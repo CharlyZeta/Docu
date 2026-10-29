@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docu"
+version = "0.1.0"
+description = "Agente autonomo de documentacion tecnica: agnostico, verificable e incremental."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+# El nucleo (core/) no depende de nada externo.
+# Las capacidades se instalan por extra, para que `pip install docu` sea ligero.
+dependencies = []
+
+[project.optional-dependencies]
+cli = ["typer>=0.12"]            # alternativa ergonomica a argparse (el CLI actual es stdlib)
+profile = ["PyYAML>=6.0"]        # lectura de docu.profile.yaml
+langs = ["tree-sitter>=0.23", "tree-sitter-python", "tree-sitter-typescript", "tree-sitter-java"]
+index = ["chromadb>=0.5", "onnxruntime>=1.18", "tokenizers>=0.19"]
+docs = ["pdfplumber>=0.11", "markdown-it-py>=3.0"]
+generate = ["jinja2>=3.1"]
+eval = ["ragas>=0.1"]
+dev = ["pytest>=8.0", "ruff>=0.6", "mypy>=1.10"]
+
+[project.scripts]
+docu = "docu.delivery.cli:main"
+
+[project.entry-points."docu.ports"]
+# Los adaptadores se registran aqui y el nucleo los descubre sin importarlos.
+# "langs.python" = "docu.adapters.langs.python:PythonLangAdapter"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true

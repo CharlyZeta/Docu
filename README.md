@@ -1,0 +1,182 @@
+# docu
+
+Agente autónomo de documentación técnica: **agnóstico**, **verificable** e **incremental**.
+Se invoca una vez y entrega documentación en cuatro niveles; después se mantiene solo y
+aprende de cada instalación.
+
+> Estado: **siete fases cerradas** (F0, F1, F2, F4, F5, F6, F7) + **perfil conectado** (F3 parcial,
+> con `init` idempotente y orden de cambio) y **el agente se documenta a sí mismo**: 517
+> afirmaciones, 0 sin cita, 12 paquetes mapeados y compuerta en verde, sin banderas. El servidor MCP
+> sirve **varios repositorios** y expone **`search_code`** con la recuperación híbrida (1.000 de
+> recall con identificadores, 0.850 en español). **369 tests** en verde. Pendiente: juez LLM y nivel
+> L2. Ver [`Plan.md`](Plan.md).
+
+## Principios que el código hace cumplir
+
+| Principio | Dónde se garantiza |
+|---|---|
+| Sin evidencia no hay afirmación | `Claim.verified`, `ContentNode.is_publishable()`, `Fact.citation` |
+| Publicar es una decisión auditada | `GatePolicy.evaluate()` → `PUBLISH` / `REVIEW` / `ABORT` |
+| Idempotencia | `index/freshness.py::is_idempotent`, hash de 6 componentes, salida byte a byte |
+| Agnosticismo | `core/ports.py` (9 puertos), `adapters/langs/registry.py`; `core/` no importa `adapters/` |
+| Autonomía con presupuesto | `Budget.spend()` lanza `BudgetExhausted` en lugar de degradar salida |
+| Fuente volátil no citable sin snapshot | `Artifact.__post_init__` |
+
+## Lenguajes soportados
+
+| Lenguaje | Adaptador | Extrae |
+|---|---|---|
+| Java | `adapters/langs/java.py` | tipos, miembros, anotaciones, imports, rutas Spring |
+| Python | `adapters/langs/python.py` (sobre `ast`) | clases, funciones, decoradores, `async`, rutas FastAPI/Flask |
+| TypeScript/JS | `adapters/langs/typescript.py` | clases, interfaces, enums, decoradores NestJS, rutas, arrow functions |
+
+La **suite de conformidad** ([tests/test_conformance.py](tests/test_conformance.py)) exige las 12
+construcciones en los tres lenguajes sin tocar `core/`. Añadir un lenguaje = un paquete nuevo.
+
+## Uso
+
+```bash
+python -m docu.delivery.cli --help          # sin instalar nada (stdlib)
+python -m unittest discover -s tests -t .   # suite del núcleo y del arnés
+
+# evaluación de recuperación (necesita .models/multilingual-minilm para el modo híbrido)
+python eval/harness.py --golden eval/golden/backend-security-starter.json --index auto --query-field question --expand
+```
+
+Con dependencias opcionales:
+
+```bash
+pip install -e ".[langs,index,docs,generate,eval]"
+docu init                                     # detecta el stack y propone el perfil
+docu gen                                      # genera N1/N4 según el perfil, con citas
+docu status --root .                          # frescura: fresh / stale / expired
+docu gen --incremental                        # regenera solo lo desactualizado
+docu ci check                                 # validación rápida para PR (sin modelo)
+docu ci regen --out docs/generated            # regenera lo stale y escribe .docu/pr-body.md
+docu drift --bootstrap                        # foto inicial del modelo arquitectónico
+docu drift                                    # deriva entre lo declarado y el código real
+docu serve --mcp --out docs/generated         # servidor MCP de solo lectura
+docu learn                                    # resumen del ledger y candidatos
+docu learn --promote                          # instala el patrón si supera la compuerta
+docu learn --federate --dry-run               # muestra el payload anonimizado (no envía)
+docu audit
+```
+
+## Primera instalación
+
+**El stack no se declara: se detecta.** `docu init` inspecciona el repositorio (extensiones, artefactos
+de build y **paquetes**: `__init__.py`, sentencia `package`, barril `index.ts`), elige los niveles (L3
+solo si hay rutas HTTP), siembra el glosario cuando reconoce el framework y escribe
+`docu.profile.yaml` con exclusiones razonables. Después, `docu gen` **obedece el perfil**: niveles,
+carpeta de salida, exclusiones, umbrales de la compuerta, TTL y glosario.
+
+**Reejecutar `init` no es destructivo.** Si el perfil ya existe, produce una **orden de cambio**:
+
+```
+orden de cambio propuesta para demo-cambio:
+  1. output.levels: ('l1', 'l4') → ('l1', 'l3', 'l4') (se detectaron rutas HTTP: habilita la guía de uso)
+  · conservado: thresholds — valor humano: la detección no lo redefine
+
+informe: .docu/init-change-order.md
+no se escribió nada. Aplica con `docu init --apply`.
+```
+
+Códigos: `0` aplicado · `10` sin cambios · `20` orden de cambio pendiente de aprobación · `60` perfil
+inválido. La detección solo puede **añadir** estructura; nunca reescribe modo, umbrales, TTL ni el
+glosario que escribió una persona.
+
+Lo que el perfil **sí** tiene que decidir un humano, porque no es inferible:
+
+| Decisión | Por qué no se detecta |
+|---|---|
+| `glossary` | la jerga del dominio («cadena de filtros» → `securityFilterChain`) no está en el código |
+| `sources.git.exclude` | qué es producto y qué es herramienta del equipo |
+| `acceptance.thresholds` | cuánta calidad exige este proyecto |
+| `sources.web.allowlist` | a qué dominios puede consultar |
+
+## Servidor MCP
+
+Cualquier agente compatible (Claude Code, Cursor) consulta la misma documentación que los humanos:
+
+```json
+{
+  "mcpServers": {
+    "docu": {
+      "command": "docu",
+      "args": ["serve", "--mcp", "--root", ".", "--out", "docs/generated"]
+    }
+  }
+}
+```
+
+Herramientas de **solo lectura**: `list_projects`, **`search_code`**, `search_docs`, `get_module`,
+`get_symbol_doc`, `list_gaps`, `get_architecture`, `get_freshness`. Todas las respuestas incluyen
+citas `archivo#L`.
+
+`search_code` es la vía recomendada para preguntas técnicas: usa la **recuperación híbrida** del
+producto ([`retrieve/hybrid.py`](src/docu/retrieve/hybrid.py) — léxico + símbolo exacto + denso
+multilingüe, con el glosario del perfil). `search_docs` busca en la documentación ya redactada.
+
+### Transporte
+
+- **stdio** (por defecto): el que usan Claude Code, Cursor y el resto de clientes MCP.
+- **HTTP** (`--port`): puente JSON-RPC para consultar desde otro proceso o máquina.
+
+```bash
+docu serve --mcp --port 8791 --workspace /ruta/a/mis-proyectos
+curl -s localhost:8791/health
+curl -s -X POST localhost:8791/mcp -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call",
+       "params":{"name":"search_code","arguments":{"query":"dónde se valida el refresh token","project":"Backend-Security-Starter"}}}'
+```
+
+> El transporte HTTP implementa JSON-RPC por `POST /mcp` (más `GET /health` y `GET /projects`). **No**
+> implementa el transporte «Streamable HTTP» del estándar MCP, que exige SSE para mensajes
+> servidor→cliente: es un puente para scripts, integraciones y equipos, no un sustituto del stdio.
+
+**Un servidor, varios repositorios.** Con `--workspace` sirve todos los proyectos documentados de una
+carpeta; el agente elige con el parámetro `project`:
+
+```json
+{
+  "mcpServers": {
+    "docu-workspace": {
+      "command": "docu",
+      "args": ["serve", "--mcp", "--workspace", "/ruta/a/mis-proyectos", "--root", "/ruta/a/mis-proyectos/docu"]
+    }
+  }
+}
+```
+
+```
+list_projects                       → {"projects": [{"name":"Docu",…},{"name":"Backend-Security-Starter",…}]}
+search_docs(query, project="Docu")  → secciones de ese repositorio, con citas
+search_docs(query)                  → error accionable: «hay varios proyectos: indica 'project' (…)»
+```
+
+## Estructura
+
+```
+src/docu/core/       contratos, puertos, política         (stdlib puro)
+src/docu/index/      chunker sintáctico, metadatos, frescura
+src/docu/retrieve/   glosario de dominio, híbrido y enrutado
+src/docu/generate/   evidencia, prompts, cuatro niveles
+src/docu/audit/      juez calibrado, métricas, RAGAS
+src/docu/conformance/ arquitectura prescriptiva vs. real
+src/docu/learn/      ledger, patrones, promoción, federación
+src/docu/delivery/   CLI, entrada de CI, servidor MCP (solo lectura)
+src/docu/adapters/   implementaciones de cada puerto (langs, embedders, stores…)
+eval/                golden set, arnés de evaluación, informes
+tests/               suite del núcleo + conformidad de lenguajes
+.models/             modelo ONNX multilingüe (ignorado en git)
+```
+
+## Documentación del proyecto
+
+- [`Guia-v2.md`](Guia-v2.md) — guía de arquitectura corregida (14 correcciones sobre v1, decisiones cerradas).
+- [`Plan.md`](Plan.md) — plan de construcción: KPIs, fases F0–F7, cronograma, riesgos, coste.
+- [`Guia.txt`](Guia.txt) — documento original, conservado como referencia.
+
+## Licencia
+
+MIT (motor). La federación entre instalaciones es opt-in y nunca envía código ni texto.

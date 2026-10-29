@@ -1,0 +1,62 @@
+name: docu
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: docu-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Validación rápida: NO llama a ningún modelo, NO escribe nada.
+  # Regla del producto: un commit no espera a la documentación.
+  check:
+    name: frescura de la documentación
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar docu
+        run: pip install -e .
+      - name: Validar frescura
+        run: docu ci check --json
+        # Códigos: 0 fresh · 20 hay páginas stale. Si falla, comentar en el PR no es necesario:
+        # el propio job indica que hace falta `docu gen --incremental`.
+
+  # Regeneración post-merge: solo las páginas stale, y siempre como PR revisable.
+  regen:
+    name: proponer documentación actualizada
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar docu
+        run: pip install -e .
+      - name: Regenerar páginas desactualizadas
+        run: docu ci regen --out docs/generated
+      - name: Abrir PR de documentación
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: docs/docu-bot
+          delete-branch: true
+          title: "docs: documentación regenerada por docu"
+          commit-message: "docs: regenerar documentación desactualizada"
+          body-path: .docu/pr-body.md
+          labels: documentation
+          add-paths: |
+            docs/generated/**
+            .docu/manifest.json

@@ -1,0 +1,7 @@
+# Normaliza finales de línea en el repositorio; los archivos de datos quedan intactos.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.onnx binary
+*.pdf binary

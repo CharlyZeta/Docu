@@ -1,0 +1,75 @@
+# Perfil de aceptación de docu. Editarlo es decidir: la generación lo obedece.
+# Generado por `docu init`; revisa exclusiones, niveles y umbrales antes de confiar en él.
+schema_version: "1.0"
+
+project: docu
+mode: apply                 # propose | apply | publish
+
+sources:
+  git:
+    ref: HEAD
+    # include: []   # por defecto: todo lo detectable
+    exclude:
+      - "*/target/*"
+      - "target/*"
+      - "*/build/*"
+      - "build/*"
+      - "dist/*"
+      - "*/node_modules/*"
+      - "node_modules/*"
+      - "*/.git/*"
+      - ".git/*"
+      - ".sdd/*"
+      - ".agents/*"
+      - ".venv/*"
+      - "venv/*"
+      - "docs/generated/*"
+      - "out/*"
+      - "coverage/*"
+      - "__pycache__/*"
+      - "*/.pytest_cache/*"
+  pdf: []
+  web:
+    allowlist: ["docs.spring.io", "docs.python.org", "developer.mozilla.org"]
+  contracts: []
+
+output:
+  dir: docs/generated
+  language: es
+  levels:
+    l1: true
+    l2: false   # pendiente de implementación
+    l3: false
+    l4: true
+  notation:
+    diagrams: mermaid
+    architecture: c4
+    api: openapi3.1
+
+acceptance:
+  thresholds:
+    accuracy: 8.5
+    completeness: 9.0
+    attribution: 9.5
+    conciseness: 7.5
+
+freshness:
+  ttl_days: 90
+
+learn:
+  promotion_delta: 0.05
+  rollback_drop: 0.05
+  federate: false
+
+# Glosario del domino de docu: sin esto, "página desactualizada" no se acerca a `stale`.
+glossary:
+  "desactualizado": ["stale", "state_of", "classify"]
+  "desactualizada": ["stale", "state_of", "classify"]
+  "obsoleto": ["stale", "expired", "ttl"]
+  "frescura": ["freshness", "fresh", "stale", "ttl"]
+  "huella": ["hash", "digest", "sha256"]
+  "compuerta": ["gate", "thresholds", "publish", "review"]
+  "hueco": ["gap", "unsupported", "no evidence"]
+  "paquete": ["package", "init", "module"]
+  "patrón": ["pattern", "candidate", "promote"]
+  "promoción": ["promote", "rollback", "pattern"]

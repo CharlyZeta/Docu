@@ -1,0 +1,206 @@
+Guía de Arquitectura para el Diseño de un Agente Autónomo de Documentación Técnica Basado en RAG Híbrido
+
+1. Fundamentos y Arquitectura del Agente de Documentación RAG
+
+El desarrollo de software moderno enfrenta un desafío persistente: la fragmentación del conocimiento técnico entre repositorios de código fuente, diagramas de arquitectura, especificaciones en formato PDF y documentación web externa. Para resolver esta problemática, la creación de un agente autónomo de documentación debe fundamentarse en una arquitectura de Generación Aumentada por Recuperación (RAG) Híbrida. A diferencia de los enfoques RAG tradicionales o ingenuos (Naïve RAG), que procesan documentos homogéneos mediante segmentación estática por tamaño de bloques, un sistema híbrido integra componentes especializados para procesar artefactos estructurados y no estructurados, preservando la trazabilidad exacta de las fuentes.
+
+Como establecen las investigaciones pioneras sobre RAG híbrido aplicadas a proyectos de GitHub realizadas en la Universidad Nacional del Centro de la Provincia de Buenos Aires (UNCPBA), el agente debe estructurar su ciclo de vida en una secuencia de cinco fases fundamentales:
+
+Fase 1: Ingesta, Extracción Sintáctica y Normalización
+
+El agente debe implementar tuberías de ingesta en paralelo según el tipo de recurso que conforma el proyecto:
+
+* Código Fuente y Repositorio Git: El agente clona e inspecciona el repositorio mediante módulos de extracción dedicados. Para capturar la semántica profunda del código, el sistema no se limita a leer el texto plano de los archivos; procesa el código mediante Árboles de Sintaxis Abstracta (AST) e integra marcos de análisis como RepoAgent de OpenBMB y Repowise. Esta inspección permite identificar declaraciones de funciones, clases, métodos, firmas de API y relaciones bidireccionales de invocación entre objetos.
+* Grafo de Dependencias e Historial de Git: El agente analiza las importaciones y referencias cruzadas para construir un grafo de dependencias interno. Adicionalmente, examina la minería del historial de commits de Git para extraer información sobre la autoría de componentes (ownership), la frecuencia de modificación (churn) y el acoplamiento implícito entre archivos.
+* Documentos Técnicos y Teóricos (PDFs): Procesamiento de libros de texto, manuales de diseño o especificaciones académicas utilizando librerías de extracción de texto como PyPDF.
+* Contenido Web Dinámico y APIs: Integración de consultas web como mecanismo de respaldo cuando la información local del repositorio o los PDFs resulta insuficiente para responder o completar una especificación técnica.
+
+Segmentación Sintáctica e Inyección Explícita de Metadatos
+
+Un fallo recurrente en los sistemas RAG aplicados a repositorios de código es el fragmentado estático que corta bloques semánticos a la mitad de una función o clase. Para garantizar la coherencia semántica:
+
+1. Segmentación Sintáctica: La delimitación de bloques se alinea con las fronteras estructurales del lenguaje (bloques de función, clases, archivos de configuración o secciones sintácticas). Un rango operativo óptimo oscila entre 512 y 1024 tokens con un solapamiento (overlap) de 128 tokens.
+2. Inyección de Metadatos y Contexto de Archivo: Cada fragmento extraído se prefija explícitamente con su contexto de origen. Por ejemplo, al segmentar un método, se inyecta en el contenido del bloque el identificador del archivo, la ruta dentro del proyecto, el nombre de la clase contenedora y la estampa de tiempo de ingesta. Esta inyección de metadatos mejora la precisión del procesamiento semántico para consultas orientadas a archivos específicos y soporta la trazabilidad arquitectónica.
+
+{
+  "chunk_id": "data_service_main_042",
+  "source_type": "git_repository",
+  "file_path": "src/services/data_service.py",
+  "enclosing_symbol": "DataService.process_record",
+  "git_commit_hash": "a8f3b92",
+  "dependencies": ["src/utils/format_helper.py", "src/models/entity.py"],
+  "content_prefix": "[File: src/services/data_service.py | Class: DataService | Method: process_record]"
+}
+
+
+Fase 2: Generación de Embeddings y Almacenamiento Vectorial
+
+Una vez normalizados los bloques, se generan representaciones vectoriales denso-semánticas. Como demuestran los experimentos de la UNCPBA, el uso de modelos de embedding especializados en contenido técnico y código (como los modelos nv-embed-v1 de 768 dimensiones) ofrece un rendimiento superior frente a modelos de propósito general. Los vectores se almacenan en una base de datos vectorial como ChromaDB utilizando métricas de similitud coseno.
+
+Fase 3: Procesamiento de Consultas y Búsqueda Semántica
+
+Al recibir una solicitud de documentación, el agente realiza un procesamiento idéntico sobre la consulta y ejecuta una búsqueda de k-vecinos más cercanos (k-NN) en paralelo sobre las colecciones activadas.
+
+Fase 4: Re-ranking con Cross-Encoder y Refinamiento
+
+Para maximizar la precisión de recuperación en proyectos complejos, el agente aplica un clasificador de reordenamiento (re-ranker) basado en cross-encoders (como el modelo llama-3.2-nv-rerankqa). Este modelo evalúa conjuntamente el par consulta-fragmento sobre los 10 mejores resultados de cada fuente, asignando un puntaje de relevancia cualitativo. El re-ranking elimina fragmentos léxicamente similares pero contextualmente irrelevantes, mejorando significativamente la atribución de fuentes.
+
+Fase 5: Generación Aumentada de Respuestas
+
+Los fragmentos seleccionados se ensamblan en un prompt estructurado que restringe explícitamente al modelo de lenguaje (LLM) a generar la documentación basándose únicamente en el contexto recuperado, erradicando alucinaciones y garantizando la citación e integración de metadatos.
+
+2. Sistema de Normalización y Parámetros de Aceptación por Proyecto
+
+Para que el agente genere documentación coherente y estandarizada, no debe aplicar una plantilla rígida e idéntica a todos los sistemas. Cada proyecto posee una rúbrica, directrices de arquitectura y criterios de aceptación propios.
+
+Configuración Dinámica de Parámetros de Aceptación
+
+El agente recibe como entrada un archivo de perfil de configuración que define las reglas formales de la documentación esperada. Este archivo especifica los estándares del proyecto, tales como:
+
+* Módulos obligatorios: Requerimiento explícito de arquitectura general, diagramas de clases, diccionario de datos, guía de API y manual de usuario.
+* Estándares de notación: Formato de diagramas (PlantUML o Mermaid), notaciones de arquitectura (C4 Model) y estándares de API (OpenAPI/Swagger).
+* Restricciones de lenguaje y estilo: Nivel de profundidad técnica según la audiencia, voz del documento y vocabulario específico del dominio.
+
+Alineación de Arquitectura como Código (AaC) y Control de Deriva
+
+Según la literatura académica sobre Architecture as Code (AaC) de Bucaioni y colaboradores, la arquitectura como código se define por tres características esenciales: un enfoque centrado en código, una evolución impulsada por la automatización, y accesibilidad para los stakeholders. La falta de mecanismos de verificación continua genera un desajuste entre la arquitectura planificada y la implementación real en código, fenómeno conocido como deriva arquitectónica (architecture drift), lo que deriva en deuda arquitectónica.
+
+El agente actúa como un motor de conformidad continua:
+
+1. Extracción de la Arquitectura Prescriptiva: El agente lee los archivos de definición de infraestructura o modelos de arquitectura en código (archivos YAML de C4InterFlow, definiciones de AWS CloudFormation o anotaciones en código).
+2. Verificación de Conformidad frente al Código Real: Al analizar el grafo de dependencias del código recién compilado o modificado, el agente detecta discrepancias (por ejemplo, una nueva dependencia entre servicios no declarada en el modelo C4) y genera alertas o actualiza la documentación arquitectónica para mantener la alineación.
+
+Métrica de Evaluación de Calidad de la Documentación
+
+El agente evalúa la documentación generada frente a cuatro métricas cuantitativas clave (en escala de 1 a 10), validadas en el protocolo de evaluación de sistemas RAG técnicos:
+
+Métrica de Calidad	Definición Técnica	Mecanismo de Verificación del Agente
+Exactitud del Contenido (Content Accuracy)	Corrección factual y equivalencia semántica con el código e infraestructura real.	Comparación contra la AST y firmas de API extraídas directamente del código fuente.
+Completitud (Completeness)	Cobertura total de los componentes, funciones, casos de uso e interfaces requeridas en la rúbrica del proyecto.	Verificación de checklist frente al perfil de aceptación del proyecto.
+Precisión de Atribución (Source Attribution Accuracy)	Alineación exacta entre los fragmentos citados como evidencia y las fuentes originales (archivos del repo, PDFs, web).	Auditoría de metadatos de origen para asegurar que cada afirmación técnica enlace al archivo o línea correspondiente.
+Concisión (Conciseness)	Ausencia de redundancias, texto de relleno o verbosidad innecesaria.	Análisis sintáctico del texto para eliminar redundancias y mantener la densidad informativa.
+
+3. Evaluación Automática, Auditoría de Calidad y Mantenimiento Incremental
+
+Para asegurar la sostenibilidad de la documentación a lo largo del tiempo, el agente debe integrar mecanismos autónomos de auditoría, control de alucinaciones y actualización incremental sobre el repositorio.
+
+Protocolo de Auditoría Autónoma (LLM-as-a-Judge) y Métricas RAGAS
+
+El agente ejecuta una fase interna de control de calidad antes de publicar o confirmar la documentación. Utiliza el patrón LLM-as-a-Judge (configurando el modelo evaluador a temperatura 0 para asegurar la repetibilidad y estabilidad de los resultados) y marcos de evaluación como RAGAS (Faithfulness, Answer Relevance, Context Precision) y FActScore.
+
+Si la puntuación de precisión factual o completitud de un módulo de documentación generado cae por debajo del umbral de aceptación definido para el proyecto (por ejemplo, menor a 8.5/10), el agente inicia un bucle de refinamiento autónomo: reescribe el prompt interno, expande la búsqueda de contexto en el grafo de código o solicita fragmentos adicionales antes de aprobar el documento.
+
+Detección de Obsolescencia y Control de Frescura (Freshness Hashing)
+
+Regenerar toda la documentación de un proyecto masivo tras cada commit es costoso e ineficiente. Las mejores prácticas de sistemas de inteligencia de código como Repowise demuestran que la documentación debe mantenerse actualizada mediante un seguimiento incremental por hash:
+
+1. Huella Digital de Entrada (Input Hash): Para cada página o sección de documentación, el agente calcula un hash combinado a partir del contenido del archivo fuente, las firmas de dependencias de sus vecinos en el grafo y la plantilla de generación.
+2. Estado del Documento: Cada módulo de documentación se marca con un estado: fresco (fresh), obsoleto (stale) o expirado (expired).
+3. Actualización Incremental: Cuando se realiza un nuevo commit o merge en el repositorio, el agente calcula las diferencias en el árbol de Git, consulta el grafo de dependencias para identificar únicamente las páginas impactadas por los archivos modificados, y regenera exclusivamente esos componentes.
+
+Integración en el Ciclo de Vida: Hooks de Pre-Commit y CI/CD
+
+El agente de documentación debe integrarse directamente en el flujo diario de trabajo de los desarrolladores. La forma más efectiva de lograrlo es mediante la configuración de un hook de pre-commit en el repositorio objetivo, siguiendo el modelo implementado por marcos como RepoAgent de OpenBMB.
+
+Bajo este flujo:
+
+1. El desarrollador modifica el código fuente y ejecuta el comando de commit en Git.
+2. El hook de pre-commit activa automáticamente al agente.
+3. El agente detecta las modificaciones, consulta su índice RAG, regenera la documentación Markdown afectada en la carpeta asignada, y actualiza los archivos para el commit.
+4. El commit se completa incorporando el código y su documentación sincronizada.
+
+4. Uso Técnico Escalar de Recursos y Diagramación Automatizada
+
+Un aspecto crítico en proyectos de gran escala es la capacidad de explicar la arquitectura de forma visual sin requerir diseño manual ni mantenimiento costoso de imágenes binarias.
+
+Diagramas como Código (PlantUML y Mermaid)
+
+El agente debe aprovechar el paradigma de Diagramas como Código (Diagrams as Code). Como destaca la integración oficial de Mermaid en GitHub y plataformas de diseño como VPasCode o Visual Paradigm, escribir sintaxis textual DSL para diagramación permite:
+
+* Almacenar los diagramas en archivos Markdown o archivos de texto versionados directamente en Git.
+* Renderizar los diagramas dinámicamente en repositorios web, wikis o visores de Markdown sin almacenar imágenes pesadas.
+* Permitir que el modelo de lenguaje del agente genere y refactorice diagramas utilizando lenguaje natural o analizando estructuras de código.
+
+Ejemplo: Generación Automática de Diagrama de Secuencia en Mermaid
+
+Cuando el agente analiza un flujo de procesamiento de solicitudes en el código, extrae la secuencia de llamadas e inyecta en el documento Markdown el correspondiente bloque textual:
+
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant API as API Gateway
+    participant Service as ProcessorService
+    participant DB as Base de Datos
+
+    Usuario->>API: Solicitud de Procesamiento
+    API->>Service: validate_and_execute(data)
+    Service->>DB: query_entity_by_id(id)
+    DB-->>Service: registro_entidad
+    Service->>Service: apply_business_rules()
+    Service-->>API: result_summary
+    API-->>Usuario: Respuesta Completada
+
+
+Al renderizar este Markdown, GitHub o cualquier visor compatible transforma el bloque en una visualización vectorial clara y escalable. Si un desarrollador cambia la firma del método o añade un paso de verificación, el agente reescribe únicamente las líneas de texto Mermaid correspondientes.
+
+Adaptación de Voces y Exposición vía Servidor MCP
+
+Siguiendo el diseño de herramientas de inteligencia de repositorios como Repowise, el agente debe permitir configurar la voz narrativa del contenido (comprehensive, reference, tutorial, o caveman para presupuestos de tokens reducidos). Adicionalmente, la documentación estructurada debe servirse mediante herramientas del Protocolo de Contexto de Modelo (MCP, Model Context Protocol), permitiendo que agentes de codificación de IA (como Claude Code o Cursor) consulten la misma documentación que leen los desarrolladores humanos.
+
+5. Estrategia de Documentación Multicapa para Diversas Audiencias
+
+Un proyecto de software exitoso debe comunicarse con múltiples partes interesadas. El agente no puede generar un único texto genérico; debe estructurar la documentación en cuatro niveles diferenciados por audiencia, adaptando el vocabulario, la profundidad técnica y el formato.
+
+Nivel 1: Manual Técnico e Interno (Para Desarrolladores y Arquitectos)
+
+Dirigido a ingenieros que necesitan mantener, depurar o extender la base de código. Como orientan las guías de documentación de proyectos de software de Folium Labs y las publicaciones técnicas de César Cancino, este documento debe ser exhaustivo y estar estructurado con máxima precisión.
+
+* Arquitectura del Sistema: Diagramas de componentes (Modelos C4), patrones de diseño identificados en el código (por ejemplo, desacoplamiento mediante patrón Strategy o Factory) y flujo de datos.
+* Modelo y Diccionario de Datos: Diagrama Entidad-Relación en notación Mermaid o PlantUML, acompañado de una tabla detallada que especifique cada campo, tipo de dato, restricciones y descripción funcional.
+* Especificación de API y Endpoints (Swagger / OpenAPI): Descripción de contratos de API con métodos HTTP, rutas, parámetros de entrada, códigos de respuesta y ejemplos de estructura JSON.
+* Estructura de Carpetas y Dependencias: Árbol descriptivo del proyecto, mapeo de módulos clave y lista de librerías externas con versión exacta y propósito.
+
+Campo	Tipo de Dato	Restricciones	Descripción Funcional
+entity_id	UUID	Clave Primaria, Obligatorio	Identificador único del registro en el sistema.
+code	Texto	Único, Obligatorio	Código primario para referencia externa.
+status_code	Texto	Clave Foránea	Código del estado actual para control de ciclo de vida.
+is_active	Booleano	Predeterminado Verdadero	Estado operativo del registro para borrado lógico.
+
+Nivel 2: Guías de Infraestructura y Despliegue (Para DevOps y SysAdmins)
+
+Enfocado en la operación del sistema en entornos de pruebas y producción, alineándose con los principios de Architecture as Code.
+
+* Configuración del Entorno: Especificación detallada de variables de entorno requeridas, puertos, servicios de terceros e integraciones.
+* Artefactos de Infraestructura: Explicación de archivos Dockerfile, composiciones de servicios, o scripts de Infraestructura como Código (IaC) en Terraform o CloudFormation.
+* Procedimientos de Despliegue: Pasos automatizados y manuales para la ejecución de migraciones de base de datos, construcción de imágenes y despliegue en contenedores.
+* Métricas de Salud de Código: Identificación de archivos con alta tasa de modificación (churn), cobertura de pruebas unitarias e indicadores de rendimiento.
+
+Nivel 3: Manual de Usuario Final (Para Stakeholders No Técnicos y Operadores)
+
+Diseñado para usuarios de negocio, clientes o personal operativo sin perfil informático. Como destaca la literatura sobre documentación efectiva de software, esta sección requiere empatía, claridad sintáctica y un lenguaje totalmente desprovisto de tecnicismos informáticos.
+
+* Lenguaje Accesible: En lugar de usar jerga sobre llamadas a endpoints, se indica "Ingrese los datos requeridos en el formulario de inicio y presione el botón Procesar".
+* Guías Paso a Paso: Flujos explicados secuencialmente para las funcionalidades principales del negocio.
+* Diagramas de Interfaz y Capturas: Referencias visuales del flujo de trabajo interactivo.
+* Resolución de Problemas Comunes (FAQ): Respuestas directas a dudas frecuentes de usuario, validaciones de formularios y contactos de soporte.
+
+Nivel 4: README y Onboarding (Para Nuevos Integrantes del Equipo)
+
+La puerta de entrada al repositorio. Debe ofrecer una visión clara que permita a un nuevo desarrollador poner en marcha el proyecto en su máquina local en pocos minutos.
+
+* Visión General: Descripción sintética del problema que resuelve el software y el valor que aporta.
+* Prerrequisitos: Versiones exactas del lenguaje de programación, motores de base de datos y herramientas globales.
+* Instalación y Configuración Rápida: Lista ordenada de comandos ejecutables para clonar, instalar dependencias, configurar variables y levantar la aplicación.
+* Comandos Principales: Instrucciones para ejecutar la suite de pruebas unitarias, el analizador de código y el servidor de desarrollo.
+
+6. Checklist de Implementación para el Desarrollo del Agente
+
+Para construir con éxito el agente autónomo de documentación, se debe verificar el cumplimiento de los siguientes pasos en su desarrollo:
+
+1. Configurar el Pipeline de Ingesta RAG Híbrido: Implementar la extracción paralela de código AST, PDFs y fuentes web con metadatos explícitos.
+2. Establecer la Base de Datos Vectorial y Re-Ranker: Configurar la base vectorial con embeddings técnicos y re-ranking con cross-encoder.
+3. Implementar el Motor de Aceptación por Proyecto: Crear el lector de parámetros de aceptación para guiar la generación según la rúbrica de cada proyecto.
+4. Integrar el Evaluador Automático: Configurar la evaluación LLM-as-a-Judge a temperatura 0 y métricas RAGAS.
+5. Desplegar el Control de Frescura e Integración Git: Configurar el seguimiento por hash de entradas e integrar el hook de pre-commit para automatizar las actualizaciones en cada commit.
+6. Habilitar la Generación de Diagramas como Código: Configurar los módulos de salida para generar bloques textuales de Mermaid y PlantUML.
+7. Soportar la Salida Multicapa y Servidor MCP: Asegurar que las plantillas permitan generar desde el README básico hasta el manual técnico profundo y el manual de usuario sin tecnicismos, exponiendo las herramientas vía MCP.

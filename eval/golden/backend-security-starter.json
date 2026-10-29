@@ -1,0 +1,411 @@
+{
+  "schema_version": "1.0",
+  "project": "backend-security-starter",
+  "repo": "E:/Propios/Backend-Security-Starter",
+  "k": 10,
+  "description": "Golden set de F0: 20 casos con evidencia esperada verificada a mano contra el repositorio. 'question' es la pregunta humana en espanol (mide la brecha idioma); 'query' son los terminos con los que un ingeniero buscaria en el codigo (identificadores, ingles). Ambas se miden.",
+  "cases": [
+    {
+      "id": "C-01",
+      "category": "code",
+      "question": "¿Dónde se define la cadena de filtros de seguridad: CSRF, sesión sin estado y rutas permitidas?",
+      "query": "SecurityFilterChain csrf disable authorizeHttpRequests permitAll sessionManagement STATELESS",
+      "expected": [
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/config/BssSecurityConfig.java",
+          "symbol": "BssSecurityConfig.securityFilterChain",
+          "lines": [
+            35,
+            61
+          ]
+        }
+      ],
+      "answer": "En BssSecurityConfig.securityFilterChain(): desactiva CSRF, configura CORS según propiedades, SessionCreationPolicy.STATELESS, permite /error, /api/auth/refresh y Swagger, exige ROLE_BSS_ADMIN para /api/bss/** y añade JwtAuthenticationFilter antes de UsernamePasswordAuthenticationFilter.",
+      "notes": "Caso canónico de Nivel 1: cubre configuración de seguridad y orden de filtros."
+    },
+    {
+      "id": "C-02",
+      "category": "code",
+      "question": "¿Cuánto es el margen de tolerancia de reloj (leeway) aplicado a la validación del JWT y dónde se declara?",
+      "query": "LEEWAY_SECONDS clockSkewSeconds 60 jwt parser expiration",
+      "expected": [
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/service/JwtTokenService.java",
+          "symbol": "JwtTokenService.LEEWAY_SECONDS",
+          "lines": [
+            29,
+            94
+          ]
+        }
+      ],
+      "answer": "LEEWAY_SECONDS = 60, aplicado con clockSkewSeconds(LEEWAY_SECONDS) al construir el parser del token.",
+      "notes": "Verifica una cifra: si el documento dice otro número, es alucinación detectable."
+    },
+    {
+      "id": "C-03",
+      "category": "code",
+      "question": "¿Cómo se valida un refresh token en el endpoint de refresco y qué ocurre con el token anterior?",
+      "query": "refreshtoken refresh token rotation deleteByToken createRefreshToken findByToken verifyExpiration",
+      "expected": [
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/controller/BssAuthController.java",
+          "symbol": "BssAuthController.refreshtoken",
+          "lines": [
+            39,
+            69
+          ]
+        }
+      ],
+      "answer": "BssAuthController.refreshtoken: rechaza body vacío con BssBadRequestException (400), busca el token, verifica expiración, emite nuevo access token, crea nuevo refresh token (rotación) y borra solo el token usado. Si no existe, lanza JwtValidationException.",
+      "notes": "Flujo de negocio principal del producto."
+    },
+    {
+      "id": "C-04",
+      "category": "code",
+      "question": "¿Dónde se implementa el filtro que autentica cada petición a partir del header Authorization?",
+      "query": "JwtAuthenticationFilter OncePerRequestFilter addFilterBefore UsernamePasswordAuthenticationFilter header",
+      "expected": [
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/filter/JwtAuthenticationFilter.java"
+        },
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/config/BssSecurityConfig.java",
+          "lines": [
+            59,
+            59
+          ],
+          "optional": true
+        }
+      ],
+      "answer": "En JwtAuthenticationFilter (extends OncePerRequestFilter), registrado por BssSecurityConfig con addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).",
+      "notes": "Caso multi-archivo: el filtro y su punto de registro."
+    },
+    {
+      "id": "C-05",
+      "category": "code",
+      "question": "¿Qué interfaz permite cambiar el almacenamiento de refresh tokens y cuál es la implementación por defecto?",
+      "query": "RefreshTokenRepository interface InMemoryRefreshTokenRepository default bean",
+      "expected": [
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/repository/RefreshTokenRepository.java"
+        },
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/repository/InMemoryRefreshTokenRepository.java"
+        }
+      ],
+      "answer": "La interfaz RefreshTokenRepository; el starter publica InMemoryRefreshTokenRepository por defecto (condicional a que no exista otro bean).",
+      "notes": "Punto de extensibilidad del producto: la documentación debe explicar cómo sustituirlo."
+    },
+    {
+      "id": "C-06",
+      "category": "code",
+      "question": "¿Qué componente elimina los refresh tokens expirados y con qué mecanismo se planifica?",
+      "query": "RefreshTokenCleanupTask scheduled cleanup expired refresh tokens EnableScheduling",
+      "expected": [
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/service/RefreshTokenCleanupTask.java"
+        },
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/config/BssSecurityConfig.java",
+          "lines": [
+            24,
+            24
+          ],
+          "optional": true
+        }
+      ],
+      "answer": "RefreshTokenCleanupTask, tarea programada habilitada por @EnableScheduling en BssSecurityConfig.",
+      "notes": "Conecta dos archivos mediante una anotación: prueba de grafo de dependencias."
+    },
+    {
+      "id": "C-07",
+      "category": "code",
+      "question": "¿Cómo se garantiza que los errores de seguridad (401/403) se devuelvan con un cuerpo JSON uniforme?",
+      "query": "SecurityErrorWriter json error body uniform mapper iso-8601 response writer",
+      "expected": [
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/config/SecurityErrorWriter.java"
+        },
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/config/JwtAuthenticationEntryPoint.java",
+          "optional": true
+        },
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/config/JwtAccessDeniedHandler.java",
+          "optional": true
+        }
+      ],
+      "answer": "SecurityErrorWriter centraliza la escritura del JSON; JwtAuthenticationEntryPoint (401) y JwtAccessDeniedHandler (403) lo usan desde el exceptionHandling de la cadena de filtros.",
+      "notes": "Un solo hecho central con dos consumidores: si el doc inventa un formato distinto, falla. La consulta no nombra a los handlers: hacerlo era fuga de la respuesta secundaria y sesgaba la medicion (F-06)."
+    },
+    {
+      "id": "C-08",
+      "category": "code",
+      "question": "¿Dónde se generan y validan los tokens JWT (firma, expiración, claims)?",
+      "query": "JwtTokenService generateToken verifyExpiration createRefreshToken jjwt SecretKey claims authorities",
+      "expected": [
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/service/JwtTokenService.java"
+        }
+      ],
+      "answer": "En JwtTokenService: generateToken con authorities, verifyExpiration, createRefreshToken, findByToken y deleteByToken; usa jjwt 0.12.6 con expiración configurable.",
+      "notes": "Símbolo central del dominio."
+    },
+    {
+      "id": "C-09",
+      "category": "architecture",
+      "question": "¿Cómo está dividido el proyecto en módulos y cuál es la dirección de las dependencias entre ellos?",
+      "query": "modules backend-security-core backend-security-autoconfigure backend-security-starter parent dependencyManagement",
+      "expected": [
+        {
+          "path": "pom.xml",
+          "lines": [
+            44,
+            49
+          ]
+        },
+        {
+          "path": "backend-security-autoconfigure/pom.xml"
+        },
+        {
+          "path": "README.md",
+          "lines": [
+            16,
+            33
+          ],
+          "optional": true
+        }
+      ],
+      "answer": "Cuatro módulos: core (lógica pura, sin autoconfiguración), autoconfigure (depende de core), starter (agrega autoconfigure + core para el cliente) y sample (demo). El parent declara los módulos y gestiona versiones.",
+      "notes": "Pregunta de arquitectura que exige leer más de un archivo."
+    },
+    {
+      "id": "C-10",
+      "category": "architecture",
+      "question": "¿Cómo se registra la autoconfiguración para que Spring Boot 3 la detecte?",
+      "query": "META-INF spring AutoConfiguration.imports BssSecurityAutoConfiguration spring.factories",
+      "expected": [
+        {
+          "path": "backend-security-autoconfigure/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports"
+        },
+        {
+          "path": "backend-security-autoconfigure/src/main/java/com/bss/security/autoconfigure/BssSecurityAutoConfiguration.java",
+          "optional": true
+        }
+      ],
+      "answer": "Mediante el archivo META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports, que lista BssSecurityAutoConfiguration (mecanismo de Spring Boot 3, no spring.factories).",
+      "notes": "Detalle que distingue un doc real de uno genérico: el archivo exacto."
+    },
+    {
+      "id": "C-11",
+      "category": "architecture",
+      "question": "¿Qué beans crea la autoconfiguración y bajo qué condición pueden ser sobrescritos por el usuario?",
+      "query": "ConditionalOnMissingBean Bean BssSecurityAutoConfiguration override bean client application",
+      "expected": [
+        {
+          "path": "backend-security-autoconfigure/src/main/java/com/bss/security/autoconfigure/BssSecurityAutoConfiguration.java",
+          "lines": [
+            34,
+            100
+          ]
+        }
+      ],
+      "answer": "Crea los beans del starter anotados con @Bean y @ConditionalOnMissingBean, de modo que cualquier bean definido por la aplicación cliente tiene prioridad.",
+      "notes": "Explica el contrato de extensibilidad: lo que el doc de Nivel 1 debe dejar claro."
+    },
+    {
+      "id": "C-12",
+      "category": "architecture",
+      "question": "¿Qué debe declarar un cliente para incorporar la seguridad en su aplicación?",
+      "query": "backend-security-starter dependency pom client import single declaration",
+      "expected": [
+        {
+          "path": "backend-security-starter/pom.xml"
+        },
+        {
+          "path": "README.md",
+          "optional": true
+        }
+      ],
+      "answer": "Una sola dependencia al artefacto backend-security-starter, que arrastra autoconfigure y core.",
+      "notes": "Pregunta de onboarding: la respuesta correcta es mínima y concreta."
+    },
+    {
+      "id": "C-13",
+      "category": "architecture",
+      "question": "¿Qué versiones de Spring Boot, Spring Security y jjwt fija el proyecto?",
+      "query": "spring-boot-starter-parent 3.3.4 spring-security.version 6.3.3 jjwt.version 0.12.6 java.version 21",
+      "expected": [
+        {
+          "path": "pom.xml",
+          "lines": [
+            6,
+            55
+          ]
+        },
+        {
+          "path": "README.md",
+          "lines": [
+            6,
+            9
+          ],
+          "optional": true
+        }
+      ],
+      "answer": "Spring Boot 3.3.4 (parent), Spring Security 6.3.3 y jjwt 0.12.6; Java 21.",
+      "notes": "Cifras verificables: cualquier otra versión en el doc es un error factual."
+    },
+    {
+      "id": "C-14",
+      "category": "config",
+      "question": "¿En qué puerto escucha la aplicación de ejemplo y cómo se habilitan los hilos virtuales?",
+      "query": "server port 8081 spring threads virtual enabled application.yml",
+      "expected": [
+        {
+          "path": "backend-security-sample/src/main/resources/application.yml",
+          "lines": [
+            1,
+            9
+          ]
+        }
+      ],
+      "answer": "Puerto 8081 (server.port) y spring.threads.virtual.enabled: true.",
+      "notes": "Configuración de operación: entra en Nivel 2."
+    },
+    {
+      "id": "C-15",
+      "category": "config",
+      "question": "¿Qué propiedades configuran el secreto y las expiraciones del JWT, y qué requisito tiene el secreto?",
+      "query": "bss.security.jwt.secret expiration refresh expiration 604800 3600 HS256 32 characters",
+      "expected": [
+        {
+          "path": "backend-security-sample/src/main/resources/application.yml",
+          "lines": [
+            11,
+            25
+          ]
+        },
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/service/JwtTokenService.java",
+          "lines": [
+            29,
+            40
+          ],
+          "optional": true
+        }
+      ],
+      "answer": "bss.security.jwt.secret (mínimo 32 caracteres para HS256), bss.security.jwt.expiration (3600 s) y bss.security.jwt.refresh.expiration (604800 s).",
+      "notes": "Mezcla configuración y restricción de código: buen test de recuperación cruzada."
+    },
+    {
+      "id": "C-16",
+      "category": "config",
+      "question": "¿Cómo se activa la caché de autenticación y cuál es el prefijo de sus propiedades?",
+      "query": "bss.security.cache.enabled ConfigurationProperties prefix BssCacheProperties cache authentication",
+      "expected": [
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/config/BssCacheProperties.java"
+        },
+        {
+          "path": "backend-security-sample/src/main/resources/application.yml",
+          "lines": [
+            23,
+            24
+          ],
+          "optional": true
+        }
+      ],
+      "answer": "Con bss.security.cache.enabled: true; las propiedades se enlazan bajo el prefijo bss.security.cache (@ConfigurationProperties).",
+      "notes": "Verifica el prefijo exacto: un doc que invente 'bss.cache' es incorrecto."
+    },
+    {
+      "id": "C-17",
+      "category": "config",
+      "question": "¿Cómo se restringe CORS y qué configuración se considera insegura?",
+      "query": "cors enabled allowed-origins allow-credentials insecure IllegalArgumentException BssCorsProperties maxAge",
+      "expected": [
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/config/BssCorsProperties.java"
+        },
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/config/BssSecurityConfig.java",
+          "lines": [
+            81,
+            95
+          ],
+          "optional": true
+        }
+      ],
+      "answer": "Con bss.security.cors (enabled, allowed-origins, allow-credentials, allowed-methods, allowed-headers, max-age). Se rechaza allowedOrigins('*') junto a allowCredentials(true) con IllegalArgumentException.",
+      "notes": "Documenta una regla de seguridad: debe citar el comportamiento exacto."
+    },
+    {
+      "id": "C-18",
+      "category": "api",
+      "question": "¿Qué endpoint expone el refresco de tokens y con qué verbo HTTP y cuerpo?",
+      "query": "RequestMapping /api/auth PostMapping refresh RequestBody TokenRefreshRequest TokenRefreshResponse 200 401",
+      "expected": [
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/controller/BssAuthController.java",
+          "symbol": "BssAuthController.refreshtoken",
+          "lines": [
+            26,
+            46
+          ]
+        },
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/dto/TokenRefreshRequest.java",
+          "optional": true
+        }
+      ],
+      "answer": "POST /api/auth/refresh con body {refreshToken} y respuesta {accessToken, refreshToken}; 400 si falta el token, 401 si es inválido o expirado.",
+      "notes": "Base del Nivel 1 (OpenAPI) y del Nivel 3 (guía de usuario)."
+    },
+    {
+      "id": "C-19",
+      "category": "api",
+      "question": "¿Qué endpoints de administración existen y qué autoridad exigen?",
+      "query": "BssManagementController /api/bss/config GetMapping PostMapping ROLE_BSS_ADMIN hasAuthority",
+      "expected": [
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/controller/BssManagementController.java",
+          "lines": [
+            27,
+            60
+          ]
+        },
+        {
+          "path": "backend-security-core/src/main/java/com/bss/security/core/config/BssSecurityConfig.java",
+          "lines": [
+            55,
+            55
+          ],
+          "optional": true
+        }
+      ],
+      "answer": "GET y POST /api/bss/config, bajo hasAuthority('ROLE_BSS_ADMIN') (además de requerir autenticación).",
+      "notes": "Une controlador y regla de autorización."
+    },
+    {
+      "id": "C-20",
+      "category": "api",
+      "question": "¿Qué endpoints expone la aplicación de ejemplo y cuál es público?",
+      "query": "SampleController /api/public/info /api/user/profile /api/admin/dashboard LoginController POST login",
+      "expected": [
+        {
+          "path": "backend-security-sample/src/main/java/com/bss/sample/controller/SampleController.java",
+          "lines": [
+            11,
+            40
+          ]
+        },
+        {
+          "path": "backend-security-sample/src/main/java/com/bss/sample/controller/LoginController.java",
+          "optional": true
+        }
+      ],
+      "answer": "SampleController bajo /api: /public/info (público), /user/profile (autenticado) y /admin/dashboard (rol de administrador); LoginController expone POST /login implementado por el cliente.",
+      "notes": "Caso de Nivel 3: la guía de usuario debe describir estos flujos sin jerga."
+    }
+  ]
+}

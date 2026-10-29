@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Estado local del agente. El manifest SI se versiona: es la memoria de frescura entre corridas
+# (y lo que permite que el CI sepa que regenerar). El resto del estado es desechable.
+.docu/*
+!.docu/manifest.json
+!.docu/ledger.jsonl
+
+# Informes de evaluacion
+eval/reports/*.json
+eval/reports/*.md
+
+# Modelos ONNX descargados (113 MB): se obtienen con `docu models fetch`
+.models/
+
+# Documentacion generada en local (se regenera con `docu gen`)
+out/
