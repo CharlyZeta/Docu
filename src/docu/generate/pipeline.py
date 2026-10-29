@@ -35,6 +35,7 @@ from docu.generate.facts import (
     unsupported,
     yaml_facts,
 )
+from docu.generate.diagrams import build_all, write_diagrams
 from docu.generate.markdown import RENDERERS
 from docu.index.packages import detect_packages
 from docu.index.manifest import (
@@ -87,6 +88,7 @@ class GenerationResult:
     manifest_path: Path | None = None
     applicability: Mapping[str, bool] = field(default_factory=dict)
     unsupported_languages: Mapping[str, int] = field(default_factory=dict)
+    diagrams: tuple[str, ...] = field(default_factory=tuple)
 
     @property
     def wrote_files(self) -> bool:
@@ -438,6 +440,9 @@ def generate(
     manifest_target = manifest_file(root_path, manifest_path)
 
     facts, sources = collect_facts(root_path, include_tests=include_tests, include=include, exclude=exclude)
+    discovered = _discover(root_path, include_tests=include_tests, include=include, exclude=exclude)
+    packages = detect_packages(discovered)
+    diagrams = build_all(discovered, packages, facts, _read)
     missing = unsupported(facts)
     digest = sha256_of("|".join(f"{path}:{sha}" for path, sha in sorted(sources.items())))[:12]
     versions = {**DEFAULT_VERSIONS, "docu": version}
@@ -507,7 +512,7 @@ def generate(
         if gate.outcome is GateOutcome.ABORT:
             continue
         renderer = RENDERERS[level]
-        content = renderer(name, facts, sources, meta)
+        content = renderer(name, facts, sources, meta, diagrams=diagrams)
         filename = LEVEL_FILENAMES.get(level, f"{level}.md")
         destination = out_path / filename
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -529,6 +534,7 @@ def generate(
 
     if gate.outcome is not GateOutcome.ABORT:
         manifest.save(manifest_target)
+        write_diagrams(diagrams, out_path / "diagrams")
 
     _record_run(
         root=root_path,
@@ -555,4 +561,5 @@ def generate(
         manifest_path=manifest_target,
         applicability=applicable,
         unsupported_languages=_language_names(languages),
+        diagrams=tuple(diagram.filename for diagram in diagrams),
     )

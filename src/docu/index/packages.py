@@ -47,11 +47,13 @@ def _python_packages(files: Mapping[str, Path]) -> list[DetectedPackage]:
         package_dir = marker.rsplit("/", 1)[0] if "/" in marker else "."
         prefix = "src/" if package_dir.startswith("src/") else ""
         name = package_dir[len(prefix) :].replace("/", ".") if package_dir != "." else "."
+        # Miembros **directos**: el paquete no absorbe sus subpaquetes. Si se cuenta recursivo,
+        # `docu` reclama 45 archivos y su diagrama de clases mezcla capas que no le pertenecen.
         members = tuple(
             sorted(
                 rel
                 for rel in python_files
-                if rel.startswith(package_dir + "/") or package_dir == "."
+                if (rel.rsplit("/", 1)[0] if "/" in rel else ".") == package_dir
             )
         )
         line_count = _line_count(Path(files[marker]))
@@ -113,7 +115,13 @@ def _typescript_packages(files: Mapping[str, Path]) -> list[DetectedPackage]:
             continue
         package_dir = rel.rsplit("/", 1)[0]
         barrel_dirs.add(package_dir)
-        members = tuple(sorted(item for item in code_files if item.startswith(package_dir + "/")))
+        members = tuple(
+            sorted(
+                item
+                for item in code_files
+                if (item.rsplit("/", 1)[0] if "/" in item else ".") == package_dir
+            )
+        )
         line_count = _line_count(Path(code_files[rel]))
         packages.append(
             DetectedPackage(
@@ -133,6 +141,10 @@ def _typescript_packages(files: Mapping[str, Path]) -> list[DetectedPackage]:
 
     for directory, members in sorted(grouped.items()):
         if len(members) < 3 or directory == ".":
+            continue
+        # Unidades por carpeta sólo en profundidad razonable: `vendor/includes/assets/js` no es una
+        # unidad de arquitectura aunque tenga tres archivos.
+        if directory.count("/") + 1 > MAX_DIRECTORY_DEPTH:
             continue
         first = members[0]
         packages.append(
@@ -157,6 +169,9 @@ def _read(path: Path) -> str:
         return path.read_text(encoding="utf-8", errors="replace")
     except OSError:
         return ""
+
+
+MAX_DIRECTORY_DEPTH = 3
 
 
 def _line_count(path: Path) -> int:

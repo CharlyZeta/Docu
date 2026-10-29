@@ -67,7 +67,9 @@ class PythonPackageTests(unittest.TestCase):
 
     def test_counts_only_its_own_files(self) -> None:
         self.assertEqual(self.packages["demo.core"].file_count, 2)  # __init__ + models
-        self.assertEqual(self.packages["demo"].file_count, 5)  # todo lo anidado
+        # Los subpaquetes no se absorben: si `demo` contara recursivo, su diagrama de clases
+        # mezclaría capas ajenas y el tamaño del paquete mentiría.
+        self.assertEqual(self.packages["demo"].file_count, 2)  # __init__ + service
 
     def test_citation_points_to_the_declaring_file(self) -> None:
         self.assertEqual(self.packages["demo.core"].citation, "src/demo/core/__init__.py#L1-L1")

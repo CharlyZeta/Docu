@@ -91,6 +91,34 @@ def _header(
     ]
 
 
+def _diagrams_block(diagrams: Sequence[object], facts: Sequence[Fact]) -> list[str]:
+    """Bloques Mermaid embebidos. Sin diagramas, se declara el hueco con su motivo."""
+    blocks: list[str] = []
+    for diagram in diagrams:
+        name = getattr(diagram, "name", "")
+        kind = getattr(diagram, "kind", "")
+        mermaid = getattr(diagram, "mermaid", "")
+        note = getattr(diagram, "note", "")
+        if not mermaid:
+            continue
+        title = {
+            "architecture": "Dependencias entre paquetes",
+            "classes": "Clases del paquete",
+            "api": "Flujo de la API",
+        }.get(str(kind), str(name))
+        blocks += [f"### {title}" + (f" · {note}" if note else ""), "", "```mermaid", mermaid, "```", ""]
+    if not blocks:
+        blocks += [
+            NO_EVIDENCE,
+            "",
+            "> No se generan diagramas de secuencia: el grafo de llamadas no resuelve despacho "
+            "dinámico (inyección de dependencias, interfaces), y un diagrama de secuencia inventado "
+            "sería peor que su ausencia.",
+            "",
+        ]
+    return blocks
+
+
 # --------------------------------------------------------------------------- Nivel 1
 
 
@@ -99,8 +127,9 @@ def render_l1(
     facts: Sequence[Fact],
     sources: Mapping[str, str],
     meta: Mapping[str, str],
+    diagrams: Sequence[object] = (),
 ) -> str:
-    """Manual tecnico interno: arquitectura, API, configuracion y simbolos."""
+    """Manual tecnico interno: arquitectura, diagramas, API, configuracion y simbolos."""
     lines = _header(project, "Manual técnico (Nivel 1)", meta, facts)
     counts = _counts(facts)
 
@@ -135,6 +164,9 @@ def render_l1(
     if not module_rows and not package_rows:
         lines += [NO_EVIDENCE, ""]
 
+    lines += ["## 3. Diagramas", ""]
+    lines += _diagrams_block(diagrams, facts)
+
     parent = _dedupe(_by_kind(facts, "parent"))
     properties = _dedupe(_by_kind(facts, "property"))
     if parent or properties:
@@ -143,7 +175,7 @@ def render_l1(
         rows += [[f"`{f.subject}`", "propiedad", f.detail, _cite(f.citation)] for f in properties]
         lines += [_table(["Elemento", "Tipo", "Valor", "Cita"], rows), ""]
 
-    lines += ["## 3. Dependencias", ""]
+    lines += ["## 4. Dependencias", ""]
     lines += [
         _table(
             ["Artefacto", "Versión", "Scope", "Cita"],
@@ -155,7 +187,7 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 4. API HTTP", ""]
+    lines += ["## 5. API HTTP", ""]
     lines += [
         _table(
             ["Verbo", "Ruta", "Handler", "Cita"],
@@ -172,7 +204,7 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 5. Configuración", ""]
+    lines += ["## 6. Configuración", ""]
     lines += [
         _table(
             ["Clave", "Valor", "Cita"],
@@ -184,7 +216,7 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 6. Tipos", ""]
+    lines += ["## 7. Tipos", ""]
     lines += [
         _table(
             ["Tipo", "Nombre", "Anotaciones", "Cita"],
@@ -203,7 +235,7 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 7. Índice de métodos", ""]
+    lines += ["## 8. Índice de métodos", ""]
     methods = _by_kind(facts, "method")
     rows = [
         [f"`{fact.subject}`", f"`{(fact.detail or '')[:90]}`", _cite(fact.citation)] for fact in methods[:200]
@@ -212,7 +244,7 @@ def render_l1(
     if len(methods) > 200:
         lines += [f"_({len(methods) - 200} métodos adicionales omitidos del índice)_.", ""]
 
-    lines += ["## 8. Alcance y límites", ""]
+    lines += ["## 9. Alcance y límites", ""]
     lines += [
         "Secciones aplicables a este proyecto (y por tanto exigibles en la compuerta): "
         f"**{meta.get('applicable', '—') or '—'}**.",
@@ -234,7 +266,7 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 9. Trazabilidad", ""]
+    lines += ["## 10. Trazabilidad", ""]
     lines += [
         "Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos fuente y su "
         "huella son:",
@@ -256,6 +288,7 @@ def render_l4(
     facts: Sequence[Fact],
     sources: Mapping[str, str],
     meta: Mapping[str, str],
+    diagrams: Sequence[object] = (),
 ) -> str:
     """README y onboarding: lo minimo para entender y arrancar, sin jerga innecesaria."""
     lines = _header(project, "README de onboarding (Nivel 4)", meta, facts)
@@ -358,6 +391,7 @@ def render_l3(
     facts: Sequence[Fact],
     sources: Mapping[str, str],
     meta: Mapping[str, str],
+    diagrams: Sequence[object] = (),
 ) -> str:
     """Guia de uso para personas sin perfil tecnico: acciones, ajustes y avisos."""
     lines = _header(project, "Guía de uso (Nivel 3)", meta, facts, plain=True)

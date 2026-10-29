@@ -506,10 +506,10 @@ def _run_init(args: argparse.Namespace) -> int:
         load,
         merge,
         plan_changes,
-        propose,
         render_change_order,
         to_yaml,
     )
+    from docu.delivery.proposal import propose
 
     root = Path(args.root).resolve()
     if not root.exists():

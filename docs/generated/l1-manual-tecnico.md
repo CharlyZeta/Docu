@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:421cf` · archivos: 49 · afirmaciones: 545 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:b9a1c` · archivos: 51 · afirmaciones: 558 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -10,25 +10,210 @@ Generado por `docu 0.1.0` · fuente `sha256:421cf` · archivos: 49 · afirmacion
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **51**
-- Tipos: **80** · métodos: **384**
+- Tipos: **81** · métodos: **396**
 
 ## 2. Arquitectura: módulos y paquetes
 
 | Paquete | Lenguaje | Archivos | Cita |
 |---|---|---|---|
-| `docu` | python | 44 | `src/docu/__init__.py#L1-L10` |
-| `docu.adapters` | python | 9 | `src/docu/adapters/__init__.py#L1-L1` |
+| `docu` | python | 1 | `src/docu/__init__.py#L1-L10` |
+| `docu.adapters` | python | 1 | `src/docu/adapters/__init__.py#L1-L1` |
 | `docu.adapters.embedders` | python | 2 | `src/docu/adapters/embedders/__init__.py#L1-L1` |
 | `docu.adapters.langs` | python | 6 | `src/docu/adapters/langs/__init__.py#L1-L1` |
 | `docu.audit` | python | 2 | `src/docu/audit/__init__.py#L1-L5` |
 | `docu.conformance` | python | 3 | `src/docu/conformance/__init__.py#L1-L5` |
 | `docu.core` | python | 6 | `src/docu/core/__init__.py#L1-L5` |
-| `docu.delivery` | python | 5 | `src/docu/delivery/__init__.py#L1-L5` |
-| `docu.generate` | python | 4 | `src/docu/generate/__init__.py#L1-L5` |
+| `docu.delivery` | python | 6 | `src/docu/delivery/__init__.py#L1-L5` |
+| `docu.generate` | python | 5 | `src/docu/generate/__init__.py#L1-L5` |
 | `docu.index` | python | 5 | `src/docu/index/__init__.py#L1-L5` |
 | `docu.learn` | python | 5 | `src/docu/learn/__init__.py#L1-L5` |
 | `docu.retrieve` | python | 4 | `src/docu/retrieve/__init__.py#L1-L5` |
 | `eval` | python | 2 | `eval/__init__.py#L1-L1` |
+
+## 3. Diagramas
+
+### Dependencias entre paquetes · 13 paquetes · 31 dependencias derivadas de imports
+
+```mermaid
+flowchart LR
+    docu["docu<br/>1 archivos"]
+    docu_adapters["docu.adapters<br/>1 archivos"]
+    docu_adapters_embedders["docu.adapters.embedders<br/>2 archivos"]
+    docu_adapters_langs["docu.adapters.langs<br/>6 archivos"]
+    docu_audit["docu.audit<br/>2 archivos"]
+    docu_conformance["docu.conformance<br/>3 archivos"]
+    docu_core["docu.core<br/>6 archivos"]
+    docu_delivery["docu.delivery<br/>6 archivos"]
+    docu_generate["docu.generate<br/>5 archivos"]
+    docu_index["docu.index<br/>5 archivos"]
+    docu_learn["docu.learn<br/>5 archivos"]
+    docu_retrieve["docu.retrieve<br/>4 archivos"]
+    eval["eval<br/>2 archivos"]
+    docu --> docu_core
+    docu_adapters_langs --> docu_core
+    docu_audit --> docu_core
+    docu_audit --> docu_generate
+    docu_conformance --> docu_adapters_langs
+    docu_conformance --> docu_core
+    docu_conformance --> docu_generate
+    docu_delivery --> docu
+    docu_delivery --> docu_adapters_langs
+    docu_delivery --> docu_audit
+    docu_delivery --> docu_conformance
+    docu_delivery --> docu_core
+    docu_delivery --> docu_generate
+    docu_delivery --> docu_learn
+    docu_delivery --> docu_retrieve
+    docu_generate --> docu_adapters_langs
+    docu_generate --> docu_core
+    docu_generate --> docu_index
+    docu_generate --> docu_learn
+    docu_index --> docu_core
+    docu_learn --> docu_core
+    docu_retrieve --> docu_adapters_embedders
+    docu_retrieve --> docu_adapters_langs
+    docu_retrieve --> docu_core
+    docu_retrieve --> docu_generate
+    docu_retrieve --> docu_index
+    eval --> docu_adapters_embedders
+    eval --> docu_adapters_langs
+    eval --> docu_core
+    eval --> docu_index
+    eval --> docu_retrieve
+```
+
+### Clases del paquete · 5 clases de docu.adapters.langs
+
+```mermaid
+classDiagram
+    class JavaLangAdapter <<class>> {
+        symbols()
+        _members()
+        imports()
+        calls()
+    }
+    class Lines <<class>> {
+        __init__()
+        line_of()
+    }
+    class PythonLangAdapter <<class>> {
+        symbols()
+        _module_member()
+        _decorators()
+        _routes()
+        imports()
+        calls()
+    }
+    class TypeScriptLangAdapter <<class>> {
+        symbols()
+        _members()
+        _express_routes()
+        imports()
+        calls()
+    }
+    class _Lines <<class>> {
+        __init__()
+        line_of()
+    }
+```
+
+### Clases del paquete · 18 clases de docu.core
+
+```mermaid
+classDiagram
+    class Artifact <<class>> {
+        __post_init__()
+    }
+    class Budget <<class>> {
+        spend()
+        exceeded()
+        remaining_usd()
+    }
+    class BudgetExhausted <<class>> {
+    }
+    class Change <<class>> {
+        kind()
+        describe()
+    }
+    class Chunk <<class>> {
+        __post_init__()
+        citation()
+        to_record()
+    }
+    class Chunker <<class>> {
+        chunk()
+    }
+    class Claim <<class>> {
+        verified()
+    }
+    class ContentNode <<class>> {
+        unsupported()
+        is_publishable()
+    }
+    class DocState <<class>> {
+    }
+    class Embedder <<class>> {
+        embed()
+    }
+    class FreshnessRecord <<class>> {
+        is_expired()
+    }
+    class GateDecision <<class>> {
+        may_write()
+        describe()
+    }
+    class GateOutcome <<class>> {
+    }
+    class GatePolicy <<class>> {
+        evaluate()
+    }
+    class Judge <<class>> {
+        score()
+    }
+    class LangAdapter <<class>> {
+        symbols()
+        imports()
+        calls()
+    }
+    class Metrics <<class>> {
+    }
+    class Mode <<class>> {
+    }
+```
+
+### Clases del paquete · 7 clases de docu.delivery
+
+```mermaid
+classDiagram
+    class CliError <<class>> {
+        __init__()
+    }
+    class ExitCode <<class>> {
+    }
+    class McpServer <<class>> {
+        __post_init__()
+        projects()
+        resolve()
+        _index_for()
+        index()
+        _glossary()
+        _require_docs()
+        call_tool()
+    }
+    class ProjectRef <<class>> {
+        has_docs()
+    }
+    class ResolvedOptions <<class>> {
+    }
+    class ToolError <<class>> {
+    }
+    class _Handler <<class>> {
+        do_GET()
+        do_POST()
+        _json()
+        log_message()
+    }
+```
 
 ### Plataforma
 
@@ -36,7 +221,7 @@ Generado por `docu 0.1.0` · fuente `sha256:421cf` · archivos: 49 · afirmacion
 |---|---|---|---|
 | `requires-python` | propiedad | >=3.11 | `pyproject.toml#L10-L10` |
 
-## 3. Dependencias
+## 4. Dependencias
 
 | Artefacto | Versión | Scope | Cita |
 |---|---|---|---|
@@ -57,11 +242,11 @@ Generado por `docu 0.1.0` · fuente `sha256:421cf` · archivos: 49 · afirmacion
 | `ruff` | >=0.6 | dev | `pyproject.toml#L25-L25` |
 | `mypy` | >=1.10 | dev | `pyproject.toml#L25-L25` |
 
-## 4. API HTTP
+## 5. API HTTP
 
 > **Sin evidencia disponible.** Esta sección no se documenta: el agente no rellena huecos con prosa plausible.
 
-## 5. Configuración
+## 6. Configuración
 
 | Clave | Valor | Cita |
 |---|---|---|
@@ -117,7 +302,7 @@ Generado por `docu 0.1.0` · fuente `sha256:421cf` · archivos: 49 · afirmacion
 | `learn.rollback_drop` | `0.05` | `docu.profile.yaml#L61-L61` |
 | `learn.federate` | `false` | `docu.profile.yaml#L62-L62` |
 
-## 6. Tipos
+## 7. Tipos
 
 | Tipo | Nombre | Anotaciones | Cita |
 |---|---|---|---|
@@ -174,7 +359,7 @@ Generado por `docu 0.1.0` · fuente `sha256:421cf` · archivos: 49 · afirmacion
 | class | `Publisher` | `@runtime_checkable` | `src/docu/core/ports.py#L133-L145` |
 | class | `ProfileError` | — | `src/docu/core/profile.py#L46-L47` |
 | class | `Profile` | `@dataclass` | `src/docu/core/profile.py#L51-L105` |
-| class | `Change` | `@dataclass` | `src/docu/core/profile.py#L381-L395` |
+| class | `Change` | `@dataclass` | `src/docu/core/profile.py#L308-L322` |
 | class | `YamlError` | — | `src/docu/core/yamlmini.py#L14-L15` |
 | class | `CliError` | — | `src/docu/delivery/cli.py#L157-L162` |
 | class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L166-L177` |
@@ -183,9 +368,10 @@ Generado por `docu 0.1.0` · fuente `sha256:421cf` · archivos: 49 · afirmacion
 | class | `ProjectRef` | `@dataclass` | `src/docu/delivery/mcp_server.py#L122-L131` |
 | class | `ToolError` | — | `src/docu/delivery/mcp_server.py#L134-L135` |
 | class | `McpServer` | `@dataclass` | `src/docu/delivery/mcp_server.py#L139-L469` |
+| class | `Diagram` | `@dataclass` | `src/docu/generate/diagrams.py#L38-L48` |
 | class | `Fact` | `@dataclass` | `src/docu/generate/facts.py#L29-L44` |
-| class | `GeneratedDoc` | `@dataclass` | `src/docu/generate/pipeline.py#L70-L73` |
-| class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L77-L100` |
+| class | `GeneratedDoc` | `@dataclass` | `src/docu/generate/pipeline.py#L71-L74` |
+| class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L78-L102` |
 | class | `SymbolChunker` | `@dataclass` | `src/docu/index/chunker.py#L46-L211` |
 | class | `InputComponents` | `@dataclass` | `src/docu/index/freshness.py#L26-L34` |
 | class | `DocEntry` | `@dataclass` | `src/docu/index/manifest.py#L33-L68` |
@@ -202,7 +388,7 @@ Generado por `docu 0.1.0` · fuente `sha256:421cf` · archivos: 49 · afirmacion
 | class | `Section` | `@dataclass` | `src/docu/retrieve/search.py#L65-L86` |
 | class | `DocIndex` | `@dataclass` | `src/docu/retrieve/search.py#L123-L193` |
 
-## 7. Índice de métodos
+## 8. Índice de métodos
 
 | Símbolo | Firma | Cita |
 |---|---|---|
@@ -393,23 +579,23 @@ Generado por `docu 0.1.0` · fuente `sha256:421cf` · archivos: 49 · afirmacion
 | `load` | `def load(path: Path | str | None) -> Profile | None` | `src/docu/core/profile.py#L215-L226` |
 | `candidate_paths` | `def candidate_paths(root: Path) -> tuple[Path, ...]` | `src/docu/core/profile.py#L229-L230` |
 | `find` | `def find(root: Path) -> Path | None` | `src/docu/core/profile.py#L233-L235` |
-| `detect` | `def detect(root: Path) -> dict[str, object]` | `src/docu/core/profile.py#L241-L279` |
-| `propose` | `def propose(root: Path) -> Profile` | `src/docu/core/profile.py#L282-L311` |
-| `to_yaml` | `def to_yaml(profile: Profile) -> str` | `src/docu/core/profile.py#L314-L377` |
-| `Change.kind` | `def kind(self) -> str` | `src/docu/core/profile.py#L391-L392` |
-| `Change.describe` | `def describe(self) -> str` | `src/docu/core/profile.py#L394-L395` |
-| `plan_changes` | `def plan_changes(existing: Profile | None, proposed: Profile) -> list[Change]` | `src/docu/core/profile.py#L402-L455` |
-| `merge` | `def merge(existing: Profile, proposed: Profile) -> Profile` | `src/docu/core/profile.py#L458-L467` |
-| `render_change_order` | `def render_change_order(changes: Sequence[Change], project: str) -> str` | `src/docu/core/profile.py#L470-L498` |
+| `to_yaml` | `def to_yaml(profile: Profile) -> str` | `src/docu/core/profile.py#L241-L304` |
+| `Change.kind` | `def kind(self) -> str` | `src/docu/core/profile.py#L318-L319` |
+| `Change.describe` | `def describe(self) -> str` | `src/docu/core/profile.py#L321-L322` |
+| `plan_changes` | `def plan_changes(existing: Profile | None, proposed: Profile) -> list[Change]` | `src/docu/core/profile.py#L329-L382` |
+| `merge` | `def merge(existing: Profile, proposed: Profile) -> Profile` | `src/docu/core/profile.py#L385-L394` |
+| `render_change_order` | `def render_change_order(changes: Sequence[Change], project: str) -> str` | `src/docu/core/profile.py#L397-L425` |
 | `parse` | `def parse(text: str) -> dict[str, object]` | `src/docu/core/yamlmini.py#L18-L28` |
 | `_prepare` | `def _prepare(text: str) -> list[tuple[int, str, int]]` | `src/docu/core/yamlmini.py#L34-L48` |
 | `_strip_comment` | `def _strip_comment(line: str) -> str` | `src/docu/core/yamlmini.py#L51-L64` |
 | `_parse_block` | `def _parse_block(lines: list[tuple[int, str, int]], start: int, indent: int) -> tuple[obje` | `src/docu/core/yamlmini.py#L70-L75` |
 | `_parse_mapping` | `def _parse_mapping(lines: list[tuple[int, str, int]], start: int, indent: int) -> tuple[di` | `src/docu/core/yamlmini.py#L78-L107` |
+| `_parse_sequence` | `def _parse_sequence(lines: list[tuple[int, str, int]], start: int, indent: int) -> tuple[l` | `src/docu/core/yamlmini.py#L110-L135` |
+| `_parse_inline_item` | `def _parse_inline_item(lines: list[tuple[int, str, int]], start: int, indent: int, first: ` | `src/docu/core/yamlmini.py#L138-L173` |
 
-_(184 métodos adicionales omitidos del índice)_.
+_(196 métodos adicionales omitidos del índice)_.
 
-## 8. Alcance y límites
+## 9. Alcance y límites
 
 Secciones aplicables a este proyecto (y por tanto exigibles en la compuerta): **type, config_key, dependency, module**.
 
@@ -417,7 +603,7 @@ Secciones **no aplicables** —no existen en este proyecto y no se penalizan—:
 
 No cubierto todavía por el generador: diagramas de componentes y de secuencia, diccionario de datos, contratos OpenAPI si no están declarados, y la capa de operación/despliegue (Nivel 2).
 
-## 9. Trazabilidad
+## 10. Trazabilidad
 
 Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos fuente y su huella son:
 
@@ -447,22 +633,24 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/core/contracts.py` | `1ed0e6d83f63` |
 | `src/docu/core/policy.py` | `bb4c3a0a3ed5` |
 | `src/docu/core/ports.py` | `88d8cfdb18c0` |
-| `src/docu/core/profile.py` | `16d2c1150a38` |
+| `src/docu/core/profile.py` | `8b8e459dc096` |
 | `src/docu/core/yamlmini.py` | `7a54cc7a2960` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
-| `src/docu/delivery/cli.py` | `7f2d4faca627` |
+| `src/docu/delivery/cli.py` | `c77cb7e9f4b1` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |
 | `src/docu/delivery/mcp_server.py` | `86ed3d803200` |
+| `src/docu/delivery/proposal.py` | `8a918f79f687` |
 | `src/docu/generate/__init__.py` | `91d9129019a3` |
+| `src/docu/generate/diagrams.py` | `9b2b5943a2ad` |
 | `src/docu/generate/facts.py` | `eb5835430ed4` |
-| `src/docu/generate/markdown.py` | `ce09d8045f2b` |
-| `src/docu/generate/pipeline.py` | `42acd8ba388a` |
+| `src/docu/generate/markdown.py` | `e1df2e0e82eb` |
+| `src/docu/generate/pipeline.py` | `a938d933f6f3` |
 | `src/docu/index/__init__.py` | `06566a17f409` |
 | `src/docu/index/chunker.py` | `5588ae08b6bf` |
 | `src/docu/index/freshness.py` | `076f96a3fb8b` |
 | `src/docu/index/manifest.py` | `f3ea859b5225` |
-| `src/docu/index/packages.py` | `c95a5e61a5f3` |
+| `src/docu/index/packages.py` | `1984e88187c9` |
 | `src/docu/learn/__init__.py` | `4d33ba71c4c5` |
 | `src/docu/learn/federation.py` | `ffeb217ac871` |
 | `src/docu/learn/ledger.py` | `38818d4f92ec` |

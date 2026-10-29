@@ -1,0 +1,93 @@
+classDiagram
+    class ArchitectureModel {
+        <<class>>
+        component_names()
+        declared_routes()
+        declared_dependencies()
+        is_empty()
+    }
+    class Artifact {
+        <<class>>
+        __post_init__()
+    }
+    class AuditReport {
+        <<class>>
+        score()
+        passed()
+        to_dict()
+        to_markdown()
+    }
+    class Budget {
+        <<class>>
+        spend()
+        exceeded()
+        remaining_usd()
+    }
+    class BudgetExhausted {
+        <<class>>
+    }
+    class Candidate {
+        <<class>>
+        key()
+    }
+    class Change {
+        <<class>>
+        kind()
+        describe()
+    }
+    class Check {
+        <<class>>
+        passed()
+        score()
+        to_dict()
+    }
+    class Chunk {
+        <<class>>
+        __post_init__()
+        citation()
+        to_record()
+    }
+    class Chunker {
+        <<class>>
+        chunk()
+    }
+    class Claim {
+        <<class>>
+        verified()
+    }
+    class CliError {
+        <<class>>
+        __init__()
+    }
+    class CodeChunk {
+        <<class>>
+        citation()
+        to_dict()
+    }
+    class CodeFacts {
+        <<class>>
+    }
+    class CodeIndex {
+        <<class>>
+        __post_init__()
+        dense_available()
+        capabilities()
+        _idf()
+        _lexical()
+        _structural()
+        _dense()
+        search()
+    }
+    class ContentNode {
+        <<class>>
+        unsupported()
+        is_publishable()
+    }
+    class Decision {
+        <<class>>
+        is_change()
+        describe()
+    }
+    class DeclaredComponent {
+        <<class>>
+    }

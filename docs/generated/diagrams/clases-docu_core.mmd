@@ -1,0 +1,59 @@
+classDiagram
+    class Artifact <<class>> {
+        __post_init__()
+    }
+    class Budget <<class>> {
+        spend()
+        exceeded()
+        remaining_usd()
+    }
+    class BudgetExhausted <<class>> {
+    }
+    class Change <<class>> {
+        kind()
+        describe()
+    }
+    class Chunk <<class>> {
+        __post_init__()
+        citation()
+        to_record()
+    }
+    class Chunker <<class>> {
+        chunk()
+    }
+    class Claim <<class>> {
+        verified()
+    }
+    class ContentNode <<class>> {
+        unsupported()
+        is_publishable()
+    }
+    class DocState <<class>> {
+    }
+    class Embedder <<class>> {
+        embed()
+    }
+    class FreshnessRecord <<class>> {
+        is_expired()
+    }
+    class GateDecision <<class>> {
+        may_write()
+        describe()
+    }
+    class GateOutcome <<class>> {
+    }
+    class GatePolicy <<class>> {
+        evaluate()
+    }
+    class Judge <<class>> {
+        score()
+    }
+    class LangAdapter <<class>> {
+        symbols()
+        imports()
+        calls()
+    }
+    class Metrics <<class>> {
+    }
+    class Mode <<class>> {
+    }

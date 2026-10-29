@@ -1,0 +1,29 @@
+classDiagram
+    class CliError <<class>> {
+        __init__()
+    }
+    class ExitCode <<class>> {
+    }
+    class McpServer <<class>> {
+        __post_init__()
+        projects()
+        resolve()
+        _index_for()
+        index()
+        _glossary()
+        _require_docs()
+        call_tool()
+    }
+    class ProjectRef <<class>> {
+        has_docs()
+    }
+    class ResolvedOptions <<class>> {
+    }
+    class ToolError <<class>> {
+    }
+    class _Handler <<class>> {
+        do_GET()
+        do_POST()
+        _json()
+        log_message()
+    }
