@@ -15,7 +15,12 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, replace
 
-from docu.adapters.langs._braces import annotations_before, iter_callables, mask_annotation_braces
+from docu.adapters.langs._braces import (
+    annotations_before,
+    iter_callables,
+    mask_annotation_braces,
+    matching_paren,
+)
 from docu.core.contracts import Symbol, SymbolKind
 
 CONTROL_WORDS = frozenset(
@@ -24,6 +29,11 @@ CONTROL_WORDS = frozenset(
 
 #: Palabras que preceden a una declaracion de tipo, no a un metodo: `record X(...)`, `new X(...)`.
 NOT_METHODS = frozenset("record class interface enum new return extends implements throws".split())
+
+#: Modificadores que no forman parte del tipo de un campo.
+FIELD_MODIFIERS = frozenset(
+    "public private protected static final transient volatile readonly default".split()
+)
 
 HTTP_MAPPINGS = {
     "GetMapping": "GET",
@@ -192,6 +202,122 @@ def join_paths(base: str | None, suffix: str | None) -> str:
     return "/" + combined.lstrip("/")
 
 
+def _strip_annotations(text: str) -> str:
+    return _ANNOTATION_RE.sub(" ", text)
+
+
+def _java_fields(
+    masked: str,
+    source: str,
+    depth: list[int],
+    level: int,
+    open_brace: int,
+    close_brace: int,
+    type_name: str,
+    path: str,
+    lines: "_Lines",
+) -> list[Symbol]:
+    """Campos declarados en el cuerpo del tipo.
+
+    Sin campos no hay diccionario de datos ni ERD: el documento podía decir «qué métodos tiene»
+    pero no «qué datos guarda», que es la mitad de lo que un equipo necesita para integrarse.
+    """
+    fields: list[Symbol] = []
+    boundary = open_brace + 1
+    index = open_brace + 1
+    while index < close_brace:
+        char = masked[index]
+        if char == "{" and depth[index] == level - 1:
+            # Bloque anidado (tipo interno, inicializador o cuerpo de método): se salta entero.
+            index = matching_brace(masked, index) + 1
+            boundary = index
+            continue
+        if char == ";" and depth[index] == level:
+            statement = masked[boundary:index]
+            raw = source[boundary:index]
+            boundary = index + 1
+            cleaned = " ".join(_strip_annotations(statement).split())
+            if not cleaned or "(" in cleaned.split("=", 1)[0]:
+                index += 1
+                continue
+            head = cleaned.split("=", 1)[0].strip()
+            tokens = [token for token in head.split() if token not in FIELD_MODIFIERS]
+            if len(tokens) < 2:
+                index += 1
+                continue
+            name = tokens[-1]
+            if not name.replace("_", "").isalnum() or not name[:1].isalpha():
+                index += 1
+                continue
+            field_type = " ".join(tokens[:-1])
+            name_offset = source.rfind(name, boundary - len(raw) - 1, index + 1)
+            field_line = lines.line_of(name_offset if name_offset != -1 else boundary)
+            fields.append(
+                Symbol(
+                    name=name,
+                    qualname=f"{type_name}.{name}",
+                    kind=SymbolKind.FIELD,
+                    path=path,
+                    line_start=field_line,
+                    line_end=lines.line_of(index),
+                    signature=field_type,
+                    annotations=annotation_names(raw),
+                )
+            )
+        index += 1
+    return fields
+
+
+def _record_fields(
+    masked: str,
+    source: str,
+    type_name: str,
+    path: str,
+    match_end: int,
+    lines: "_Lines",
+) -> list[Symbol]:
+    """Componentes de un `record`: son sus campos, aunque vivan en la firma."""
+    paren = masked.find("(", match_end)
+    if paren == -1:
+        return []
+    close = matching_paren(masked, paren)
+    body = source[paren + 1 : close]
+    fields: list[Symbol] = []
+    depth = 0
+    chunk: list[str] = []
+    for char in body + ",":
+        if char in "(<[":
+            depth += 1
+        elif char in ")>]":
+            depth -= 1
+        if char == "," and depth == 0:
+            component = " ".join("".join(chunk).split())
+            chunk = []
+            if not component:
+                continue
+            cleaned = _strip_annotations(component)
+            tokens = [token for token in cleaned.split() if token not in FIELD_MODIFIERS]
+            if len(tokens) < 2:
+                continue
+            name = tokens[-1]
+            line = lines.line_of(source.find(name, paren))
+            fields.append(
+                Symbol(
+                    name=name,
+                    qualname=f"{type_name}.{name}",
+                    kind=SymbolKind.FIELD,
+                    path=path,
+                    line_start=line,
+                    line_end=line,
+                    signature=" ".join(tokens[:-1]),
+                    annotations=annotation_names(component),
+                )
+            )
+            continue
+        chunk.append(char)
+    return fields
+
+
 def _annotation_block(source: str, start: int, end: int) -> tuple[str, int]:
     """Anotaciones entre dos posiciones y offset donde empieza la primera.
 
@@ -284,6 +410,20 @@ class JavaLangAdapter:
                 type_name=name,
                 base_route=base_route,
             )
+            fields = _java_fields(
+                masked,
+                source,
+                depth,
+                level + 1,
+                open_brace,
+                close_brace,
+                name,
+                path,
+                lines,
+            )
+            if keyword == "record":
+                fields = _record_fields(masked, source, name, path, match.end(), lines) or fields
+            children = fields + children
             routes.extend(member_routes)
 
             type_kind = {

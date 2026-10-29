@@ -235,7 +235,37 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 8. Índice de métodos", ""]
+    lines += ["## 8. Diccionario de datos", ""]
+    fields = _by_kind(facts, "field")
+    if fields:
+        lines += [
+            "> Campos **declarados** en el código. El tipo es el que declara el lenguaje, no una "
+            "inferencia: si aparece «sin tipo declarado», el campo no lo tiene.",
+            "",
+            _table(
+                ["Entidad", "Campo", "Tipo declarado", "Anotaciones", "Cita"],
+                [
+                    [
+                        f"`{fact.attributes.get('owner', fact.subject.rsplit('.', 1)[0])}`",
+                        f"`{fact.subject.rsplit('.', 1)[-1]}`",
+                        f"`{fact.detail}`",
+                        ", ".join(
+                            f"`{item}`"
+                            for item in fact.attributes.get("annotations", "—").split()
+                        )
+                        if fact.attributes.get("annotations", "—") != "—"
+                        else "—",
+                        _cite(fact.citation),
+                    ]
+                    for fact in fields
+                ],
+            ),
+            "",
+        ]
+    else:
+        lines += [NO_EVIDENCE, ""]
+
+    lines += ["## 9. Índice de métodos", ""]
     methods = _by_kind(facts, "method")
     rows = [
         [f"`{fact.subject}`", f"`{(fact.detail or '')[:90]}`", _cite(fact.citation)] for fact in methods[:200]
@@ -244,7 +274,7 @@ def render_l1(
     if len(methods) > 200:
         lines += [f"_({len(methods) - 200} métodos adicionales omitidos del índice)_.", ""]
 
-    lines += ["## 9. Alcance y límites", ""]
+    lines += ["## 10. Alcance y límites", ""]
     lines += [
         "Secciones aplicables a este proyecto (y por tanto exigibles en la compuerta): "
         f"**{meta.get('applicable', '—') or '—'}**.",
@@ -269,7 +299,7 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 10. Trazabilidad", ""]
+    lines += ["## 11. Trazabilidad", ""]
     lines += [
         "Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos fuente y su "
         "huella son:",

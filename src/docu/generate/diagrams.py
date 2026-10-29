@@ -26,6 +26,7 @@ from docu.index.packages import DetectedPackage
 MAX_CLASSES_PER_DIAGRAM = 18
 MAX_METHODS_PER_CLASS = 8
 MAX_CLASS_DIAGRAMS = 3
+MAX_FIELDS_PER_ENTITY = 12
 MAX_API_ROUTES = 40
 
 _INHERITANCE_RE = re.compile(
@@ -215,6 +216,62 @@ def api_flow_diagram(facts: Sequence[Fact]) -> Diagram | None:
     )
 
 
+def _entity_type(text: str) -> tuple[str, bool]:
+    """Tipo declarado y si es una colección: `List<Cliente>` → (`Cliente`, True)."""
+    compact = text.strip().rstrip(";")
+    plural = False
+    for wrapper in ("List", "Set", "Collection", "Iterable", "Array", "[]", "Optional"):
+        if wrapper in compact:
+            plural = wrapper not in ("Optional",)
+            break
+    inner = re.sub(r"^(?:List|Set|Collection|Iterable|Optional|Array)\s*<", "", compact)
+    inner = inner.rstrip(">").rstrip("[]").replace("[]", "")
+    name = inner.rsplit(".", 1)[-1].strip()
+    return name, plural
+
+
+def erd_diagram(facts: Sequence[Fact]) -> Diagram | None:
+    """ERD desde los tipos declarados.
+
+    Las entidades son los tipos con campos; las relaciones salen del **tipo del campo** cuando ese
+    tipo es otra entidad documentada. No se inventan claves foráneas ni cardinalidades que el código
+    no declare: una colección se dibuja como «muchos», un tipo simple como «uno».
+    """
+    fields_by_entity: dict[str, list[Fact]] = {}
+    for fact in facts:
+        if fact.kind != "field":
+            continue
+        owner = str(fact.attributes.get("owner", fact.subject.rsplit(".", 1)[0]))
+        fields_by_entity.setdefault(owner, []).append(fact)
+    if not fields_by_entity:
+        return None
+
+    entities = set(fields_by_entity)
+    lines = ["erDiagram"]
+    relations: list[str] = []
+    for entity in sorted(fields_by_entity):
+        lines.append(f"    {_node_id(entity)} {{")
+        for fact in fields_by_entity[entity][:MAX_FIELDS_PER_ENTITY]:
+            declared = fact.detail if fact.detail != "sin tipo declarado" else "sinTipo"
+            token = _node_id(declared.split("|")[0].strip()[:24]).strip("_") or "tipo"
+            lines.append(f"        {token} {fact.subject.rsplit('.', 1)[-1]}")
+        lines.append("    }")
+        for fact in fields_by_entity[entity]:
+            target, plural = _entity_type(fact.detail)
+            if target in entities and target != entity:
+                cardinality = "}o--o{" if plural else "}o--||"
+                relations.append(
+                    f'    {_node_id(entity)} {cardinality} {_node_id(target)} : "{fact.subject.rsplit(".", 1)[-1]}"'
+                )
+    lines.extend(dict.fromkeys(relations))
+    return Diagram(
+        name="modelo-de-datos",
+        kind="erd",
+        mermaid="\n".join(lines),
+        note=f"{len(entities)} entidades · {len(dict.fromkeys(relations))} relaciones declaradas por tipo",
+    )
+
+
 # --------------------------------------------------------------------------- entrada
 
 
@@ -240,6 +297,10 @@ def build_all(
         if diagram is not None:
             diagrams.append(diagram)
             class_count += 1
+
+    model = erd_diagram(facts)
+    if model is not None:
+        diagrams.append(model)
 
     flow = api_flow_diagram(facts)
     if flow is not None:
@@ -270,6 +331,7 @@ __all__ = [
     "architecture_diagram",
     "build_all",
     "class_diagram",
+    "erd_diagram",
     "package_dependencies",
     "resolve_import",
     "write_diagrams",

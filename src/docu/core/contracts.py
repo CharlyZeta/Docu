@@ -50,6 +50,7 @@ class SymbolKind(str, Enum):
     FUNCTION = "function"
     METHOD = "method"
     CONSTRUCTOR = "constructor"
+    FIELD = "field"
     HTTP_ROUTE = "http_route"
     SQL_TABLE = "sql_table"
     CONFIG_KEY = "config_key"

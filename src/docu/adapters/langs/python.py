@@ -49,6 +49,13 @@ class PythonLangAdapter:
                 )
                 if child is not None
             )
+            fields = tuple(
+                field
+                for field in (
+                    self._class_field(path, item, container=node.name) for item in node.body
+                )
+                if field is not None
+            )
             return Symbol(
                 name=node.name,
                 qualname=node.name if container is None else f"{container}.{node.name}",
@@ -57,7 +64,7 @@ class PythonLangAdapter:
                 line_start=node.lineno,
                 line_end=getattr(node, "end_lineno", node.lineno),
                 signature=f"class {node.name}({', '.join(_base_name(base) for base in node.bases)})",
-                children=children,
+                children=fields + children,
                 annotations=self._decorators(node),
             )
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -70,6 +77,42 @@ class PythonLangAdapter:
                 line_end=getattr(node, "end_lineno", node.lineno),
                 signature=_signature(node),
                 annotations=self._decorators(node),
+            )
+        return None
+
+    def _class_field(self, path: str, node: ast.AST, container: str) -> Symbol | None:
+        """Campo de clase: `nombre: Tipo` (anotado) o `nombre = valor` (sin tipo).
+
+        Los tipos declarados son la materia prima del diccionario de datos y del ERD: sin ellos el
+        documento describe métodos pero no datos, que es la mitad de una integración.
+        """
+        if isinstance(node, ast.AnnAssign):
+            if not isinstance(node.target, ast.Name):
+                return None
+            annotation = ast.unparse(node.annotation)
+            return Symbol(
+                name=node.target.id,
+                qualname=f"{container}.{node.target.id}",
+                kind=SymbolKind.FIELD,
+                path=path,
+                line_start=node.lineno,
+                line_end=getattr(node, "end_lineno", node.lineno),
+                signature=annotation,
+                annotations=(),
+            )
+        if isinstance(node, ast.Assign):
+            names = [target.id for target in node.targets if isinstance(target, ast.Name)]
+            if len(names) != 1 or names[0].isupper():  # constantes de módulo: no son entidades
+                return None
+            return Symbol(
+                name=names[0],
+                qualname=f"{container}.{names[0]}",
+                kind=SymbolKind.FIELD,
+                path=path,
+                line_start=node.lineno,
+                line_end=getattr(node, "end_lineno", node.lineno),
+                signature="",
+                annotations=(),
             )
         return None
 

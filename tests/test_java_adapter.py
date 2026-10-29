@@ -5,7 +5,32 @@ from __future__ import annotations
 import unittest
 
 from docu.adapters.langs.java import JavaLangAdapter, depth_map, mask_source, matching_brace
-from docu.core.contracts import SymbolKind
+from docu.core.contracts import Symbol, SymbolKind
+
+
+def _method(symbol: Symbol, name: str) -> Symbol:
+    return next(
+        child
+        for child in symbol.children
+        if child.name == name and child.kind in (SymbolKind.METHOD, SymbolKind.CONSTRUCTOR)
+    )
+
+
+def _methods(symbol: Symbol) -> list[str]:
+    """Nombres de los miembros que son métodos.
+
+    Los campos también son hijos del tipo desde que se extraen para el diccionario de datos y el
+    ERD, así que un test sobre métodos debe decir «métodos», no «todos los hijos».
+    """
+    return [
+        child.name
+        for child in symbol.children
+        if child.kind in (SymbolKind.METHOD, SymbolKind.CONSTRUCTOR)
+    ]
+
+
+def _fields(symbol: Symbol) -> list[str]:
+    return [child.name for child in symbol.children if child.kind is SymbolKind.FIELD]
 
 FIXTURE = '''package com.example.demo;
 
@@ -91,29 +116,29 @@ class SymbolTests(unittest.TestCase):
         self.assertEqual(self.controller.line_end, FIXTURE.count("\n"))  # cierre de la clase
 
     def test_members_exclude_control_flow_blocks(self) -> None:
-        names = [child.name for child in self.controller.children]
-        self.assertEqual(names, ["listItems", "createItem", "helper"])
+        self.assertEqual(_methods(self.controller), ["listItems", "createItem", "helper"])
 
     def test_method_range_covers_body_only(self) -> None:
-        method = self.controller.children[0]
+        method = _method(self.controller, "listItems")
         self.assertEqual(method.line_start, line_of(FIXTURE, "@GetMapping"))
         # El metodo termina en su llave de cierre, no en la del siguiente miembro.
         self.assertEqual(method.line_end, line_of(FIXTURE, "@PostMapping") - 2)
         self.assertIn("Map<String, Integer> listItems()", method.signature)
 
     def test_method_kind_and_qualname(self) -> None:
-        method = self.controller.children[1]
+        method = _method(self.controller, "createItem")
         self.assertIs(method.kind, SymbolKind.METHOD)
         self.assertEqual(method.qualname, "DemoController.createItem")
 
-    def test_static_field_declaration_is_not_a_method(self) -> None:
-        self.assertNotIn("TEMPLATE", [child.name for child in self.controller.children])
+    def test_static_field_is_a_field_not_a_method(self) -> None:
+        """Un `static final` es un campo: se documenta en el diccionario de datos, no como método."""
+        self.assertNotIn("TEMPLATE", _methods(self.controller))
+        self.assertIn("TEMPLATE", _fields(self.controller))
 
     def test_string_with_parentheses_does_not_break_parsing(self) -> None:
         source = FIXTURE.replace('"no soy una llave { ni un cierre }"', '"metodo() falso { }"')
         symbols = self.adapter.symbols("DemoController.java", source)
-        names = [child.name for child in symbols[0].children]
-        self.assertEqual(names, ["listItems", "createItem", "helper"])
+        self.assertEqual(_methods(symbols[0]), ["listItems", "createItem", "helper"])
 
 
 class RouteTests(unittest.TestCase):

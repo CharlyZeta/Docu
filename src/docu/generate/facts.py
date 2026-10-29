@@ -80,6 +80,20 @@ def symbol_facts(symbols: Sequence[Symbol]) -> list[Fact]:
             )
             for child in symbol.children:
                 child_citation = f"{child.path}#L{child.line_start}-L{child.line_end}"
+                if child.kind is SymbolKind.FIELD:
+                    facts.append(
+                        Fact(
+                            kind="field",
+                            subject=child.qualname,
+                            detail=child.signature or "sin tipo declarado",
+                            citation=child_citation,
+                            attributes={
+                                "owner": symbol.name,
+                                "annotations": " ".join(child.annotations) or "—",
+                            },
+                        )
+                    )
+                    continue
                 facts.append(
                     Fact(
                         kind="method",

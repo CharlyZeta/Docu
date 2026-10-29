@@ -70,6 +70,14 @@ HANDROLLED_ROUTE_RE = re.compile(
 )
 METHOD_IN_CONDITION_RE = re.compile(r"method\s*===?\s*['\"](\w+)['\"]")
 
+#: Propiedad declarada (`name: string;`), también en interfaces.
+#: El inicializador se separa con `=(?!>)` para no cortar los tipos función (`() => void`).
+PROPERTY_RE = re.compile(
+    r"(?m)^[ \t]*(?:(?:public|private|protected|readonly|static|declare|abstract)\s+)*"
+    r"(?P<name>[A-Za-z_$][\w$]*)(?P<optional>\?)?\s*:\s*(?P<type>[^;\n]+?)"
+    r"(?:\s*=(?!>)[^;]*)?;"
+)
+
 #: Literales que son tipos de JavaScript, no rutas (`typeof path === 'string'`).
 TYPE_LITERALS = frozenset(
     "string number object boolean function undefined symbol bigint".split()
@@ -291,6 +299,28 @@ class TypeScriptLangAdapter:
                     line_end=lines.line_of(close),
                     signature=" ".join(source[decl_start:match.end()].split())[:300],
                     annotations=annotations,
+                )
+            )
+
+        # Propiedades declaradas: materia prima del diccionario de datos y del ERD.
+        for match in PROPERTY_RE.finditer(masked, open_brace + 1, close_brace):
+            if depth[match.start()] != level:
+                continue
+            name = match.group("name")
+            if name in seen:
+                continue
+            seen.add(name)
+            members.append(
+                Symbol(
+                    name=name,
+                    qualname=f"{type_name}.{name}",
+                    kind=SymbolKind.FIELD,
+                    path=path,
+                    line_start=lines.line_of(match.start()),
+                    line_end=lines.line_of(match.end()),
+                    signature=" ".join(match.group("type").split())
+                    + (" | ausente" if match.group("optional") else ""),
+                    annotations=(),
                 )
             )
         return members, routes

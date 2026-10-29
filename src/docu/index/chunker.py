@@ -66,6 +66,10 @@ class SymbolChunker:
         for symbol in _flatten(symbols):
             if symbol.kind is SymbolKind.HTTP_ROUTE:
                 continue  # su informacion viaja en el prefijo del metodo
+            if symbol.kind is SymbolKind.FIELD:
+                # Un campo suelto no es una unidad de recuperación útil: su información vive en el
+                # diccionario de datos del tipo y en el ERD, no en un chunk de una línea.
+                continue
             start, end = self._span(symbol, symbols, lines)
             body = "\n".join(lines[start - 1 : end])
             if not body.strip():
@@ -87,13 +91,18 @@ class SymbolChunker:
     # ------------------------------------------------------------------ geometria
 
     def _span(self, symbol: Symbol, symbols: Sequence[Symbol], lines: Sequence[str]) -> tuple[int, int]:
-        """Rango de lineas del simbolo; para contenedores termina antes del primer hijo."""
+        """Rango de lineas del simbolo; en contenedores termina antes del primer miembro ejecutable.
+
+        Los campos **no** cortan la cáscara: son parte del contrato de datos del tipo y hacen falta
+        en el chunk del contenedor, junto a la declaración y las anotaciones.
+        """
         if symbol.kind not in CONTAINER_KINDS:
             return symbol.line_start, min(symbol.line_end, len(lines))
         child_starts = [
             child.line_start
             for child in symbol.children
             if child.line_start > symbol.line_start
+            and child.kind not in (SymbolKind.FIELD, SymbolKind.HTTP_ROUTE)
         ]
         end = (min(child_starts) - 1) if child_starts else symbol.line_end
         return symbol.line_start, max(symbol.line_start, min(end, len(lines)))
