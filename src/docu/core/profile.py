@@ -19,7 +19,7 @@ from docu.core.policy import Thresholds
 from docu.core.yamlmini import YamlError, parse
 
 LEVELS = ("l1", "l2", "l3", "l4")
-SUPPORTED_LEVELS = ("l1", "l3", "l4")  # l2 aun no implementado
+SUPPORTED_LEVELS = ("l1", "l2", "l3", "l4")
 
 DEFAULT_EXCLUDE = (
     "*/target/*",

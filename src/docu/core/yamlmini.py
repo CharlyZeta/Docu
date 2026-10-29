@@ -91,6 +91,17 @@ def _parse_mapping(
         key, sep, rest = _split_key(content, number)
         if not sep:
             raise YamlError(f"se esperaba 'clave: valor' en la linea {number}")
+        if rest[:1] in ("|", ">"):
+            # Escalar de bloque (`run: |`, `command: >`): las líneas siguientes, más indentadas,
+            # son el valor. Sin esto, un workflow real con `run: |` rompe toda la ingesta.
+            marker = rest[0]
+            index += 1
+            block: list[str] = []
+            while index < len(lines) and lines[index][0] > indent:
+                block.append(lines[index][1])
+                index += 1
+            result[key] = ("\n" if marker == "|" else " ").join(block).strip()
+            continue
         if rest:
             result[key] = _scalar(rest, number)
             index += 1
@@ -157,6 +168,15 @@ def _parse_inline_item(
         child_key, child_sep, child_rest = _split_key(content, child_number)
         if not child_sep:
             raise YamlError(f"se esperaba 'clave: valor' en la linea {child_number}")
+        if child_rest[:1] in ("|", ">"):
+            marker = child_rest[0]
+            index += 1
+            block_lines: list[str] = []
+            while index < len(lines) and lines[index][0] > line_indent:
+                block_lines.append(lines[index][1])
+                index += 1
+            item[child_key] = ("\n" if marker == "|" else " ").join(block_lines).strip()
+            continue
         if child_rest:
             item[child_key] = _scalar(child_rest, child_number)
             index += 1

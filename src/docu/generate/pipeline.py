@@ -8,6 +8,7 @@ El LLM de F3 se enchufa detras de este mismo contrato: recibe los hechos y solo 
 
 from __future__ import annotations
 
+import json
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -30,6 +31,7 @@ from docu.generate.facts import (
     package_json_facts,
     pom_facts,
     pyproject_facts,
+    pyproject_scripts_facts,
     requirements_facts,
     symbol_facts as java_facts,
     unsupported,
@@ -37,6 +39,17 @@ from docu.generate.facts import (
 )
 from docu.generate.diagrams import build_all, write_diagrams
 from docu.generate.markdown import RENDERERS
+from docu.generate.ops import (
+    compose_facts,
+    dockerfile_facts,
+    env_facts,
+    is_compose_file,
+    is_docker_file,
+    is_env_file,
+    is_workflow_file,
+    scripts_facts,
+    workflow_facts,
+)
 from docu.index.packages import detect_packages
 from docu.index.manifest import (
     DEFAULT_VERSIONS,
@@ -62,7 +75,12 @@ def _is_test_path(rel: Path) -> bool:
     if any(part in TEST_DIRS for part in lowered):
         return True
     return "src" in lowered and "test" in lowered
-LEVEL_FILENAMES = {"l1": "l1-manual-tecnico.md", "l3": "l3-guia-de-uso.md", "l4": "l4-readme.md"}
+LEVEL_FILENAMES = {
+    "l1": "l1-manual-tecnico.md",
+    "l2": "l2-operacion.md",
+    "l3": "l3-guia-de-uso.md",
+    "l4": "l4-readme.md",
+}
 EXTRA_FILES = ("package.json", "pyproject.toml", "requirements.txt")
 DEFAULT_LEVELS = ("l1", "l4")
 
@@ -147,6 +165,9 @@ def _discover(
             or name.endswith((".yml", ".yaml"))
             or name == "pom.xml"
             or name in EXTRA_FILES
+            or is_env_file(rel_text)
+            or is_docker_file(rel_text)
+            or is_compose_file(rel_text)
         ):
             found[rel_text] = candidate
     return found
@@ -176,7 +197,18 @@ def collect_facts(
         normalized = source.replace("\r\n", "\n").replace("\r", "\n")
         sources[rel] = sha256_of(normalized.encode("utf-8")).replace("sha256:", "")[:12]
         adapter = adapter_for(rel)
-        if adapter is not None:
+        if is_compose_file(rel):
+            facts.extend(compose_facts(rel, source))
+        elif is_env_file(rel):
+            # Sólo archivos de ejemplo: un `.env` real no se abre nunca.
+            facts.extend(env_facts(rel, source))
+        elif is_docker_file(rel):
+            facts.extend(dockerfile_facts(rel, source))
+        elif is_workflow_file(rel) and rel.endswith((".yml", ".yaml")):
+            # Los workflows son CI, no configuración de la aplicación: mezclarlos ensucia la tabla
+            # de configuración con claves internas de GitHub Actions.
+            facts.extend(workflow_facts(rel, source))
+        elif adapter is not None:
             facts.extend(java_facts(adapter.symbols(rel, source)))  # type: ignore[attr-defined]
         elif rel.endswith("pom.xml"):
             facts.extend(pom_facts(rel, source))
@@ -184,8 +216,15 @@ def collect_facts(
             facts.extend(yaml_facts(rel, source))
         elif rel.endswith("package.json"):
             facts.extend(package_json_facts(rel, source))
+            try:
+                payload = json.loads(source)
+            except json.JSONDecodeError:
+                payload = None
+            if isinstance(payload, dict):
+                facts.extend(scripts_facts(rel, payload, source))
         elif rel.endswith("pyproject.toml"):
             facts.extend(pyproject_facts(rel, source))
+            facts.extend(pyproject_scripts_facts(rel, source))
         elif rel.endswith("requirements.txt"):
             facts.extend(requirements_facts(rel, source))
     facts.extend(package_facts(detect_packages(discovered)))

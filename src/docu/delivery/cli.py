@@ -601,10 +601,10 @@ def _run_generate(args: argparse.Namespace) -> int:
 
     root = Path(args.root).resolve()
     options = _resolve(args, root)
-    unsupported_levels = [level for level in options.levels if level not in ("l1", "l3", "l4")]
+    unsupported_levels = [level for level in options.levels if level not in ("l1", "l2", "l3", "l4")]
     if unsupported_levels:
         print(
-            f"error: niveles disponibles hoy: l1, l3, l4 (pedidos: {', '.join(unsupported_levels)})",
+            f"error: niveles disponibles hoy: l1, l2, l3, l4 (pedidos: {', '.join(unsupported_levels)})",
             file=sys.stderr,
         )
         return int(ExitCode.CONFIG_ERROR)

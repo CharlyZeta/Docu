@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:b9a1c` · archivos: 51 · afirmaciones: 558 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:f5167` · archivos: 52 · afirmaciones: 550 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -9,8 +9,8 @@ Generado por `docu 0.1.0` · fuente `sha256:b9a1c` · archivos: 51 · afirmacion
 - Módulos de build: **0** · paquetes: **13**
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
-- Claves de configuración: **51**
-- Tipos: **81** · métodos: **396**
+- Claves de configuración: **24**
+- Tipos: **81** · métodos: **408**
 
 ## 2. Arquitectura: módulos y paquetes
 
@@ -24,7 +24,7 @@ Generado por `docu 0.1.0` · fuente `sha256:b9a1c` · archivos: 51 · afirmacion
 | `docu.conformance` | python | 3 | `src/docu/conformance/__init__.py#L1-L5` |
 | `docu.core` | python | 6 | `src/docu/core/__init__.py#L1-L5` |
 | `docu.delivery` | python | 6 | `src/docu/delivery/__init__.py#L1-L5` |
-| `docu.generate` | python | 5 | `src/docu/generate/__init__.py#L1-L5` |
+| `docu.generate` | python | 6 | `src/docu/generate/__init__.py#L1-L5` |
 | `docu.index` | python | 5 | `src/docu/index/__init__.py#L1-L5` |
 | `docu.learn` | python | 5 | `src/docu/learn/__init__.py#L1-L5` |
 | `docu.retrieve` | python | 4 | `src/docu/retrieve/__init__.py#L1-L5` |
@@ -44,7 +44,7 @@ flowchart LR
     docu_conformance["docu.conformance<br/>3 archivos"]
     docu_core["docu.core<br/>6 archivos"]
     docu_delivery["docu.delivery<br/>6 archivos"]
-    docu_generate["docu.generate<br/>5 archivos"]
+    docu_generate["docu.generate<br/>6 archivos"]
     docu_index["docu.index<br/>5 archivos"]
     docu_learn["docu.learn<br/>5 archivos"]
     docu_retrieve["docu.retrieve<br/>4 archivos"]
@@ -250,33 +250,6 @@ classDiagram
 
 | Clave | Valor | Cita |
 |---|---|---|
-| `name` | `docu` | `.github/workflows/docu.yml#L1-L1` |
-| `on.pull_request.branches` | `[main]` | `.github/workflows/docu.yml#L5-L5` |
-| `on.push.branches` | `[main]` | `.github/workflows/docu.yml#L7-L7` |
-| `permissions.contents` | `write` | `.github/workflows/docu.yml#L11-L11` |
-| `permissions.pull-requests` | `write` | `.github/workflows/docu.yml#L12-L12` |
-| `concurrency.group` | `docu-${{ github.ref }}` | `.github/workflows/docu.yml#L15-L15` |
-| `concurrency.cancel-in-progress` | `true` | `.github/workflows/docu.yml#L16-L16` |
-| `jobs.check.name` | `frescura de la documentación` | `.github/workflows/docu.yml#L22-L22` |
-| `jobs.check.if` | `github.event_name == 'pull_request` | `.github/workflows/docu.yml#L23-L23` |
-| `jobs.check.runs-on` | `ubuntu-latest` | `.github/workflows/docu.yml#L24-L24` |
-| `jobs.check.steps.with.python-version` | `3.12` | `.github/workflows/docu.yml#L29-L29` |
-| `jobs.check.steps.run` | `pip install -e .` | `.github/workflows/docu.yml#L31-L31` |
-| `jobs.check.steps.run` | `docu ci check --json` | `.github/workflows/docu.yml#L33-L33` |
-| `jobs.regen.name` | `proponer documentación actualizada` | `.github/workflows/docu.yml#L39-L39` |
-| `jobs.regen.if` | `github.event_name != 'pull_request` | `.github/workflows/docu.yml#L40-L40` |
-| `jobs.regen.runs-on` | `ubuntu-latest` | `.github/workflows/docu.yml#L41-L41` |
-| `jobs.regen.steps.with.python-version` | `3.12` | `.github/workflows/docu.yml#L46-L46` |
-| `jobs.regen.steps.run` | `pip install -e .` | `.github/workflows/docu.yml#L48-L48` |
-| `jobs.regen.steps.run` | `docu ci regen --out docs/generated` | `.github/workflows/docu.yml#L50-L50` |
-| `jobs.regen.steps.uses` | `peter-evans/create-pull-request@v6` | `.github/workflows/docu.yml#L52-L52` |
-| `jobs.regen.steps.with.branch` | `docs/docu-bot` | `.github/workflows/docu.yml#L54-L54` |
-| `jobs.regen.steps.with.delete-branch` | `true` | `.github/workflows/docu.yml#L55-L55` |
-| `jobs.regen.steps.with.title` | `docs: documentación regenerada por docu` | `.github/workflows/docu.yml#L56-L56` |
-| `jobs.regen.steps.with.commit-message` | `docs: regenerar documentación desactualizada` | `.github/workflows/docu.yml#L57-L57` |
-| `jobs.regen.steps.with.body-path` | `.docu/pr-body.md` | `.github/workflows/docu.yml#L58-L58` |
-| `jobs.regen.steps.with.labels` | `documentation` | `.github/workflows/docu.yml#L59-L59` |
-| `jobs.regen.steps.with.add-paths` | `|` | `.github/workflows/docu.yml#L60-L60` |
 | `schema_version` | `1.0` | `docu.profile.yaml#L3-L3` |
 | `project` | `docu` | `docu.profile.yaml#L5-L5` |
 | `mode` | `apply` | `docu.profile.yaml#L6-L6` |
@@ -287,7 +260,7 @@ classDiagram
 | `output.dir` | `docs/generated` | `docu.profile.yaml#L37-L37` |
 | `output.language` | `es` | `docu.profile.yaml#L38-L38` |
 | `output.levels.l1` | `true` | `docu.profile.yaml#L40-L40` |
-| `output.levels.l2` | `false` | `docu.profile.yaml#L41-L41` |
+| `output.levels.l2` | `true` | `docu.profile.yaml#L41-L41` |
 | `output.levels.l3` | `false` | `docu.profile.yaml#L42-L42` |
 | `output.levels.l4` | `true` | `docu.profile.yaml#L43-L43` |
 | `output.notation.diagrams` | `mermaid` | `docu.profile.yaml#L45-L45` |
@@ -370,8 +343,8 @@ classDiagram
 | class | `McpServer` | `@dataclass` | `src/docu/delivery/mcp_server.py#L139-L469` |
 | class | `Diagram` | `@dataclass` | `src/docu/generate/diagrams.py#L38-L48` |
 | class | `Fact` | `@dataclass` | `src/docu/generate/facts.py#L29-L44` |
-| class | `GeneratedDoc` | `@dataclass` | `src/docu/generate/pipeline.py#L71-L74` |
-| class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L78-L102` |
+| class | `GeneratedDoc` | `@dataclass` | `src/docu/generate/pipeline.py#L89-L92` |
+| class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L96-L120` |
 | class | `SymbolChunker` | `@dataclass` | `src/docu/index/chunker.py#L46-L211` |
 | class | `InputComponents` | `@dataclass` | `src/docu/index/freshness.py#L26-L34` |
 | class | `DocEntry` | `@dataclass` | `src/docu/index/manifest.py#L33-L68` |
@@ -589,11 +562,11 @@ classDiagram
 | `_prepare` | `def _prepare(text: str) -> list[tuple[int, str, int]]` | `src/docu/core/yamlmini.py#L34-L48` |
 | `_strip_comment` | `def _strip_comment(line: str) -> str` | `src/docu/core/yamlmini.py#L51-L64` |
 | `_parse_block` | `def _parse_block(lines: list[tuple[int, str, int]], start: int, indent: int) -> tuple[obje` | `src/docu/core/yamlmini.py#L70-L75` |
-| `_parse_mapping` | `def _parse_mapping(lines: list[tuple[int, str, int]], start: int, indent: int) -> tuple[di` | `src/docu/core/yamlmini.py#L78-L107` |
-| `_parse_sequence` | `def _parse_sequence(lines: list[tuple[int, str, int]], start: int, indent: int) -> tuple[l` | `src/docu/core/yamlmini.py#L110-L135` |
-| `_parse_inline_item` | `def _parse_inline_item(lines: list[tuple[int, str, int]], start: int, indent: int, first: ` | `src/docu/core/yamlmini.py#L138-L173` |
+| `_parse_mapping` | `def _parse_mapping(lines: list[tuple[int, str, int]], start: int, indent: int) -> tuple[di` | `src/docu/core/yamlmini.py#L78-L118` |
+| `_parse_sequence` | `def _parse_sequence(lines: list[tuple[int, str, int]], start: int, indent: int) -> tuple[l` | `src/docu/core/yamlmini.py#L121-L146` |
+| `_parse_inline_item` | `def _parse_inline_item(lines: list[tuple[int, str, int]], start: int, indent: int, first: ` | `src/docu/core/yamlmini.py#L149-L193` |
 
-_(196 métodos adicionales omitidos del índice)_.
+_(208 métodos adicionales omitidos del índice)_.
 
 ## 9. Alcance y límites
 
@@ -601,7 +574,7 @@ Secciones aplicables a este proyecto (y por tanto exigibles en la compuerta): **
 
 Secciones **no aplicables** —no existen en este proyecto y no se penalizan—: route.
 
-No cubierto todavía por el generador: diagramas de componentes y de secuencia, diccionario de datos, contratos OpenAPI si no están declarados, y la capa de operación/despliegue (Nivel 2).
+No cubierto todavía por el generador: diagramas de secuencia (el grafo de llamadas no resuelve despacho dinámico), diccionario de datos/ERD, contratos OpenAPI si no están declarados, e infraestructura provisionada (Terraform/CloudFormation). Los diagramas de componentes, clases y flujo de API están en la sección 3; la operación y el despliegue, en el documento de Nivel 2.
 
 ## 10. Trazabilidad
 
@@ -610,7 +583,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | Archivo | sha256 |
 |---|---|
 | `.github/workflows/docu.yml` | `1a164973b830` |
-| `docu.profile.yaml` | `94dcacef07be` |
+| `docu.profile.yaml` | `536bf0c2d80d` |
 | `eval/__init__.py` | `65861c4d8840` |
 | `eval/harness.py` | `6137ad8155a0` |
 | `pyproject.toml` | `a4e309a1c90a` |
@@ -633,24 +606,25 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/core/contracts.py` | `1ed0e6d83f63` |
 | `src/docu/core/policy.py` | `bb4c3a0a3ed5` |
 | `src/docu/core/ports.py` | `88d8cfdb18c0` |
-| `src/docu/core/profile.py` | `8b8e459dc096` |
-| `src/docu/core/yamlmini.py` | `7a54cc7a2960` |
+| `src/docu/core/profile.py` | `749de6eea118` |
+| `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
-| `src/docu/delivery/cli.py` | `c77cb7e9f4b1` |
+| `src/docu/delivery/cli.py` | `f62adf0eeb97` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |
 | `src/docu/delivery/mcp_server.py` | `86ed3d803200` |
-| `src/docu/delivery/proposal.py` | `8a918f79f687` |
+| `src/docu/delivery/proposal.py` | `d3f93708a83b` |
 | `src/docu/generate/__init__.py` | `91d9129019a3` |
-| `src/docu/generate/diagrams.py` | `9b2b5943a2ad` |
-| `src/docu/generate/facts.py` | `eb5835430ed4` |
-| `src/docu/generate/markdown.py` | `e1df2e0e82eb` |
-| `src/docu/generate/pipeline.py` | `a938d933f6f3` |
+| `src/docu/generate/diagrams.py` | `68389108e62a` |
+| `src/docu/generate/facts.py` | `b417534f352e` |
+| `src/docu/generate/markdown.py` | `6e9f671bc7ad` |
+| `src/docu/generate/ops.py` | `cee221559089` |
+| `src/docu/generate/pipeline.py` | `c64d0591110a` |
 | `src/docu/index/__init__.py` | `06566a17f409` |
 | `src/docu/index/chunker.py` | `5588ae08b6bf` |
 | `src/docu/index/freshness.py` | `076f96a3fb8b` |
 | `src/docu/index/manifest.py` | `f3ea859b5225` |
-| `src/docu/index/packages.py` | `1984e88187c9` |
+| `src/docu/index/packages.py` | `03aa387201ec` |
 | `src/docu/learn/__init__.py` | `4d33ba71c4c5` |
 | `src/docu/learn/federation.py` | `ffeb217ac871` |
 | `src/docu/learn/ledger.py` | `38818d4f92ec` |

@@ -38,7 +38,7 @@ output:
   language: es
   levels:
     l1: true
-    l2: false   # pendiente de implementación
+    l2: true
     l3: false
     l4: true
   notation:

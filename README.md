@@ -4,12 +4,12 @@ Agente autónomo de documentación técnica: **agnóstico**, **verificable** e *
 Se invoca una vez y entrega documentación en cuatro niveles; después se mantiene solo y
 aprende de cada instalación.
 
-> Estado: **siete fases cerradas** (F0, F1, F2, F4, F5, F6, F7) + **perfil conectado** (F3 parcial,
-> con `init` idempotente y orden de cambio) y **el agente se documenta a sí mismo**: 517
-> afirmaciones, 0 sin cita, 12 paquetes mapeados y compuerta en verde, sin banderas. El servidor MCP
-> sirve **varios repositorios** y expone **`search_code`** con la recuperación híbrida (1.000 de
-> recall con identificadores, 0.850 en español). **369 tests** en verde. Pendiente: juez LLM y nivel
-> L2. Ver [`Plan.md`](Plan.md).
+> Estado: **siete fases cerradas** (F0, F1, F2, F4, F5, F6, F7) + **perfil conectado**, **Nivel 2** y
+> **diagramas como código** (F3 parcial: falta la capa de prosa con LLM, que es opcional). El agente se
+> documenta a sí mismo: 550 afirmaciones, 0 sin cita, compuerta en verde y **auditoría determinista
+> 100/100** sin ningún modelo. El servidor MCP sirve **varios repositorios** y expone **`search_code`**
+> con la recuperación híbrida (1.000 de recall con identificadores, 0.850 en español).
+> **432 tests** en verde. Ver [`Plan.md`](Plan.md).
 
 ## Principios que el código hace cumplir
 
@@ -48,9 +48,11 @@ Con dependencias opcionales:
 ```bash
 pip install -e ".[langs,index,docs,generate,eval]"
 docu init                                     # detecta el stack y propone el perfil
-docu gen                                      # genera N1/N4 según el perfil, con citas
+docu gen                                      # niveles del perfil, con citas y diagramas
+docu gen --level l1 --level l2 --level l4     # manual + operación + onboarding
 docu status --root .                          # frescura: fresh / stale / expired
 docu gen --incremental                        # regenera solo lo desactualizado
+docu audit --report out/auditoria.md          # 5 comprobaciones deterministas, sin modelos
 docu ci check                                 # validación rápida para PR (sin modelo)
 docu ci regen --out docs/generated            # regenera lo stale y escribe .docu/pr-body.md
 docu drift --bootstrap                        # foto inicial del modelo arquitectónico
@@ -59,7 +61,6 @@ docu serve --mcp --out docs/generated         # servidor MCP de solo lectura
 docu learn                                    # resumen del ledger y candidatos
 docu learn --promote                          # instala el patrón si supera la compuerta
 docu learn --federate --dry-run               # muestra el payload anonimizado (no envía)
-docu audit
 ```
 
 ## Primera instalación
@@ -157,19 +158,33 @@ search_docs(query)                  → error accionable: «hay varios proyectos
 ## Estructura
 
 ```
-src/docu/core/       contratos, puertos, política         (stdlib puro)
-src/docu/index/      chunker sintáctico, metadatos, frescura
+src/docu/core/       contratos, puertos, política, perfil   (stdlib puro, hoja del grafo)
+src/docu/index/      chunker sintáctico, metadatos, frescura, paquetes
 src/docu/retrieve/   glosario de dominio, híbrido y enrutado
-src/docu/generate/   evidencia, prompts, cuatro niveles
-src/docu/audit/      juez calibrado, métricas, RAGAS
+src/docu/generate/   hechos, diagramas Mermaid, cuatro niveles, operación
+src/docu/audit/      auditoría determinista (citas, duplicados, coherencia, cobertura, frescura)
 src/docu/conformance/ arquitectura prescriptiva vs. real
 src/docu/learn/      ledger, patrones, promoción, federación
-src/docu/delivery/   CLI, entrada de CI, servidor MCP (solo lectura)
+src/docu/delivery/   CLI, entrada de CI, propuesta de perfil, servidor MCP (solo lectura)
 src/docu/adapters/   implementaciones de cada puerto (langs, embedders, stores…)
 eval/                golden set, arnés de evaluación, informes
-tests/               suite del núcleo + conformidad de lenguajes
+tests/               suite del núcleo + conformidad de lenguajes (432 pruebas)
 .models/             modelo ONNX multilingüe (ignorado en git)
 ```
+
+## Niveles y diagramas
+
+| Nivel | Documento | Para quién |
+|---|---|---|
+| L1 | manual técnico | ingeniería: arquitectura, diagramas, API, configuración, símbolos |
+| L2 | operación y despliegue | quien monta el sistema: entorno, puertos, artefactos, comandos, CI |
+| L3 | guía de uso | negocio: qué se puede hacer, sin jerga |
+| L4 | README de onboarding | quien llega nuevo |
+
+Los diagramas se generan como **Mermaid** a partir de evidencia y se embeben en el L1
+(`docs/generated/diagrams/*.mmd`): dependencias entre paquetes derivadas de los `import` reales,
+clases por paquete con su herencia declarada y flujo de la API. **No** se generan diagramas de
+secuencia: el grafo de llamadas no resuelve despacho dinámico y el documento lo declara como hueco.
 
 ## Documentación del proyecto
 

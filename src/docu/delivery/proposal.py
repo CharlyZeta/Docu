@@ -15,6 +15,7 @@ from docu.adapters.langs.registry import adapter_for
 from docu.core.profile import DEFAULT_EXCLUDE, LEVELS, Profile
 from docu.generate.facts import symbol_facts
 from docu.generate.pipeline import _discover, collect_facts, _read
+from docu.generate.ops import is_compose_file, is_docker_file, is_env_file, is_workflow_file
 from docu.retrieve.glossary import DEFAULT_GLOSSARY
 
 #: Nombres de framework que, si aparecen en las dependencias, cambian el perfil propuesto.
@@ -49,6 +50,14 @@ def detect(root: Path) -> dict[str, object]:
         "routes": route_count,
         "files": len(discovered),
         "facts": len(facts),
+        "ops": sum(
+            1
+            for rel in discovered
+            if is_compose_file(rel)
+            or is_docker_file(rel)
+            or is_env_file(rel)
+            or is_workflow_file(rel)
+        ),
     }
 
 
@@ -63,6 +72,10 @@ def propose(root: Path, *, project: str | None = None) -> Profile:
     levels = ["l1", "l4"]
     if routes > 0:
         levels.append("l3")
+    # El Nivel 2 sólo se propone cuando hay algo que operar: un documento de despliegue sobre un
+    # proyecto sin artefactos de despliegue sería una plantilla vacía.
+    if detection.get("ops"):
+        levels.append("l2")
 
     # El glosario se siembra solo cuando hay evidencia de que aplica: inventar vocabulario de un
     # dominio desconocido seria peor que no sembrarlo.

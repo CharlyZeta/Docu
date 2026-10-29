@@ -302,6 +302,35 @@ def package_json_facts(path: str, source: str) -> list[Fact]:
     return facts
 
 
+def pyproject_scripts_facts(path: str, source: str) -> list[Fact]:
+    """Comandos instalables declarados en `[project.scripts]` de `pyproject.toml`.
+
+    Sin esto, un proyecto Python sin `package.json` aparece con «procedimientos: sin evidencia»
+    aunque declare su CLI punto por punto.
+    """
+    facts: list[Fact] = []
+    inside = False
+    for line_number, line in enumerate(source.splitlines(), start=1):
+        stripped = line.strip()
+        if stripped.startswith("["):
+            inside = stripped.startswith("[project.scripts]")
+            continue
+        if not inside or not stripped or stripped.startswith("#"):
+            continue
+        match = re.match(r'^([A-Za-z0-9_.-]+)\s*=\s*"([^"]+)"', stripped)
+        if match is None:
+            continue
+        facts.append(
+            Fact(
+                kind="command",
+                subject=match.group(1),
+                detail=f"python -m {match.group(2).split(':')[0]} · {match.group(2)}",
+                citation=f"{path}#L{line_number}-L{line_number}",
+            )
+        )
+    return facts
+
+
 def pyproject_facts(path: str, source: str) -> list[Fact]:
     """`pyproject.toml`: dependencias de `[project]` y de sus extras, y la versión de Python exigida.
 

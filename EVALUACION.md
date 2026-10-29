@@ -12,21 +12,20 @@ la propia guía les da. Cada nota se sostiene en evidencia ejecutable, no en la 
 | 1 | Ingesta y cobertura de fuentes | 12 | **50** | Código Java/Python/TS, `pom`, `pyproject`, `package.json`, `requirements`, YAML, OpenAPI | **Sin PDF ni web** (el perfil los declara, no hay adaptador) ni IaC |
 | 2 | Estructura y trazabilidad | 13 | **94** | Chunks sintácticos, prefijo de metadatos, paquetes, citas `archivo#L`, conformidad de 3 lenguajes | Parsers propios (no tree-sitter) y sin ERD/diccionario de datos |
 | 3 | Recuperación | 12 | **82** | recall@10 **1.000** (identificadores) y **0.850** (español), híbrido de 3 canales con glosario | MRR 0.562 < 0.60 (falta cross-encoder) |
-| 4 | Generación documental | 18 | **58** | L1/L3/L4 con 0 afirmaciones sin cita, idempotencia byte a byte, 0 USD | **Sin prosa**: documentos de hechos; sin L2 ni diagramas |
+| 4 | Generación documental | 18 | **72** | L1/L2/L3/L4 con 0 afirmaciones sin cita, diagramas Mermaid embebidos, idempotencia byte a byte, 0 USD | Sigue siendo **extractiva**: sin prosa explicativa |
 | 5 | Perfil y gobernanza por proyecto | 8 | **80** | Esquema validado, `init` con orden de cambio, umbrales/exclusiones/TTL efectivos | Rúbrica `required_modules` no se aplica aún |
 | 6 | Evaluación y auditoría de calidad | 10 | **75** | `docu audit`: 5 comprobaciones deterministas (citas, duplicados, coherencia entre niveles, cobertura, frescura) + arnés de recuperación | Sin juez LLM para claridad/utilidad (opcional por diseño) |
 | 7 | Frescura y mantenimiento | 12 | **95** | Hash de 6 entradas, `fresh/stale/expired`, incremental, PR automático, TTL | Sin `pre-commit` (decisión deliberada: valida el CI) |
-| 8 | Multicapa y visualización | 8 | **35** | L1, L3 (sin jerga, con test) y L4 | **Sin Nivel 2**, sin diagramas Mermaid/PlantUML, sin `ContentNode` |
+| 8 | Multicapa y visualización | 8 | **80** | L1/L2/L3/L4 + diagramas de arquitectura, clases y flujo de API en Mermaid | Sin diagramas de secuencia (el grafo no resuelve despacho dinámico) ni ERD |
 | 9 | Interoperabilidad (MCP) | 7 | **88** | 8 herramientas read-only, multi-repo, `search_code` híbrido, puente HTTP | HTTP no es Streamable HTTP/SSE |
 
-### Nota ponderada: **73 / 100** como herramienta de documentación utilizable hoy
+### Nota ponderada: **79 / 100** como herramienta de documentación utilizable hoy
 
-### Fidelidad a la visión completa de la guía: **≈ 57 / 100**
+### Fidelidad a la visión completa de la guía: **≈ 65 / 100**
 
-La diferencia entre ambas cifras es exactamente la capa que la guía daba por hecha y aquí no existe:
-generación con LLM (prosa y voces), juez automático, diagramas como código y fuentes no-código.
-El núcleo —trazabilidad, frescura, conformidad, MCP— está por encima de lo que la guía especificaba
-en detalle, porque la guía no los definía a nivel de contrato.
+La diferencia entre ambas cifras ya no son los diagramas ni el Nivel 2 —implementados— sino la capa de
+prosa con LLM, el juez automático que aquí se sustituyó a propósito por verificación determinista, y las
+fuentes que no son código (PDF, web, IaC).
 
 ## Prueba ciega sobre código no visto
 

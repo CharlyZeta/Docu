@@ -261,8 +261,11 @@ def render_l1(
             "",
         ]
     lines += [
-        "No cubierto todavía por el generador: diagramas de componentes y de secuencia, diccionario "
-        "de datos, contratos OpenAPI si no están declarados, y la capa de operación/despliegue (Nivel 2).",
+        "No cubierto todavía por el generador: diagramas de secuencia (el grafo de llamadas no "
+        "resuelve despacho dinámico), diccionario de datos/ERD, contratos OpenAPI si no están "
+        "declarados, e infraestructura provisionada (Terraform/CloudFormation). Los diagramas de "
+        "componentes, clases y flujo de API están en la sección 3; la operación y el despliegue, en "
+        "el documento de Nivel 2.",
         "",
     ]
 
@@ -386,6 +389,116 @@ VERB_LABELS = {
 }
 
 
+# --------------------------------------------------------------------------- Nivel 2
+
+
+def render_l2(
+    project: str,
+    facts: Sequence[Fact],
+    sources: Mapping[str, str],
+    meta: Mapping[str, str],
+    diagrams: Sequence[object] = (),
+) -> str:
+    """Operación y despliegue: entorno, puertos, artefactos, procedimientos y CI.
+
+    Nunca incluye valores de variables de entorno: sólo nombres. Un documento que copia una clave
+    es un incidente, no documentación.
+    """
+    lines = _header(project, "Operación y despliegue (Nivel 2)", meta, facts)
+    counts = _counts(facts)
+
+    lines += ["## 1. Entorno requerido", ""]
+    env_rows = [
+        [f"`{fact.subject}`", fact.detail, _cite(fact.citation)] for fact in _by_kind(facts, "env_var")
+    ]
+    if env_rows:
+        lines += [
+            "> Sólo se documentan los **nombres** de las variables. Los valores de los archivos de "
+            "ejemplo no se copian, y un `.env` real nunca se lee.",
+            "",
+            _table(["Variable", "Archivo de ejemplo", "Cita"], env_rows),
+            "",
+        ]
+    else:
+        lines += [NO_EVIDENCE, ""]
+
+    lines += ["## 2. Puertos y servicios", ""]
+    port_rows = [
+        [f"`{fact.subject}`", fact.detail, _cite(fact.citation)] for fact in _by_kind(facts, "port")
+    ]
+    service_rows = [
+        [f"`{fact.subject}`", fact.detail, _cite(fact.citation)]
+        for fact in _by_kind(facts, "service")
+    ]
+    if service_rows:
+        lines += [_table(["Servicio", "Origen", "Cita"], service_rows), ""]
+    if port_rows:
+        lines += [_table(["Puerto", "Publicado por", "Cita"], port_rows), ""]
+    if not service_rows and not port_rows:
+        lines += [NO_EVIDENCE, ""]
+
+    lines += ["## 3. Artefactos de infraestructura", ""]
+    image_rows = [
+        [f"`{fact.subject}`", fact.detail, _cite(fact.citation)] for fact in _by_kind(facts, "image")
+    ]
+    process_rows = [
+        [f"`{fact.subject}`", fact.detail, _cite(fact.citation)]
+        for fact in _by_kind(facts, "process")
+    ]
+    order_rows = [
+        [f"`{fact.subject}`", _cite(fact.citation)] for fact in _by_kind(facts, "dependency_edge")
+    ]
+    if image_rows:
+        lines += [_table(["Imagen base", "Rol", "Cita"], image_rows), ""]
+    if process_rows:
+        lines += [_table(["Arranque del contenedor", "Rol", "Cita"], process_rows), ""]
+    if order_rows:
+        lines += [_table(["Orden de arranque", "Cita"], order_rows), ""]
+    if not image_rows and not process_rows and not order_rows:
+        lines += [NO_EVIDENCE, ""]
+
+    lines += ["## 4. Procedimientos", ""]
+    command_rows = [
+        [f"`{fact.subject}`", f"`{fact.detail}`", _cite(fact.citation)]
+        for fact in _by_kind(facts, "command")
+    ]
+    if command_rows:
+        lines += [_table(["Comando", "Qué ejecuta", "Cita"], command_rows), ""]
+    else:
+        lines += [NO_EVIDENCE, ""]
+
+    lines += ["## 5. Integración continua", ""]
+    workflow_rows = [
+        [f"`{fact.subject}`", fact.detail, _cite(fact.citation)] for fact in _by_kind(facts, "workflow")
+    ]
+    trigger_rows = [
+        [f"`{fact.subject}`", fact.detail, _cite(fact.citation)] for fact in _by_kind(facts, "trigger")
+    ]
+    job_rows = [
+        [f"`{fact.subject}`", fact.detail, _cite(fact.citation)] for fact in _by_kind(facts, "ci_job")
+    ]
+    if workflow_rows:
+        lines += [_table(["Workflow", "Archivo", "Cita"], workflow_rows), ""]
+    if trigger_rows:
+        lines += [_table(["Disparador", "Workflow", "Cita"], trigger_rows), ""]
+    if job_rows:
+        lines += [_table(["Job", "Workflow", "Cita"], job_rows), ""]
+    if not workflow_rows and not job_rows:
+        lines += [NO_EVIDENCE, ""]
+
+    lines += ["## 6. Alcance y límites", ""]
+    lines += [
+        f"- Afirmaciones documentadas: **{len(facts)}** · entorno {counts.get('env_var', 0)}, "
+        f"puertos {counts.get('port', 0)}, servicios {counts.get('service', 0)}, "
+        f"comandos {counts.get('command', 0)}, jobs de CI {counts.get('ci_job', 0)}",
+        "- **No** se documentan valores de secretos ni el contenido de un `.env` real.",
+        "- **No** se describe infraestructura provisionada que no esté declarada en el repositorio: "
+        "Terraform y CloudFormation aún no se leen.",
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def render_l3(
     project: str,
     facts: Sequence[Fact],
@@ -428,4 +541,4 @@ def render_l3(
 
 
 #: Renderizadores disponibles por nivel. Se declara al final: las funciones deben existir antes.
-RENDERERS = {"l1": render_l1, "l3": render_l3, "l4": render_l4}
+RENDERERS = {"l1": render_l1, "l2": render_l2, "l3": render_l3, "l4": render_l4}
