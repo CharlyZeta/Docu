@@ -13,7 +13,7 @@
       "level": "l1",
       "path": "docs/generated/l1-manual-tecnico.md",
       "input_hash": "sha256:6f37050db7355f7050cf854fb38162114ec614f6420cb8b4d4174a8b82223ff4",
-      "generated_at": "2026-10-30T21:13:02+00:00",
+      "generated_at": "2026-10-30T21:23:59+00:00",
       "content_hash": "sha256:4334b5d362e1e6effbd215d6c46e788ed0b6b605e6e0feb89a320d1fd9032ec2",
       "ttl_days": 90,
       "sources": {
@@ -83,7 +83,7 @@
       "level": "l2",
       "path": "docs/generated/l2-operacion.md",
       "input_hash": "sha256:f0b50073c90a1dda7f954fb24924125c792f809e3cd185d0537e6b2b9a588f81",
-      "generated_at": "2026-10-30T21:13:02+00:00",
+      "generated_at": "2026-10-30T21:23:59+00:00",
       "content_hash": "sha256:ed24038cb07a0718e0bd28442e42ee2c05f43b8c1aa6928c73bb109ba9c114d4",
       "ttl_days": 90,
       "sources": {
@@ -153,7 +153,7 @@
       "level": "l4",
       "path": "docs/generated/l4-readme.md",
       "input_hash": "sha256:7a700113d9543cccae7819b68cd4da2ee13b7ca233ec0e8d3cb3f70c7a2f2831",
-      "generated_at": "2026-10-30T21:13:02+00:00",
+      "generated_at": "2026-10-30T21:23:59+00:00",
       "content_hash": "sha256:64dae0d0e5f3b251d4c5364a07aa788714dee64e6819250c6906663de1266721",
       "ttl_days": 90,
       "sources": {
