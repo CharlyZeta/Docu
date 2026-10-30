@@ -340,6 +340,26 @@ erDiagram
         str version
         str schema_version
     }
+    PdfDocument {
+        str rel
+        int pages
+        int chars
+        str method
+        str status
+        bool usable
+        tuple_str warnings
+    }
+    PdfPage {
+        int number
+        str text
+    }
+    PdfText {
+        tuple_PdfPage pages
+        int total_pages
+        int chars
+        str method
+        tuple_str warnings
+    }
     Profile {
         str project
         Mode mode

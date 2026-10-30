@@ -54,6 +54,7 @@ docu status --root .                          # frescura: fresh / stale / expire
 docu gen --incremental                        # regenera solo lo desactualizado
 docu audit --report out/auditoria.md          # 5 comprobaciones deterministas, sin modelos
 docu site --out out/site                      # web con divulgación progresiva (sin CDN ni JS obligatorio)
+docu pdf                                      # extrae texto de los PDFs y reporta qué se pudo leer
 docu ci check                                 # validación rápida para PR (sin modelo)
 docu ci regen --out docs/generated            # regenera lo stale y escribe .docu/pr-body.md
 docu drift --bootstrap                        # foto inicial del modelo arquitectónico

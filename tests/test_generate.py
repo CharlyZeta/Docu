@@ -177,7 +177,7 @@ class RendererTests(unittest.TestCase):
     def test_every_table_row_carries_a_citation(self) -> None:
         document = render_l1("demo", self.facts, self.sources, self.meta)
         # La seccion de trazabilidad lista los archivos fuente y su huella: ahi la cita no aplica.
-        body = document.split("## 11. Trazabilidad")[0]
+        body = document.split("## 12. Trazabilidad")[0]
         for line in body.splitlines():
             if line.startswith("| `"):
                 self.assertIn("#L", line, msg=f"fila sin cita: {line}")

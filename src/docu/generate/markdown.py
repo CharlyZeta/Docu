@@ -274,7 +274,27 @@ def render_l1(
     if len(methods) > 200:
         lines += [f"_({len(methods) - 200} métodos adicionales omitidos del índice)_.", ""]
 
-    lines += ["## 10. Alcance y límites", ""]
+    lines += ["## 10. Documentos de referencia (PDF)", ""]
+    pdfs = _by_kind(facts, "pdf_document")
+    if pdfs:
+        lines += [
+            "> La unidad de cita es la **página**: un PDF no tiene líneas estables. Los documentos que "
+            "no se pudieron leer se declaran como tales en lugar de citarse a ciegas.",
+            "",
+            _table(
+                ["Documento", "Estado y extracción", "Cita"],
+                [[f"`{fact.subject}`", fact.detail, _cite(fact.citation)] for fact in pdfs],
+            ),
+            "",
+        ]
+    else:
+        lines += [
+            "No se encontraron PDFs en el repositorio. Cuando existan, se listan aquí con su estado "
+            "de extracción y su cita por página.",
+            "",
+        ]
+
+    lines += ["## 11. Alcance y límites", ""]
     lines += [
         "Secciones aplicables a este proyecto (y por tanto exigibles en la compuerta): "
         f"**{meta.get('applicable', '—') or '—'}**.",
@@ -299,7 +319,7 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 11. Trazabilidad", ""]
+    lines += ["## 12. Trazabilidad", ""]
     lines += [
         "Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos fuente y su "
         "huella son:",

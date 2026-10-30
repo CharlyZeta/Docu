@@ -404,3 +404,16 @@ anotaciones, valor) y **prueba** (cita + fragmento real del archivo con números
 ### 13.6 Estado y pendientes
 473 tests en verde. Sigue pendiente: ingesta de PDF y web como fuentes citables, capa de prosa con LLM
 (opcional, la única que puede degradar la trazabilidad) y paginación de índices en monorepos grandes.
+
+### 13.7 Ingesta de PDF
+Extractor propio sin dependencias: objetos, `FlateDecode`, operadores `Tj`/`TJ`/`'`/`"`, escapes
+octales y hexadecimales, **CMap `ToUnicode` por fuente** (un PDF real usa una fuente subset por rol;
+aplicar un mapa global produce texto cifrado que parece texto) y posiciones `Td`/`TD`/`Tm`/`T*`.
+- La unidad de cita es la **página** (`manual.pdf#p1`): un PDF no tiene líneas estables.
+- Los PDFs entran en `sources`, así que uno nuevo o modificado invalida la frescura como el código.
+- **Límites declarados**: no se leen PDFs escaneados, cifrados ni con codificación exótica sin
+  `ToUnicode`; cuando la extracción no alcanza, el documento lo dice y `docu pdf` devuelve exit 40.
+- `docu pdf` escribe el texto extraído en `<docs>/pdf/*.txt` para que sea legible sin herramientas.
+- **Medido** sobre seis libros reales de 387–468 páginas: texto legible, ~330 000 caracteres por
+  documento. La extracción puede perder espacios entre bloques: sirve para buscar y citar la página,
+  no para reconstruir el original.

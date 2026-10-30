@@ -1,12 +1,12 @@
 # docu — README de onboarding (Nivel 4)
 
-Generado por `docu 0.1.0` · fuente `sha256:d52e7` · archivos: 54 · afirmaciones: 936 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:ca556` · archivos: 57 · afirmaciones: 982 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
 ## Qué es
 
-Proyecto **docu** con 0 módulos, 14 paquetes, 82 tipos y 0 rutas HTTP documentadas.
+Proyecto **docu** con 0 módulos, 15 paquetes, 86 tipos y 0 rutas HTTP documentadas.
 
 | Módulo / paquete | Cita |
 |---|---|
@@ -14,6 +14,7 @@ Proyecto **docu** con 0 módulos, 14 paquetes, 82 tipos y 0 rutas HTTP documenta
 | `docu.adapters` | `src/docu/adapters/__init__.py#L1-L1` |
 | `docu.adapters.embedders` | `src/docu/adapters/embedders/__init__.py#L1-L1` |
 | `docu.adapters.langs` | `src/docu/adapters/langs/__init__.py#L1-L1` |
+| `docu.adapters.sources` | `src/docu/adapters/sources/__init__.py#L1-L5` |
 | `docu.audit` | `src/docu/audit/__init__.py#L1-L5` |
 | `docu.conformance` | `src/docu/conformance/__init__.py#L1-L5` |
 | `docu.core` | `src/docu/core/__init__.py#L1-L5` |
@@ -41,4 +42,4 @@ Proyecto **docu** con 0 módulos, 14 paquetes, 82 tipos y 0 rutas HTTP documenta
 
 ## Fuentes
 
-Documento generado leyendo 54 archivos del repositorio. Las secciones sin evidencia se declaran como huecos, no se rellenan.
+Documento generado leyendo 57 archivos del repositorio. Las secciones sin evidencia se declaran como huecos, no se rellenan.

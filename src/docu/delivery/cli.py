@@ -140,6 +140,12 @@ def _build_parser() -> argparse.ArgumentParser:
     p_learn.add_argument("--endpoint", default=None, help="endpoint de federación (http/https)")
     p_learn.add_argument("--json", action="store_true")
 
+    p_pdf = sub.add_parser("pdf", help="extrae texto de los PDFs del proyecto y reporta su estado")
+    p_pdf.add_argument("--root", default=".")
+    p_pdf.add_argument("--profile", default=argparse.SUPPRESS)
+    p_pdf.add_argument("--out", default=None, help="directorio del texto extraído (por defecto <docs>/pdf)")
+    p_pdf.add_argument("--json", action="store_true")
+
     p_serve = sub.add_parser("serve", help="servidor MCP de solo lectura")
     p_serve.add_argument("--mcp", action="store_true", help="transporte MCP (stdio por defecto)")
     p_serve.add_argument("--port", type=int, default=None, help="puerto para transporte HTTP")
@@ -261,6 +267,9 @@ def _dispatch(args: argparse.Namespace) -> int:
 
     if args.command == "site":
         return _run_site(args)
+
+    if args.command == "pdf":
+        return _run_pdf(args)
 
     if args.command == "serve":
         return _run_serve(args)
@@ -471,6 +480,67 @@ def _run_site(args: argparse.Namespace) -> int:
     print(f"{project}: {len(facts)} afirmaciones · {len(pages)} páginas · web en {out_dir}")
     for page in pages:
         print(f"  {page.name}")
+    return int(ExitCode.OK)
+
+
+def _run_pdf(args: argparse.Namespace) -> int:
+    """Extrae texto de los PDFs y reporta qué se pudo leer y qué no.
+
+    Salida distinta de cero cuando **ningún** documento es usable: es un fallo de la fuente, no una
+    página vacía, y conviene que el CI lo note.
+    """
+    import json as jsonlib
+
+    from docu.index.pdfdocs import load_all, write_sidecars
+
+    root = Path(args.root).resolve()
+    options = _resolve(args, root)
+    documents, texts, _digests = load_all(
+        root, include=options.include, exclude=options.exclude
+    )
+    if not documents:
+        print(f"{options.project or root.name}: no hay PDFs en el proyecto")
+        return int(ExitCode.NO_CHANGES)
+
+    docs_dir = Path(args.out) if args.out else (
+        Path(options.profile.output_dir) if options.profile else Path("docs") / "generated"
+    )
+    written = write_sidecars(texts, docs_dir / "pdf")
+
+    if args.json:
+        print(
+            jsonlib.dumps(
+                [
+                    {
+                        "document": document.rel,
+                        "pages": document.pages,
+                        "chars": document.chars,
+                        "method": document.method,
+                        "status": document.status,
+                        "usable": document.usable,
+                        "warnings": list(document.warnings),
+                        "sidecar": str(docs_dir / "pdf") if document.rel in texts else None,
+                    }
+                    for document in documents
+                ],
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+    else:
+        for document in documents:
+            mark = "✔" if document.usable else "✖"
+            print(f"  {mark} {document.rel}: {document.status}")
+            print(
+                f"     {document.pages} páginas · {document.chars} caracteres · {document.method}"
+            )
+            for warning in document.warnings:
+                print(f"     aviso: {warning}")
+        print(f"texto extraído en {docs_dir / 'pdf'} ({len(written)} archivos)")
+
+    if not any(document.usable for document in documents):
+        print("error: ningún PDF tiene texto extraíble", file=sys.stderr)
+        return int(ExitCode.UNCITABLE_SOURCE)
     return int(ExitCode.OK)
 
 

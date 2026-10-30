@@ -228,6 +228,14 @@ def collect_facts(
         elif rel.endswith("requirements.txt"):
             facts.extend(requirements_facts(rel, source))
     facts.extend(package_facts(detect_packages(discovered)))
+
+    # PDFs como fuentes citables: la unidad de cita es la página. Su huella entra en `sources`
+    # para que un PDF nuevo o modificado invalide la frescura, igual que un archivo de código.
+    from docu.index.pdfdocs import load_all
+
+    documents, _texts, digests = load_all(root, include=include, exclude=exclude, include_tests=include_tests)
+    sources.update(digests)
+    facts.extend(document.to_fact() for document in documents)
     return facts, sources
 
 
