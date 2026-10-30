@@ -234,7 +234,9 @@ sin jerga, con verbos traducidos a acciones y aviso de alcance).
   `GET /projects`). Documentado explícitamente como **no** compatible con Streamable HTTP/SSE.
 - **Criterio de jerga cumplido:** test que elimina el código entre backticks y falla si aparece un
   término prohibido en la prosa del Nivel 3.
-- Pendiente: `ContentNode` como fuente única de los cuatro niveles y Nivel 2 (operación/despliegue).
+- **Nivel 2 entregado después del plan** (ver §12): operación y despliegue desde `.env.example`,
+  Dockerfile, compose, scripts y workflows, sin copiar nunca valores de secretos.
+- **Diagramas y publicación web** también posteriores al plan (ver §12).
 
 ### F7 — Aprendizaje y federación *(8 d)* · ✅ **completada**
 Hecho: **ledger** `.docu/ledger.jsonl` alimentado en cada generación, **biblioteca de patrones** por
@@ -347,3 +349,58 @@ evaluación. Sin medición previa, cada decisión posterior es opinión.
 | D11 | Idioma de salida de la documentación | Español por defecto, inglés por perfil |
 | D12 | Dónde vive `.docu/` | En el repo (versionado) salvo `--local` |
 | D13 | Publicación L3 (usuario final) en v1 | No: activable por perfil, no por defecto |
+
+---
+
+## 13. Entregas posteriores al plan
+
+Cinco capacidades que el plan dejaba fuera o pendientes, ya implementadas y medidas. No cambian el
+núcleo: se apoyan en los mismos hechos con cita.
+
+### 13.1 Nivel 2 — operación y despliegue
+Fuente: `.env.example` y equivalentes (**sólo nombres de variables**), `Dockerfile` (imagen base,
+`EXPOSE`, arranque), `docker-compose` (servicios, puertos, `depends_on`), `package.json` scripts,
+`pyproject [project.scripts]` y workflows de CI (nombre, disparadores, jobs).
+- **Regla dura:** un `.env` real no se abre nunca y hay un test que verifica que un valor secreto del
+  archivo de ejemplo **no aparece** en el documento generado.
+- Los workflows dejan de contarse como configuración de la aplicación: son CI, no `application.yml`.
+- **Medido:** `saleshub` documenta 14 variables de entorno y los scripts de `package.json` con su cita;
+  `docu` documenta su CLI desde `pyproject.toml`.
+
+### 13.2 Diagramas como código (Mermaid)
+Cuatro familias derivadas de evidencia: arquitectura de paquetes (imports reales), clases por paquete
+(con herencia declarada), flujo de API (ruta → controlador) y modelo de datos (ERD desde los tipos de
+campo). Se escriben en `<docs>/diagrams/*.mmd` y se embeben en el Nivel 1.
+- **No** se generan diagramas de secuencia: el grafo de llamadas no resuelve despacho dinámico y el
+  documento lo declara en lugar de inventarlo.
+- El primer diagrama de este repositorio destapó un ciclo real (`core → adapters`): se corrigió moviendo
+  la detección de stack a `delivery/proposal.py`.
+
+### 13.3 Diccionario de datos y ERD
+Los tres adaptadores extraen **campos** (Java, incluidos componentes de `record`; Python con `ast`;
+TypeScript en clases e interfaces). Se publica una sección de diccionario (entidad, campo, tipo
+declarado, anotaciones, cita) y un ERD cuyas relaciones salen del **tipo del campo**: colección →
+muchos, tipo simple → uno.
+
+### 13.4 Auditoría determinista (`docu audit`)
+Cinco comprobaciones, sin modelos: citas (archivo existe, rango válido y **el sujeto aparece dentro**),
+duplicados (sujeto + cita), coherencia de rutas entre niveles, cobertura de secciones aplicables y
+frescura. Nota ponderada con esos pesos.
+- **Medido:** `docu` 936/936 citas verificadas y **100.00/100**; `saleshub` 1226/1226 y **100.00/100**.
+- Un juez LLM queda como métrica **asesora** para claridad, nunca como compuerta: si el verificador es
+  otro modelo, el producto pierde la garantía que promete.
+
+### 13.5 Publicación web con divulgación progresiva
+`docu site` publica la misma evidencia en tres escalones: resumen (la fila), detalle (firma,
+anotaciones, valor) y **prueba** (cita + fragmento real del archivo con números de línea).
+- Sin dependencias, sin CDN y sin JavaScript obligatorio: el tercer escalón es un `<details>` nativo y
+  abre desde el disco. El JS sólo añade buscar y «expandir todo».
+- Arquitectura, ERD y flujo de API se dibujan como **SVG propio**; el recorte es explícito («se muestran
+  16 de 94 entidades · 36 relaciones fuera del recorte»). Las clases quedan como Mermaid copiable.
+- `site.json` como índice legible por máquina.
+- **Medido:** `saleshub` 1226 afirmaciones en 3 páginas con 1201 pruebas; cero referencias externas
+  (test que lo verifica) y test de inyección de HTML.
+
+### 13.6 Estado y pendientes
+473 tests en verde. Sigue pendiente: ingesta de PDF y web como fuentes citables, capa de prosa con LLM
+(opcional, la única que puede degradar la trazabilidad) y paginación de índices en monorepos grandes.
