@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:e448d` · archivos: 54 · afirmaciones: 933 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:d52e7` · archivos: 54 · afirmaciones: 936 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -10,7 +10,7 @@ Generado por `docu 0.1.0` · fuente `sha256:e448d` · archivos: 54 · afirmacion
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **82** · métodos: **427**
+- Tipos: **82** · métodos: **430**
 
 ## 2. Arquitectura: módulos y paquetes
 
@@ -864,7 +864,7 @@ erDiagram
 | class | `PatternLibrary` | `@dataclass` | `src/docu/learn/patterns.py#L59-L142` |
 | class | `Candidate` | `@dataclass` | `src/docu/learn/patterns.py#L156-L164` |
 | class | `Decision` | `@dataclass` | `src/docu/learn/promotion.py#L21-L33` |
-| class | `Page` | `@dataclass` | `src/docu/publish/site.py#L123-L126` |
+| class | `Page` | `@dataclass` | `src/docu/publish/site.py#L124-L127` |
 | class | `CodeChunk` | `@dataclass` | `src/docu/retrieve/hybrid.py#L33-L59` |
 | class | `CodeIndex` | `@dataclass` | `src/docu/retrieve/hybrid.py#L113-L249` |
 | class | `Section` | `@dataclass` | `src/docu/retrieve/search.py#L65-L86` |
@@ -1204,9 +1204,9 @@ erDiagram
 | `Decision` | `pattern_id` | `str` | — | `src/docu/learn/promotion.py#L23-L23` |
 | `Decision` | `delta` | `float` | — | `src/docu/learn/promotion.py#L24-L24` |
 | `Decision` | `reasons` | `Sequence[str]` | — | `src/docu/learn/promotion.py#L25-L25` |
-| `Page` | `name` | `str` | — | `src/docu/publish/site.py#L124-L124` |
-| `Page` | `title` | `str` | — | `src/docu/publish/site.py#L125-L125` |
-| `Page` | `html` | `str` | — | `src/docu/publish/site.py#L126-L126` |
+| `Page` | `name` | `str` | — | `src/docu/publish/site.py#L125-L125` |
+| `Page` | `title` | `str` | — | `src/docu/publish/site.py#L126-L126` |
+| `Page` | `html` | `str` | — | `src/docu/publish/site.py#L127-L127` |
 | `CodeChunk` | `path` | `str` | — | `src/docu/retrieve/hybrid.py#L36-L36` |
 | `CodeChunk` | `start` | `int` | — | `src/docu/retrieve/hybrid.py#L37-L37` |
 | `CodeChunk` | `end` | `int` | — | `src/docu/retrieve/hybrid.py#L38-L38` |
@@ -1444,7 +1444,7 @@ erDiagram
 | `_prepare` | `def _prepare(text: str) -> list[tuple[int, str, int]]` | `src/docu/core/yamlmini.py#L34-L48` |
 | `_strip_comment` | `def _strip_comment(line: str) -> str` | `src/docu/core/yamlmini.py#L51-L64` |
 
-_(227 métodos adicionales omitidos del índice)_.
+_(230 métodos adicionales omitidos del índice)_.
 
 ## 10. Alcance y límites
 
@@ -1509,7 +1509,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/learn/patterns.py` | `39aec53783eb` |
 | `src/docu/learn/promotion.py` | `66d049f788e8` |
 | `src/docu/publish/__init__.py` | `0b0f93cf665a` |
-| `src/docu/publish/site.py` | `398806ae4f02` |
+| `src/docu/publish/site.py` | `a8523d0bb8ec` |
 | `src/docu/retrieve/__init__.py` | `d44cd2bb75d8` |
 | `src/docu/retrieve/glossary.py` | `d45a6ee652f1` |
 | `src/docu/retrieve/hybrid.py` | `8b665a8ae4c9` |

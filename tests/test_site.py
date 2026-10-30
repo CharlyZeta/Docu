@@ -8,7 +8,15 @@ import unittest
 from pathlib import Path
 
 from docu.generate.facts import Fact
-from docu.publish.site import LEVEL_SECTIONS, build_site, escape, snippet
+from docu.publish.site import (
+    LEVEL_SECTIONS,
+    build_site,
+    escape,
+    parse_erd,
+    snippet,
+    svg_api_flow,
+    svg_erd,
+)
 
 
 def fact(kind: str, subject: str, detail: str, citation: str, **attributes: str) -> Fact:
@@ -155,6 +163,119 @@ class CliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as empty:
             code = main(["site", "--root", empty, "--out", str(Path(empty) / "site")])
         self.assertEqual(code, 40)  # UNCITABLE_SOURCE
+
+
+ERD = """erDiagram
+    Cliente {
+        String id
+        String nombre
+    }
+    Pedido {
+        String id
+        Cliente cliente
+    }
+    Pedido }o--|| Cliente : "cliente"
+"""
+
+API_FLOW = """flowchart LR
+    cliente(["Cliente"])
+    r0["GET /api/x"]
+    cliente --> r0
+    h0["Ctl"]
+    r0 --> h0
+"""
+
+
+class ErdSvgTests(unittest.TestCase):
+    def test_parses_entities_and_relations(self) -> None:
+        entities, relations = parse_erd(ERD)
+        self.assertEqual(set(entities), {"Cliente", "Pedido"})
+        self.assertEqual(len(entities["Pedido"]), 2)
+        self.assertEqual(relations, [("Pedido", "}o--||", "Cliente", "cliente")])
+
+    def test_draws_boxes_edge_and_cardinality(self) -> None:
+        svg, note = svg_erd(ERD)
+        assert svg is not None
+        self.assertGreaterEqual(svg.count("<rect"), 2)
+        self.assertGreaterEqual(svg.count("<line"), 1)
+        self.assertIn("}o--||", svg)
+        self.assertIn("Cliente", svg)
+        self.assertEqual(note, "")
+
+    def test_truncation_is_declared(self) -> None:
+        many = "erDiagram\n" + "\n".join(
+            f"    T{index} {{\n        String id\n    }}" for index in range(30)
+        )
+        svg, note = svg_erd(many, max_entities=5)
+        assert svg is not None
+        self.assertIn("se muestran 5 de 30 entidades", note)
+
+    def test_relations_prioritise_connected_entities(self) -> None:
+        text = "erDiagram\n" + "\n".join(
+            f"    Grande{index} {{\n" + "\n".join(f"        String f{row}" for row in range(6)) + "\n    }"
+            for index in range(12)
+        )
+        text += '\n    A {\n        String id\n    }\n    B {\n        String id\n    }\n'
+        text += '    A }o--|| B : "b"'
+        svg, _note = svg_erd(text, max_entities=4)
+        assert svg is not None
+        self.assertIn("A", svg)
+        self.assertIn("B", svg)
+
+    def test_without_entities_returns_nothing(self) -> None:
+        self.assertEqual(svg_erd(""), (None, ""))
+
+
+class ApiFlowSvgTests(unittest.TestCase):
+    def test_draws_client_route_and_handler(self) -> None:
+        svg, note = svg_api_flow(API_FLOW)
+        assert svg is not None
+        self.assertIn("Cliente", svg)
+        self.assertIn("GET /api/x", svg)
+        self.assertIn("Ctl", svg)
+        self.assertGreaterEqual(svg.count("<line"), 2)
+        self.assertEqual(note, "")
+
+    def test_caps_routes_and_says_so(self) -> None:
+        lines = ['flowchart LR', '    cliente(["Cliente"])']
+        for index in range(20):
+            lines += [f'    r{index}["GET /api/{index}"]', f"    cliente --> r{index}", f'    h0["Ctl"]', f"    r{index} --> h0"]
+        svg, note = svg_api_flow("\n".join(lines), max_routes=5)
+        assert svg is not None
+        self.assertIn("se muestran 5 de 20 rutas", note)
+
+    def test_without_routes_returns_nothing(self) -> None:
+        self.assertEqual(svg_api_flow('flowchart LR\n    cliente(["Cliente"])'), (None, ""))
+
+
+class DiagramsInSiteTests(unittest.TestCase):
+    def test_three_diagrams_are_drawn_and_all_are_copyable(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "src").mkdir()
+            (root / "src" / "demo.py").write_text("class Demo:\n    valor: int = 1\n", encoding="utf-8")
+            diagrams = root / "docs" / "diagrams"
+            diagrams.mkdir(parents=True)
+            (diagrams / "arquitectura.mmd").write_text(
+                'flowchart LR\n    a["a"]\n    b["b"]\n    a --> b\n', encoding="utf-8"
+            )
+            (diagrams / "modelo-de-datos.mmd").write_text(ERD, encoding="utf-8")
+            (diagrams / "api-flujo.mmd").write_text(API_FLOW, encoding="utf-8")
+            (diagrams / "clases-demo.mmd").write_text("classDiagram\n    class Demo", encoding="utf-8")
+
+            out = root / "site"
+            build_site(
+                root,
+                out,
+                "demo",
+                [fact("type", "Demo", "class", "src/demo.py#L1-L2")],
+                levels=("l1",),
+                diagrams_dir=diagrams,
+            )
+            html = (out / "l1.html").read_text(encoding="utf-8")
+            self.assertEqual(html.count("<svg"), 3)
+            self.assertEqual(html.count("Ver código Mermaid"), 4)
+            self.assertIn("3 se dibujan como SVG propio", html)
 
 
 if __name__ == "__main__":

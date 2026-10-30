@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -330,18 +331,237 @@ def svg_architecture(text: str, max_nodes: int = 24) -> str | None:
     return "\n".join(parts)
 
 
+_ERD_RELATION_RE = re.compile(
+    r"(?P<left>\w+)\s+(?P<card>\}o--o\{|\}o--\|\||\|o--o\{|\|\|--\|\||\}o--\|o)\s+"
+    r"(?P<right>\w+)\s*:\s*\"(?P<label>[^\"]*)\""
+)
+
+
+def parse_erd(text: str) -> tuple[dict[str, list[tuple[str, str]]], list[tuple[str, str, str, str]]]:
+    """Lee el `erDiagram` que generamos: entidades con campos y relaciones etiquetadas."""
+    entities: dict[str, list[tuple[str, str]]] = {}
+    relations: list[tuple[str, str, str, str]] = []
+    current: str | None = None
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("erDiagram"):
+            continue
+        if stripped.endswith("{") and current is None:
+            current = stripped[:-1].strip()
+            entities.setdefault(current, [])
+            continue
+        if stripped == "}":
+            current = None
+            continue
+        if current is not None:
+            parts = stripped.split()
+            if len(parts) >= 2:
+                entities[current].append((parts[0], parts[1]))
+            continue
+        match = _ERD_RELATION_RE.search(stripped)
+        if match:
+            relations.append(
+                (match.group("left"), match.group("card"), match.group("right"), match.group("label"))
+            )
+    return entities, relations
+
+
+def svg_erd(
+    text: str, max_entities: int = 12, max_fields: int = 7, columns: int = 3
+) -> tuple[str | None, str]:
+    """ERD en SVG: entidades como cajas con sus campos y relaciones con su cardinalidad.
+
+    Se recorta a las entidades con más campos y **se dice cuántas quedaron fuera**: un diagrama que
+    omite en silencio es peor que no tenerlo.
+    """
+    entities, relations = parse_erd(text)
+    if not entities:
+        return None, ""
+    degree: dict[str, int] = {}
+    for left, _, right, _ in relations:
+        degree[left] = degree.get(left, 0) + 1
+        degree[right] = degree.get(right, 0) + 1
+    # Primero las entidades que **se relacionan** y después las que más campos tienen: un ERD de
+    # interfaces de props con 817 campos y ninguna arista no explica el modelo de datos.
+    ranked = sorted(
+        entities,
+        key=lambda name: (-degree.get(name, 0), -len(entities[name]), name),
+    )
+    chosen = ranked[:max_entities]
+    if not chosen:
+        return None, ""
+    # Se incorporan socios de relación antes que entidades sueltas: un ERD sin aristas no explica
+    # nada, y el recorte por «más campos» deja fuera justo las entidades que se referencian.
+    limit = max_entities + 4
+    for name in ranked:
+        if len(chosen) >= limit:
+            break
+        if name in chosen:
+            continue
+        if any(
+            (left == name and right in chosen) or (right == name and left in chosen)
+            for left, _, right, _ in relations
+        ):
+            chosen.append(name)
+    chosen_set = set(chosen)
+    kept = [item for item in relations if item[0] in chosen_set and item[2] in chosen_set]
+
+    box_width, header, row, gap, margin = 230, 30, 17, 34, 24
+    heights = {name: header + row * min(len(entities[name]), max_fields) + 10 for name in chosen}
+    positions: dict[str, tuple[int, int]] = {}
+    column_rows: list[int] = [margin] * columns
+    for index, name in enumerate(chosen):
+        column = index % columns
+        x = margin + column * (box_width + gap * 2)
+        y = column_rows[column]
+        positions[name] = (x, y)
+        column_rows[column] = y + heights[name] + gap
+    width = margin * 2 + columns * box_width + (columns - 1) * gap * 2
+    height = max(column_rows) + margin
+    parts = [
+        f'<svg viewBox="0 0 {width} {height}" width="100%" role="img" '
+        'aria-label="Modelo de datos" xmlns="http://www.w3.org/2000/svg">',
+        '<defs><marker id="e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" '
+        'markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6ea8fe"/></marker></defs>',
+    ]
+    for left, cardinality, right, label in kept:
+        x1, y1 = positions[left]
+        x2, y2 = positions[right]
+        start = (x1 + box_width, y1 + heights[left] // 2)
+        end = (x2, y2 + heights[right] // 2)
+        parts.append(
+            f'<line x1="{start[0]}" y1="{start[1]}" x2="{end[0]}" y2="{end[1]}" '
+            'stroke="#3a465c" stroke-width="1.2" marker-end="url(#e)"/>'
+        )
+        parts.append(
+            f'<text x="{(start[0] + end[0]) // 2}" y="{(start[1] + end[1]) // 2 - 6}" '
+            f'fill="#9aa3b2" font-family="ui-monospace,monospace" font-size="10">'
+            f"{escape(cardinality)} {escape(label)[:18]}</text>"
+        )
+    for name in chosen:
+        x, y = positions[name]
+        parts.append(
+            f'<rect x="{x}" y="{y}" width="{box_width}" height="{heights[name]}" rx="8" '
+            'fill="#151922" stroke="#2b3446"/>'
+        )
+        parts.append(
+            f'<text x="{x + 10}" y="{y + 19}" fill="#e6e8ec" font-family="ui-monospace,monospace" '
+            f'font-size="12" font-weight="600">{escape(name)[:28]}</text>'
+        )
+        for offset, (field_type, field_name) in enumerate(entities[name][:max_fields]):
+            line_y = y + header + row * offset
+            parts.append(
+                f'<text x="{x + 12}" y="{line_y}" fill="#9aa3b2" '
+                f'font-family="ui-monospace,monospace" font-size="10">'
+                f"{escape(field_type)[:14]} {escape(field_name)[:18]}</text>"
+            )
+        hidden = len(entities[name]) - max_fields
+        if hidden > 0:
+            parts.append(
+                f'<text x="{x + 12}" y="{y + header + row * max_fields}" fill="#5a6472" '
+                f'font-family="ui-monospace,monospace" font-size="10">+{hidden} campos</text>'
+            )
+    parts.append("</svg>")
+
+    notes: list[str] = []
+    if len(entities) > len(chosen):
+        notes.append(f"se muestran {len(chosen)} de {len(entities)} entidades")
+    hidden_fields = sum(max(0, len(entities[name]) - max_fields) for name in chosen)
+    if hidden_fields:
+        notes.append(f"{hidden_fields} campos adicionales en el diccionario de datos")
+    if len(kept) < len(relations):
+        notes.append(f"{len(relations) - len(kept)} relaciones fuera del recorte")
+    return "\n".join(parts), " · ".join(notes)
+
+
+def svg_api_flow(text: str, max_routes: int = 12) -> tuple[str | None, str]:
+    """Flujo de la API en SVG: cliente → rutas → controlador, en tres columnas."""
+    nodes, edges = parse_flowchart(text)
+    if not nodes:
+        return None, ""
+    labels = dict(nodes)
+    routes = [name for name in labels if name.startswith("r") and labels[name] not in ("Cliente",)]
+    routes = sorted(routes, key=lambda name: int(name[1:]) if name[1:].isdigit() else 0)
+    handlers = [name for name in labels if name.startswith("h")]
+    if not routes:
+        return None, ""
+    kept = routes[:max_routes]
+    kept_set = set(kept)
+    linked_handlers = {
+        target for source, target in edges if source in kept_set and target in labels
+    }
+    column_x = {0: 24, 1: 330, 2: 700}
+    width, row, margin, box_height = 980, 38, 24, 26
+    positions: dict[str, tuple[int, int]] = {"cliente": (column_x[0], margin + 40)}
+    for index, name in enumerate(kept):
+        positions[name] = (column_x[1], margin + index * row)
+    for index, name in enumerate(sorted(linked_handlers)):
+        positions[name] = (column_x[2], margin + index * row)
+    height = max(margin + 80, margin + max(len(kept), len(linked_handlers)) * row + margin)
+    parts = [
+        f'<svg viewBox="0 0 {width} {height}" width="100%" role="img" '
+        'aria-label="Flujo de la API" xmlns="http://www.w3.org/2000/svg">',
+        '<defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" '
+        'markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6ea8fe"/></marker></defs>',
+    ]
+    for source, target in edges:
+        if source not in positions or target not in positions:
+            continue
+        x1, y1 = positions[source]
+        x2, y2 = positions[target]
+        parts.append(
+            f'<line x1="{x1 + 150}" y1="{y1 + 13}" x2="{x2}" y2="{y2 + 13}" '
+            'stroke="#3a465c" stroke-width="1" marker-end="url(#f)"/>'
+        )
+    for name, (x, y) in positions.items():
+        text_label = "Cliente" if name == "cliente" else labels.get(name, name)
+        width_box = 150 if name == "cliente" else 300
+        parts.append(
+            f'<rect x="{x}" y="{y}" width="{width_box}" height="{box_height}" rx="6" '
+            'fill="#151922" stroke="#2b3446"/>'
+        )
+        parts.append(
+            f'<text x="{x + 8}" y="{y + 17}" fill="#e6e8ec" font-family="ui-monospace,monospace" '
+            f'font-size="10">{escape(text_label)[:44]}</text>'
+        )
+    parts.append("</svg>")
+    note = (
+        f"se muestran {len(kept)} de {len(routes)} rutas"
+        if len(routes) > len(kept)
+        else ""
+    )
+    return "\n".join(parts), note
+
+
 def _diagrams_section(diagrams: Path, root: Path) -> str:
-    """Diagramas ya generados junto a la documentación: SVG propio + código Mermaid copiable."""
+    """Diagramas ya generados junto a la documentación: SVG propio + código Mermaid copiable.
+
+    Se dibujan los tres que un lector usa para orientarse (arquitectura, modelo de datos y flujo de
+    API). Los de clases se dejan como código: su layout se beneficia de un motor de grafos y la
+    información ya está en «Tipos» y en el diccionario de datos.
+    """
     if not diagrams.is_dir():
         return ""
     blocks: list[str] = []
     for path in sorted(diagrams.glob("*.mmd")):
         text = path.read_text(encoding="utf-8")
-        visual = svg_architecture(text) if path.stem == "arquitectura" else None
+        visual: str | None = None
+        note = ""
+        if path.stem == "arquitectura":
+            visual = svg_architecture(text)
+        elif path.stem == "modelo-de-datos":
+            visual, note = svg_erd(text)
+        elif path.stem == "api-flujo":
+            visual, note = svg_api_flow(text)
         title = path.stem.replace("-", " ").replace("_", ".")
         block = [f"<h3>{escape(title)}</h3>"]
         if visual:
             block.append(f'<div class="card">{visual}</div>')
+            if note:
+                block.append(
+                    f'<p class="cite">Recorte explícito: {escape(note)}. '
+                    "El diagrama no omite en silencio.</p>"
+                )
         block.append(
             '<details><summary>Ver código Mermaid</summary>'
             f"<pre>{escape(text)}</pre></details>"
@@ -349,11 +569,13 @@ def _diagrams_section(diagrams: Path, root: Path) -> str:
         blocks.append("\n".join(block))
     if not blocks:
         return ""
+    drawn = sum(1 for block in blocks if "<svg" in block)
     return (
         '<section id="diagramas"><h2>Diagramas '
         f'<span class="badge">{len(blocks)}</span></h2>'
-        '<p class="cite">Generados del mismo grafo que el documento. El de arquitectura se dibuja '
-        "como SVG propio: no necesita red ni JavaScript.</p>"
+        f'<p class="cite">Generados del mismo grafo que el documento. {drawn} se dibujan como SVG '
+        "propio (arquitectura, modelo de datos y flujo de API): no necesitan red ni JavaScript. El "
+        "resto queda como código Mermaid copiable.</p>"
         + "\n".join(blocks)
         + "</section>"
     )
@@ -498,7 +720,10 @@ __all__ = [
     "Page",
     "build_site",
     "escape",
+    "parse_erd",
     "parse_flowchart",
     "snippet",
+    "svg_api_flow",
     "svg_architecture",
+    "svg_erd",
 ]
