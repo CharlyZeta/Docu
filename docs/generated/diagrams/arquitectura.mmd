@@ -10,6 +10,7 @@ flowchart LR
     docu_generate["docu.generate<br/>6 archivos"]
     docu_index["docu.index<br/>5 archivos"]
     docu_learn["docu.learn<br/>5 archivos"]
+    docu_publish["docu.publish<br/>2 archivos"]
     docu_retrieve["docu.retrieve<br/>4 archivos"]
     eval["eval<br/>2 archivos"]
     docu --> docu_core
@@ -26,6 +27,7 @@ flowchart LR
     docu_delivery --> docu_core
     docu_delivery --> docu_generate
     docu_delivery --> docu_learn
+    docu_delivery --> docu_publish
     docu_delivery --> docu_retrieve
     docu_generate --> docu_adapters_langs
     docu_generate --> docu_core
@@ -33,6 +35,7 @@ flowchart LR
     docu_generate --> docu_learn
     docu_index --> docu_core
     docu_learn --> docu_core
+    docu_publish --> docu_generate
     docu_retrieve --> docu_adapters_embedders
     docu_retrieve --> docu_adapters_langs
     docu_retrieve --> docu_core

@@ -53,6 +53,7 @@ docu gen --level l1 --level l2 --level l4     # manual + operación + onboarding
 docu status --root .                          # frescura: fresh / stale / expired
 docu gen --incremental                        # regenera solo lo desactualizado
 docu audit --report out/auditoria.md          # 5 comprobaciones deterministas, sin modelos
+docu site --out out/site                      # web con divulgación progresiva (sin CDN ni JS obligatorio)
 docu ci check                                 # validación rápida para PR (sin modelo)
 docu ci regen --out docs/generated            # regenera lo stale y escribe .docu/pr-body.md
 docu drift --bootstrap                        # foto inicial del modelo arquitectónico
@@ -183,8 +184,23 @@ tests/               suite del núcleo + conformidad de lenguajes (432 pruebas)
 
 Los diagramas se generan como **Mermaid** a partir de evidencia y se embeben en el L1
 (`docs/generated/diagrams/*.mmd`): dependencias entre paquetes derivadas de los `import` reales,
-clases por paquete con su herencia declarada y flujo de la API. **No** se generan diagramas de
-secuencia: el grafo de llamadas no resuelve despacho dinámico y el documento lo declara como hueco.
+clases por paquete con su herencia declarada, flujo de la API y modelo de datos (ERD). **No** se
+generan diagramas de secuencia: el grafo de llamadas no resuelve despacho dinámico y el documento lo
+declara como hueco.
+
+## Publicación web
+
+`docu site` convierte lo mismo en una web navegable donde **la profundidad la elige quien lee**:
+
+| Escalón | Qué muestra |
+|---|---|
+| 1. Resumen | la fila: qué es y de qué tipo |
+| 2. Detalle | firma, anotaciones, valor declarado |
+| 3. Prueba | la cita y el **fragmento real** del archivo, con números de línea |
+
+Sin dependencias, sin CDN y sin JavaScript obligatorio: el tercer escalón es un `<details>` nativo, así
+que funciona abriendo `index.html` desde el disco. El JS sólo añade buscar y «expandir todo». La
+arquitectura se dibuja como **SVG propio** generado del mismo grafo.
 
 ## Documentación del proyecto
 

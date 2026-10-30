@@ -119,6 +119,17 @@ def _build_parser() -> argparse.ArgumentParser:
     p_audit.add_argument("--json", action="store_true")
     p_audit.add_argument("--report", default=None, help="escribe el informe Markdown")
 
+    p_site = sub.add_parser("site", help="publica la documentación como web (divulgación progresiva)")
+    p_site.add_argument("--root", default=".")
+    p_site.add_argument("--profile", default=argparse.SUPPRESS)
+    p_site.add_argument("--out", default=None, help="directorio de la web (por defecto <docs>/site)")
+    p_site.add_argument(
+        "--docs", default=None, help="directorio de la documentación generada (de ahí salen los diagramas)"
+    )
+    p_site.add_argument(
+        "--level", action="append", dest="site_levels", default=None, help="nivel a publicar (repetible)"
+    )
+
     p_learn = sub.add_parser("learn", help="revisa, promueve o federa artefactos aprendidos")
     p_learn.add_argument("--promote", action="store_true", help="promueve candidatos validados")
     p_learn.add_argument("--federate", action="store_true", help="envía huellas anonimizadas (opt-in)")
@@ -247,6 +258,9 @@ def _dispatch(args: argparse.Namespace) -> int:
 
     if args.command == "audit":
         return _run_audit(args)
+
+    if args.command == "site":
+        return _run_site(args)
 
     if args.command == "serve":
         return _run_serve(args)
@@ -413,6 +427,51 @@ def _run_audit(args: argparse.Namespace) -> int:
         )
         return int(ExitCode.NEEDS_REVIEW)
     return int(ExitCode.OK if report.passed else ExitCode.NEEDS_REVIEW)
+
+
+def _run_site(args: argparse.Namespace) -> int:
+    """Publica la web: lo esencial visible y la prueba a un clic."""
+    from docu.core.contracts import sha256_of
+    from docu.generate.facts import unsupported
+    from docu.generate.pipeline import collect_facts
+    from docu.publish.site import build_site
+
+    root = Path(args.root).resolve()
+    options = _resolve(args, root)
+    levels = tuple(args.site_levels or options.levels)
+    facts, sources = collect_facts(
+        root, include=options.include, exclude=options.exclude, include_tests=getattr(args, "include_tests", False)
+    )
+    if not facts:
+        print("error: no se detectó nada documentable", file=sys.stderr)
+        return int(ExitCode.UNCITABLE_SOURCE)
+
+    digest = sha256_of("|".join(f"{path}:{sha}" for path, sha in sorted(sources.items())))[:12]
+    # `--out` es la web; la documentación generada (y sus diagramas) se resuelve aparte: mezclarlas
+    # hacía que la web buscara los diagramas dentro de su propia carpeta de salida.
+    docs_dir = Path(args.docs) if getattr(args, "docs", None) else (
+        Path(options.profile.output_dir) if options.profile else Path("docs") / "generated"
+    )
+    out_dir = Path(args.out) if args.out else docs_dir / "site"
+    project = options.project or root.name
+    pages = build_site(
+        root,
+        out_dir,
+        project,
+        facts,
+        meta={
+            "version": __version__,
+            "digest": digest,
+            "facts": str(len(facts)),
+            "unsupported": str(len(unsupported(facts))),
+        },
+        levels=levels,
+        diagrams_dir=docs_dir / "diagrams",
+    )
+    print(f"{project}: {len(facts)} afirmaciones · {len(pages)} páginas · web en {out_dir}")
+    for page in pages:
+        print(f"  {page.name}")
+    return int(ExitCode.OK)
 
 
 def _run_serve(args: argparse.Namespace) -> int:

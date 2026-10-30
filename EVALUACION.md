@@ -16,10 +16,10 @@ la propia guía les da. Cada nota se sostiene en evidencia ejecutable, no en la 
 | 5 | Perfil y gobernanza por proyecto | 8 | **80** | Esquema validado, `init` con orden de cambio, umbrales/exclusiones/TTL efectivos | Rúbrica `required_modules` no se aplica aún |
 | 6 | Evaluación y auditoría de calidad | 10 | **75** | `docu audit`: 5 comprobaciones deterministas (citas, duplicados, coherencia entre niveles, cobertura, frescura) + arnés de recuperación | Sin juez LLM para claridad/utilidad (opcional por diseño) |
 | 7 | Frescura y mantenimiento | 12 | **95** | Hash de 6 entradas, `fresh/stale/expired`, incremental, PR automático, TTL | Sin `pre-commit` (decisión deliberada: valida el CI) |
-| 8 | Multicapa y visualización | 8 | **80** | L1/L2/L3/L4 + diagramas de arquitectura, clases y flujo de API en Mermaid | Sin diagramas de secuencia (el grafo no resuelve despacho dinámico) ni ERD |
+| 8 | Multicapa y visualización | 8 | **88** | L1/L2/L3/L4 + diagramas (arquitectura, clases, flujo de API, ERD) + **web con divulgación progresiva** hasta el fragmento de código | Sin diagramas de secuencia (el grafo no resuelve despacho dinámico) |
 | 9 | Interoperabilidad (MCP) | 7 | **88** | 8 herramientas read-only, multi-repo, `search_code` híbrido, puente HTTP | HTTP no es Streamable HTTP/SSE |
 
-### Nota ponderada: **79 / 100** como herramienta de documentación utilizable hoy
+### Nota ponderada: **80 / 100** como herramienta de documentación utilizable hoy
 
 ### Fidelidad a la visión completa de la guía: **≈ 65 / 100**
 

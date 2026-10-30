@@ -1,16 +1,16 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:e6672` · archivos: 52 · afirmaciones: 915 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:e448d` · archivos: 54 · afirmaciones: 933 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
 ## 1. Resumen
 
-- Módulos de build: **0** · paquetes: **13**
+- Módulos de build: **0** · paquetes: **14**
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **81** · métodos: **414**
+- Tipos: **82** · métodos: **427**
 
 ## 2. Arquitectura: módulos y paquetes
 
@@ -27,12 +27,13 @@ Generado por `docu 0.1.0` · fuente `sha256:e6672` · archivos: 52 · afirmacion
 | `docu.generate` | python | 6 | `src/docu/generate/__init__.py#L1-L5` |
 | `docu.index` | python | 5 | `src/docu/index/__init__.py#L1-L5` |
 | `docu.learn` | python | 5 | `src/docu/learn/__init__.py#L1-L5` |
+| `docu.publish` | python | 2 | `src/docu/publish/__init__.py#L1-L5` |
 | `docu.retrieve` | python | 4 | `src/docu/retrieve/__init__.py#L1-L5` |
 | `eval` | python | 2 | `eval/__init__.py#L1-L1` |
 
 ## 3. Diagramas
 
-### Dependencias entre paquetes · 13 paquetes · 31 dependencias derivadas de imports
+### Dependencias entre paquetes · 14 paquetes · 33 dependencias derivadas de imports
 
 ```mermaid
 flowchart LR
@@ -47,6 +48,7 @@ flowchart LR
     docu_generate["docu.generate<br/>6 archivos"]
     docu_index["docu.index<br/>5 archivos"]
     docu_learn["docu.learn<br/>5 archivos"]
+    docu_publish["docu.publish<br/>2 archivos"]
     docu_retrieve["docu.retrieve<br/>4 archivos"]
     eval["eval<br/>2 archivos"]
     docu --> docu_core
@@ -63,6 +65,7 @@ flowchart LR
     docu_delivery --> docu_core
     docu_delivery --> docu_generate
     docu_delivery --> docu_learn
+    docu_delivery --> docu_publish
     docu_delivery --> docu_retrieve
     docu_generate --> docu_adapters_langs
     docu_generate --> docu_core
@@ -70,6 +73,7 @@ flowchart LR
     docu_generate --> docu_learn
     docu_index --> docu_core
     docu_learn --> docu_core
+    docu_publish --> docu_generate
     docu_retrieve --> docu_adapters_embedders
     docu_retrieve --> docu_adapters_langs
     docu_retrieve --> docu_core
@@ -216,7 +220,7 @@ classDiagram
     }
 ```
 
-### modelo-de-datos · 67 entidades · 12 relaciones declaradas por tipo
+### modelo-de-datos · 68 entidades · 12 relaciones declaradas por tipo
 
 ```mermaid
 erDiagram
@@ -542,6 +546,11 @@ erDiagram
         tuple_str _input_names
         int _dim
     }
+    Page {
+        str name
+        str title
+        str html
+    }
     Pattern {
         str pattern_id
         str stack
@@ -833,8 +842,8 @@ erDiagram
 | class | `Profile` | `@dataclass` | `src/docu/core/profile.py#L51-L105` |
 | class | `Change` | `@dataclass` | `src/docu/core/profile.py#L308-L322` |
 | class | `YamlError` | — | `src/docu/core/yamlmini.py#L14-L15` |
-| class | `CliError` | — | `src/docu/delivery/cli.py#L157-L162` |
-| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L166-L177` |
+| class | `CliError` | — | `src/docu/delivery/cli.py#L168-L173` |
+| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L177-L188` |
 | class | `ExitCode` | — | `src/docu/delivery/exit_codes.py#L8-L16` |
 | class | `_Handler` | — | `src/docu/delivery/http_server.py#L26-L89` |
 | class | `ProjectRef` | `@dataclass` | `src/docu/delivery/mcp_server.py#L122-L131` |
@@ -855,6 +864,7 @@ erDiagram
 | class | `PatternLibrary` | `@dataclass` | `src/docu/learn/patterns.py#L59-L142` |
 | class | `Candidate` | `@dataclass` | `src/docu/learn/patterns.py#L156-L164` |
 | class | `Decision` | `@dataclass` | `src/docu/learn/promotion.py#L21-L33` |
+| class | `Page` | `@dataclass` | `src/docu/publish/site.py#L123-L126` |
 | class | `CodeChunk` | `@dataclass` | `src/docu/retrieve/hybrid.py#L33-L59` |
 | class | `CodeIndex` | `@dataclass` | `src/docu/retrieve/hybrid.py#L113-L249` |
 | class | `Section` | `@dataclass` | `src/docu/retrieve/search.py#L65-L86` |
@@ -1105,15 +1115,15 @@ erDiagram
 | `Change` | `after` | `object` | — | `src/docu/core/profile.py#L313-L313` |
 | `Change` | `reason` | `str` | — | `src/docu/core/profile.py#L314-L314` |
 | `Change` | `applied` | `bool` | — | `src/docu/core/profile.py#L315-L315` |
-| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L169-L169` |
-| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L170-L170` |
-| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L171-L171` |
-| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L172-L172` |
-| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L173-L173` |
-| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L174-L174` |
-| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L175-L175` |
-| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L176-L176` |
-| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L177-L177` |
+| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L180-L180` |
+| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L181-L181` |
+| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L182-L182` |
+| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L183-L183` |
+| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L184-L184` |
+| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L185-L185` |
+| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L186-L186` |
+| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L187-L187` |
+| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L188-L188` |
 | `_Handler` | `server_version` | `sin tipo declarado` | — | `src/docu/delivery/http_server.py#L27-L27` |
 | `_Handler` | `mcp` | `McpServer` | — | `src/docu/delivery/http_server.py#L28-L28` |
 | `ProjectRef` | `name` | `str` | — | `src/docu/delivery/mcp_server.py#L125-L125` |
@@ -1194,6 +1204,9 @@ erDiagram
 | `Decision` | `pattern_id` | `str` | — | `src/docu/learn/promotion.py#L23-L23` |
 | `Decision` | `delta` | `float` | — | `src/docu/learn/promotion.py#L24-L24` |
 | `Decision` | `reasons` | `Sequence[str]` | — | `src/docu/learn/promotion.py#L25-L25` |
+| `Page` | `name` | `str` | — | `src/docu/publish/site.py#L124-L124` |
+| `Page` | `title` | `str` | — | `src/docu/publish/site.py#L125-L125` |
+| `Page` | `html` | `str` | — | `src/docu/publish/site.py#L126-L126` |
 | `CodeChunk` | `path` | `str` | — | `src/docu/retrieve/hybrid.py#L36-L36` |
 | `CodeChunk` | `start` | `int` | — | `src/docu/retrieve/hybrid.py#L37-L37` |
 | `CodeChunk` | `end` | `int` | — | `src/docu/retrieve/hybrid.py#L38-L38` |
@@ -1431,7 +1444,7 @@ erDiagram
 | `_prepare` | `def _prepare(text: str) -> list[tuple[int, str, int]]` | `src/docu/core/yamlmini.py#L34-L48` |
 | `_strip_comment` | `def _strip_comment(line: str) -> str` | `src/docu/core/yamlmini.py#L51-L64` |
 
-_(214 métodos adicionales omitidos del índice)_.
+_(227 métodos adicionales omitidos del índice)_.
 
 ## 10. Alcance y límites
 
@@ -1474,7 +1487,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/core/profile.py` | `749de6eea118` |
 | `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
-| `src/docu/delivery/cli.py` | `f62adf0eeb97` |
+| `src/docu/delivery/cli.py` | `75b55f97c732` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |
 | `src/docu/delivery/mcp_server.py` | `86ed3d803200` |
@@ -1495,6 +1508,8 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/learn/ledger.py` | `38818d4f92ec` |
 | `src/docu/learn/patterns.py` | `39aec53783eb` |
 | `src/docu/learn/promotion.py` | `66d049f788e8` |
+| `src/docu/publish/__init__.py` | `0b0f93cf665a` |
+| `src/docu/publish/site.py` | `398806ae4f02` |
 | `src/docu/retrieve/__init__.py` | `d44cd2bb75d8` |
 | `src/docu/retrieve/glossary.py` | `d45a6ee652f1` |
 | `src/docu/retrieve/hybrid.py` | `8b665a8ae4c9` |

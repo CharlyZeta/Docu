@@ -1,12 +1,12 @@
 # docu — README de onboarding (Nivel 4)
 
-Generado por `docu 0.1.0` · fuente `sha256:e6672` · archivos: 52 · afirmaciones: 915 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:e448d` · archivos: 54 · afirmaciones: 933 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
 ## Qué es
 
-Proyecto **docu** con 0 módulos, 13 paquetes, 81 tipos y 0 rutas HTTP documentadas.
+Proyecto **docu** con 0 módulos, 14 paquetes, 82 tipos y 0 rutas HTTP documentadas.
 
 | Módulo / paquete | Cita |
 |---|---|
@@ -21,6 +21,7 @@ Proyecto **docu** con 0 módulos, 13 paquetes, 81 tipos y 0 rutas HTTP documenta
 | `docu.generate` | `src/docu/generate/__init__.py#L1-L5` |
 | `docu.index` | `src/docu/index/__init__.py#L1-L5` |
 | `docu.learn` | `src/docu/learn/__init__.py#L1-L5` |
+| `docu.publish` | `src/docu/publish/__init__.py#L1-L5` |
 | `docu.retrieve` | `src/docu/retrieve/__init__.py#L1-L5` |
 | `eval` | `eval/__init__.py#L1-L1` |
 
@@ -40,4 +41,4 @@ Proyecto **docu** con 0 módulos, 13 paquetes, 81 tipos y 0 rutas HTTP documenta
 
 ## Fuentes
 
-Documento generado leyendo 52 archivos del repositorio. Las secciones sin evidencia se declaran como huecos, no se rellenan.
+Documento generado leyendo 54 archivos del repositorio. Las secciones sin evidencia se declaran como huecos, no se rellenan.
