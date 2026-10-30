@@ -107,10 +107,11 @@ class GenerationResult:
     applicability: Mapping[str, bool] = field(default_factory=dict)
     unsupported_languages: Mapping[str, int] = field(default_factory=dict)
     diagrams: tuple[str, ...] = field(default_factory=tuple)
+    dry_run: bool = False
 
     @property
     def wrote_files(self) -> bool:
-        return bool(self.docs)
+        return bool(self.docs) and not self.dry_run
 
     @property
     def pending(self) -> tuple[str, ...]:
@@ -406,13 +407,18 @@ def _record_run(
     sources: Mapping[str, str],
     pages_written: int,
     elapsed_s: float,
+    ledger_dir: Path | None = None,
 ) -> None:
-    """Deja constancia en el ledger. Un ledger no escribible no puede tumbar la generación."""
+    """Deja constancia en el ledger. Un ledger no escribible no puede tumbar la generación.
+
+    Con `--manifest` fuera del proyecto, el ledger se escribe junto al manifest: una prueba sobre un
+    repositorio ajeno no debe dejar rastros dentro de él.
+    """
     from docu.learn import ledger
 
     try:
         ledger.append(
-            ledger.ledger_file(root),
+            ledger.ledger_file(ledger_dir or root),
             project=project,
             metrics=metrics,
             gate=gate,
@@ -495,8 +501,14 @@ def generate(
     include: Sequence[str] = (),
     exclude: Sequence[str] = (),
     thresholds: Thresholds | None = None,
+    dry_run: bool = False,
 ) -> GenerationResult:
-    """Genera los niveles pedidos. No escribe nada si la compuerta dura falla."""
+    """Genera los niveles pedidos. No escribe nada si la compuerta dura falla.
+
+    `dry_run=True` calcula hechos, métricas y compuerta pero **no escribe nada**: ni documentos, ni
+    manifest, ni diagramas, ni ledger. Existe para probar el agente sobre un repositorio ajeno sin
+    dejar rastro.
+    """
     started = time.perf_counter()
     root_path = Path(root).resolve()
     out_path = Path(out_dir)
@@ -579,6 +591,10 @@ def generate(
         content = renderer(name, facts, sources, meta, diagrams=diagrams)
         filename = LEVEL_FILENAMES.get(level, f"{level}.md")
         destination = out_path / filename
+        if dry_run:
+            # Se renderiza para validar que la compuerta y el render funcionan, pero no se escribe.
+            docs.append(GeneratedDoc(level=level, path=destination, content=content))
+            continue
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(content, encoding="utf-8")
         docs.append(GeneratedDoc(level=level, path=destination, content=content))
@@ -596,20 +612,22 @@ def generate(
             )
         )
 
-    if gate.outcome is not GateOutcome.ABORT:
+    if not dry_run and gate.outcome is not GateOutcome.ABORT:
         manifest.save(manifest_target)
         write_diagrams(diagrams, out_path / "diagrams")
 
-    _record_run(
-        root=root_path,
-        project=name,
-        metrics=metrics,
+    if not dry_run:
+        _record_run(
+            root=root_path,
+            project=name,
+            metrics=metrics,
         gate=gate,
         states=states,
         versions=versions,
         sources=sources,
         pages_written=len(docs),
         elapsed_s=time.perf_counter() - started,
+        ledger_dir=(manifest_target.parent if manifest_path else None),
     )
 
     return GenerationResult(
@@ -626,4 +644,5 @@ def generate(
         applicability=applicable,
         unsupported_languages=_language_names(languages),
         diagrams=tuple(diagram.filename for diagram in diagrams),
+        dry_run=dry_run,
     )

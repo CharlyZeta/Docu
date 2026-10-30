@@ -51,6 +51,7 @@ docu init                                     # detecta el stack y propone el pe
 docu gen                                      # niveles del perfil, con citas y diagramas
 docu gen --level l1 --level l2 --level l4     # manual + operación + onboarding
 docu status --root .                          # frescura: fresh / stale / expired
+docu gen --dry-run                            # simula: no escribe nada (ni manifest ni ledger)
 docu gen --incremental                        # regenera solo lo desactualizado
 docu audit --report out/auditoria.md          # 5 comprobaciones deterministas, sin modelos
 docu site --out out/site                      # web con divulgación progresiva (sin CDN ni JS obligatorio)
@@ -214,3 +215,23 @@ arquitectura se dibuja como **SVG propio** generado del mismo grafo.
 ## Licencia
 
 MIT (motor). La federación entre instalaciones es opt-in y nunca envía código ni texto.
+
+## Probar sin tocar el proyecto
+
+`docu` escribe en `docs/generated/` y en `.docu/`; nunca en la documentación existente. Para una
+prueba sobre un repositorio ajeno, sin dejar rastro:
+
+```bash
+docu gen --root /ruta/al/proyecto --out /fuera/de/el/repo --dry-run      # simula, no escribe nada
+docu gen --root /ruta/al/proyecto --out /fuera/de/el/repo \
+         --manifest /fuera/de/el/repo/.docu/manifest.json                # manifest y ledger fuera
+docu audit --root /ruta/al/proyecto --out /fuera/de/el/repo
+```
+
+El recetario completo, con el prompt para pedírselo a un agente y la verificación de que no se pisó
+nada, está en [`PROBAR-CON-OTRO-AGENTE.md`](PROBAR-CON-OTRO-AGENTE.md).
+
+## Próximos features
+
+Ver [`Plan.md`](Plan.md) §14. En orden de retorno esperado: indexar PDFs y snapshots web en el buscador,
+prosa con LLM (opcional y marcada como tal), IaC, diagramas de secuencia y paginación de índices.

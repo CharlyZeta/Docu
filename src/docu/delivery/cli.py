@@ -61,6 +61,11 @@ def _build_parser() -> argparse.ArgumentParser:
     p_gen.add_argument("--out", default=None, help="directorio de salida (default: el del perfil)")
     p_gen.add_argument("--project", default=None, help="nombre del proyecto en el documento")
     p_gen.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="calcula hechos, métricas y compuerta sin escribir nada (ni docs, ni manifest, ni ledger)",
+    )
+    p_gen.add_argument(
         "--include-tests",
         action="store_true",
         help="incluye src/test (por defecto se excluye: no es API del producto)",
@@ -821,6 +826,7 @@ def _run_generate(args: argparse.Namespace) -> int:
         include=options.include,
         exclude=options.exclude,
         thresholds=options.thresholds,
+        dry_run=bool(getattr(args, "dry_run", False)),
     )
     states = ", ".join(f"{level}={state.value}" for level, state in result.states.items())
     origin = f"perfil {options.profile.path.name}" if options.profile and options.profile.path else "sin perfil (detección automática)"
@@ -840,8 +846,13 @@ def _run_generate(args: argparse.Namespace) -> int:
             f"  aviso: lenguajes no soportados, no documentados: {detected}",
             file=sys.stderr,
         )
-    for doc in result.docs:
-        print(f"  escrito: {doc.path}")
+    if result.dry_run:
+        print("  simulación: no se escribió ningún archivo (--dry-run)")
+        for doc in result.docs:
+            print(f"  escribiría: {doc.path}")
+    else:
+        for doc in result.docs:
+            print(f"  escrito: {doc.path}")
     if args.incremental and not result.docs:
         print("sin cambios: todas las páginas están frescas")
         return int(ExitCode.NO_CHANGES)

@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:8610d` · archivos: 59 · afirmaciones: 1023 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:476ce` · archivos: 59 · afirmaciones: 1024 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -896,8 +896,8 @@ erDiagram
 | class | `Profile` | `@dataclass` | `src/docu/core/profile.py#L51-L107` |
 | class | `Change` | `@dataclass` | `src/docu/core/profile.py#L318-L332` |
 | class | `YamlError` | — | `src/docu/core/yamlmini.py#L14-L15` |
-| class | `CliError` | — | `src/docu/delivery/cli.py#L182-L187` |
-| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L191-L202` |
+| class | `CliError` | — | `src/docu/delivery/cli.py#L187-L192` |
+| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L196-L207` |
 | class | `ExitCode` | — | `src/docu/delivery/exit_codes.py#L8-L16` |
 | class | `_Handler` | — | `src/docu/delivery/http_server.py#L26-L89` |
 | class | `ProjectRef` | `@dataclass` | `src/docu/delivery/mcp_server.py#L122-L131` |
@@ -906,7 +906,7 @@ erDiagram
 | class | `Diagram` | `@dataclass` | `src/docu/generate/diagrams.py#L39-L49` |
 | class | `Fact` | `@dataclass` | `src/docu/generate/facts.py#L29-L44` |
 | class | `GeneratedDoc` | `@dataclass` | `src/docu/generate/pipeline.py#L89-L92` |
-| class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L96-L120` |
+| class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L96-L121` |
 | class | `SymbolChunker` | `@dataclass` | `src/docu/index/chunker.py#L46-L220` |
 | class | `InputComponents` | `@dataclass` | `src/docu/index/freshness.py#L26-L34` |
 | class | `DocEntry` | `@dataclass` | `src/docu/index/manifest.py#L33-L68` |
@@ -1185,15 +1185,15 @@ erDiagram
 | `Change` | `after` | `object` | — | `src/docu/core/profile.py#L323-L323` |
 | `Change` | `reason` | `str` | — | `src/docu/core/profile.py#L324-L324` |
 | `Change` | `applied` | `bool` | — | `src/docu/core/profile.py#L325-L325` |
-| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L194-L194` |
-| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L195-L195` |
-| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L196-L196` |
-| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L197-L197` |
-| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L198-L198` |
-| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L199-L199` |
-| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L200-L200` |
-| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L201-L201` |
-| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L202-L202` |
+| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L199-L199` |
+| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L200-L200` |
+| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L201-L201` |
+| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L202-L202` |
+| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L203-L203` |
+| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L204-L204` |
+| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L205-L205` |
+| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L206-L206` |
+| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L207-L207` |
 | `_Handler` | `server_version` | `sin tipo declarado` | — | `src/docu/delivery/http_server.py#L27-L27` |
 | `_Handler` | `mcp` | `McpServer` | — | `src/docu/delivery/http_server.py#L28-L28` |
 | `ProjectRef` | `name` | `str` | — | `src/docu/delivery/mcp_server.py#L125-L125` |
@@ -1233,6 +1233,7 @@ erDiagram
 | `GenerationResult` | `applicability` | `Mapping[str, bool]` | — | `src/docu/generate/pipeline.py#L107-L107` |
 | `GenerationResult` | `unsupported_languages` | `Mapping[str, int]` | — | `src/docu/generate/pipeline.py#L108-L108` |
 | `GenerationResult` | `diagrams` | `tuple[str, ...]` | — | `src/docu/generate/pipeline.py#L109-L109` |
+| `GenerationResult` | `dry_run` | `bool` | — | `src/docu/generate/pipeline.py#L110-L110` |
 | `SymbolChunker` | `name` | `str` | — | `src/docu/index/chunker.py#L49-L49` |
 | `SymbolChunker` | `max_tokens` | `int` | — | `src/docu/index/chunker.py#L50-L50` |
 | `SymbolChunker` | `overlap_tokens` | `int` | — | `src/docu/index/chunker.py#L51-L51` |
@@ -1581,7 +1582,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/core/profile.py` | `0a80beb4ea0e` |
 | `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
-| `src/docu/delivery/cli.py` | `5fac1e906cd3` |
+| `src/docu/delivery/cli.py` | `d049a1867e81` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |
 | `src/docu/delivery/mcp_server.py` | `86ed3d803200` |
@@ -1591,7 +1592,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/generate/facts.py` | `50ee7dba477a` |
 | `src/docu/generate/markdown.py` | `abd1dc237cc8` |
 | `src/docu/generate/ops.py` | `cee221559089` |
-| `src/docu/generate/pipeline.py` | `953f911e26b7` |
+| `src/docu/generate/pipeline.py` | `f818f0f38338` |
 | `src/docu/index/__init__.py` | `06566a17f409` |
 | `src/docu/index/chunker.py` | `7a6418ba69aa` |
 | `src/docu/index/freshness.py` | `076f96a3fb8b` |

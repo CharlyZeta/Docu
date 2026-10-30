@@ -432,3 +432,22 @@ en `docs/generated/web/*.txt`. La cita apunta al snapshot (`.../web/x.txt#L1-LN`
 - **Bug que destapó la prueba end-to-end:** con `--root` apuntando a otro proyecto, el snapshot se
   escribía en el directorio actual porque se usaba `profile.output_dir` en vez de la ruta ya resuelta
   contra la raíz. Corregido en `web`, `pdf` y `site`.
+
+---
+
+## 14. Próximos features (no comprometidos)
+
+Ordenados por retorno esperado, no por facilidad. Ninguno está empezado.
+
+| # | Feature | Por qué | Coste estimado |
+|---|---|---|---|
+| P1 | **Indexar PDFs y snapshots web en el buscador** | Hoy se citan pero el agente no los consulta: `search_code` sólo recorre código. Cerrar esto es lo que convierte las fuentes externas en conocimiento usable por MCP | 2–3 d |
+| P2 | **Capa de prosa con LLM** (opcional, por perfil) | El documento son hechos; una introducción explicativa por sección ayudaría a leerlo. **Riesgo asumido:** es la única pieza que puede degradar la trazabilidad, así que debe ir marcada como prosa y no citarse como hecho | 4–6 d |
+| P3 | **IaC: Terraform y CloudFormation** | El Nivel 2 documenta despliegue declarado en el repo; la infraestructura provisionada queda fuera | 3–4 d |
+| P4 | **Diagramas de secuencia** | Hoy se declaran imposibles con el grafo actual (despacho dinámico). Requeriría resolución de DI por tipos de campo | 4–5 d |
+| P5 | **Paginación de índices en monorepos** | El índice de métodos se corta a 200 filas; con 5 000 métodos el documento pierde detalle | 1–2 d |
+| P6 | **Juez LLM asesor** (nunca compuerta) | Métrica de claridad/utilidad calibrada contra humanos. La compuerta seguirá siendo determinista | 3–4 d |
+| P7 | **Ejecución de JavaScript para SPA** | Las páginas que sólo renderizan en cliente se declaran hoy como «sin texto útil» | 5–7 d |
+
+**Regla que no cambia:** cualquier feature nuevo se apoya en los hechos con cita; si no puede citar, se
+declara como hueco.

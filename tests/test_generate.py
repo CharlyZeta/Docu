@@ -229,6 +229,25 @@ class OnboardingTests(unittest.TestCase):
             self.assertNotIn(term, lowered, msg=f"jerga prohibida en Nivel 3: {term}")
 
 
+class DryRunTests(unittest.TestCase):
+    """`--dry-run` existe para probar sobre un repositorio ajeno sin dejar rastro."""
+
+    def test_dry_run_writes_no_files(self) -> None:
+        from docu.generate.pipeline import generate
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "src").mkdir()
+            (root / "src" / "demo.py").write_text("class Demo:\n    valor: int = 1\n", encoding="utf-8")
+            out = root / "salida"
+            result = generate(root, out, levels=("l1", "l4"), dry_run=True)
+            self.assertFalse(out.exists(), "no debe crear el directorio de salida")
+            self.assertFalse((root / ".docu").exists(), "no debe crear .docu (manifest ni ledger)")
+            self.assertTrue(result.dry_run)
+            self.assertFalse(result.wrote_files)
+            self.assertTrue(result.docs, "sí debe renderizar para validar la compuerta")
+
+
 class PipelineTests(unittest.TestCase):
     def setUp(self) -> None:
         self._tmp = tempfile.TemporaryDirectory()
