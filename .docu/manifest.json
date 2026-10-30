@@ -12,9 +12,9 @@
     {
       "level": "l1",
       "path": "docs/generated/l1-manual-tecnico.md",
-      "input_hash": "sha256:2f09f6a8b71c67f1d8d18b5bdc2e873fcb7af793345dbe4a68c1f02287a454bf",
-      "generated_at": "2026-10-30T15:28:44+00:00",
-      "content_hash": "sha256:5bf0dacde46aa1a7f658c34636905b0188a1bc1a9a9d63cd11066526cdea8341",
+      "input_hash": "sha256:5eeec4f1aebe25b0ce3ddbee756621a6146f2a6620a0af3ec2884ce64e69c7ee",
+      "generated_at": "2026-10-30T15:29:08+00:00",
+      "content_hash": "sha256:4f328a169664e6a7a5e167a566897d5734172b3cde947a284c733353dec73a6d",
       "ttl_days": 90,
       "sources": {
         ".github/workflows/docu.yml": "1a164973b830",
@@ -75,16 +75,15 @@
         "src/docu/retrieve/__init__.py": "d44cd2bb75d8",
         "src/docu/retrieve/glossary.py": "d45a6ee652f1",
         "src/docu/retrieve/hybrid.py": "8b665a8ae4c9",
-        "src/docu/retrieve/search.py": "13d6e62bb88d",
-        "out/web-demo/web/docs-python-org-3-library-ast-html.txt": "e5abb20b1153"
+        "src/docu/retrieve/search.py": "13d6e62bb88d"
       }
     },
     {
       "level": "l2",
       "path": "docs/generated/l2-operacion.md",
-      "input_hash": "sha256:42a8a725966985aa170639c7ed62827daf9948a2a8a164d08043bc0a58388dd1",
-      "generated_at": "2026-10-30T15:28:44+00:00",
-      "content_hash": "sha256:16324441fa23319c7cdf9924cbae36645e2926ba6e06c82fbc9e0fb83bc0205d",
+      "input_hash": "sha256:e3e1a8314e2b1549c9fe1bbf3676cfcba7115afbad0cb3770258708ed490f136",
+      "generated_at": "2026-10-30T15:29:08+00:00",
+      "content_hash": "sha256:d1e377bb14ab4d790a988c4ce341416cc88c8040b7d8ff3feee32bab0add46d5",
       "ttl_days": 90,
       "sources": {
         ".github/workflows/docu.yml": "1a164973b830",
@@ -145,16 +144,15 @@
         "src/docu/retrieve/__init__.py": "d44cd2bb75d8",
         "src/docu/retrieve/glossary.py": "d45a6ee652f1",
         "src/docu/retrieve/hybrid.py": "8b665a8ae4c9",
-        "src/docu/retrieve/search.py": "13d6e62bb88d",
-        "out/web-demo/web/docs-python-org-3-library-ast-html.txt": "e5abb20b1153"
+        "src/docu/retrieve/search.py": "13d6e62bb88d"
       }
     },
     {
       "level": "l4",
       "path": "docs/generated/l4-readme.md",
-      "input_hash": "sha256:d64988e7229c4bdc42b0ee41678b351b5536897fe642ee3aca5e8181288a1d1d",
-      "generated_at": "2026-10-30T15:28:44+00:00",
-      "content_hash": "sha256:809dd8fc5592ef79dc30d330d34bd6b3e6d0332805d6b21d6a506cc0fd1a7396",
+      "input_hash": "sha256:fc6c87aacdca583f8e3332f9ed0b4923a98ba70754d031259e8044e12a83fc75",
+      "generated_at": "2026-10-30T15:29:08+00:00",
+      "content_hash": "sha256:376a8802712c49792054f0cc491cdd418b88ec524c53c0ab442babfc2a65b069",
       "ttl_days": 90,
       "sources": {
         ".github/workflows/docu.yml": "1a164973b830",
@@ -215,8 +213,7 @@
         "src/docu/retrieve/__init__.py": "d44cd2bb75d8",
         "src/docu/retrieve/glossary.py": "d45a6ee652f1",
         "src/docu/retrieve/hybrid.py": "8b665a8ae4c9",
-        "src/docu/retrieve/search.py": "13d6e62bb88d",
-        "out/web-demo/web/docs-python-org-3-library-ast-html.txt": "e5abb20b1153"
+        "src/docu/retrieve/search.py": "13d6e62bb88d"
       }
     }
   ]

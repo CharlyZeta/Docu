@@ -1,6 +1,6 @@
 # docu — README de onboarding (Nivel 4)
 
-Generado por `docu 0.1.0` · fuente `sha256:15336` · archivos: 60 · afirmaciones: 1024 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:8610d` · archivos: 59 · afirmaciones: 1023 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -42,4 +42,4 @@ Proyecto **docu** con 0 módulos, 15 paquetes, 90 tipos y 0 rutas HTTP documenta
 
 ## Fuentes
 
-Documento generado leyendo 60 archivos del repositorio. Las secciones sin evidencia se declaran como huecos, no se rellenan.
+Documento generado leyendo 59 archivos del repositorio. Las secciones sin evidencia se declaran como huecos, no se rellenan.

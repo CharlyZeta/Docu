@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:15336` · archivos: 60 · afirmaciones: 1024 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:8610d` · archivos: 59 · afirmaciones: 1023 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -1535,9 +1535,7 @@ _(279 métodos adicionales omitidos del índice)_.
 
 > Las citas externas apuntan a una **copia congelada** del texto, no a la página viva: una URL cambia y una cita que no se puede abrir no sirve. La unidad de cita de un PDF es la página; la de una web, la línea del snapshot.
 
-| Fuente web | Snapshot y estado | Cita |
-|---|---|---|
-| `https://docs.python.org/3/library/ast.html` | texto congelado · 2103 líneas · 68815 caract. · c996b8c64446 · 2026-10-30T15:25:58+00:00 | `out/web-demo/web/docs-python-org-3-library-ast-html.txt#L1-L2103` |
+No se encontraron PDFs ni fuentes web en este proyecto. Cuando existan, se listan aquí con su estado de captura y su cita verificable.
 
 ## 11. Alcance y límites
 
@@ -1557,7 +1555,6 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `docu.profile.yaml` | `536bf0c2d80d` |
 | `eval/__init__.py` | `65861c4d8840` |
 | `eval/harness.py` | `6137ad8155a0` |
-| `out/web-demo/web/docs-python-org-3-library-ast-html.txt` | `e5abb20b1153` |
 | `pyproject.toml` | `a4e309a1c90a` |
 | `src/docu/__init__.py` | `ec3694c43263` |
 | `src/docu/adapters/__init__.py` | `a2c1108f5fd9` |
