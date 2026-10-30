@@ -64,6 +64,8 @@ class Profile:
     promotion_delta: float = 0.05
     rollback_drop: float = 0.05
     federate: bool = False
+    web_allowlist: tuple[str, ...] = ()
+    web_urls: tuple[str, ...] = ()
     path: Path | None = None
     raw: Mapping[str, object] = field(default_factory=dict)
 
@@ -170,7 +172,8 @@ def _glossary(value: object) -> dict[str, tuple[str, ...]]:
 def from_dict(payload: Mapping[str, object], *, path: Path | None = None, fallback_project: str = "proyecto") -> Profile:
     """Construye el perfil efectivo, con defaults para lo ausente."""
     output = _mapping(payload.get("output"), "output")
-    git = _mapping(_mapping(payload.get("sources"), "sources").get("git"), "sources.git")
+    sources = _mapping(payload.get("sources"), "sources")
+    git = _mapping(sources.get("git"), "sources.git")
     freshness = _mapping(payload.get("freshness"), "freshness")
     learn = _mapping(payload.get("learn"), "learn")
 
@@ -192,6 +195,11 @@ def from_dict(payload: Mapping[str, object], *, path: Path | None = None, fallba
             raise ProfileError("freshness.ttl_days debe ser positivo")
 
     exclude = _string_tuple(git.get("exclude"), "sources.git.exclude")
+    web = _mapping(sources.get("web"), "sources.web")
+    web_urls = _string_tuple(web.get("urls"), "sources.web.urls")
+    for url in web_urls:
+        if not url.startswith(("http://", "https://")):
+            raise ProfileError(f"sources.web.urls: {url!r} no es una URL http/https")
 
     return Profile(
         project=str(payload.get("project") or fallback_project),
@@ -207,6 +215,8 @@ def from_dict(payload: Mapping[str, object], *, path: Path | None = None, fallba
         promotion_delta=float(learn.get("promotion_delta", 0.05) or 0.05),  # type: ignore[arg-type]
         rollback_drop=float(learn.get("rollback_drop", 0.05) or 0.05),  # type: ignore[arg-type]
         federate=bool(learn.get("federate", False)),
+        web_allowlist=_string_tuple(web.get("allowlist"), "sources.web.allowlist"),
+        web_urls=web_urls,
         path=path,
         raw=payload,
     )

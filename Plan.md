@@ -417,3 +417,18 @@ aplicar un mapa global produce texto cifrado que parece texto) y posiciones `Td`
 - **Medido** sobre seis libros reales de 387–468 páginas: texto legible, ~330 000 caracteres por
   documento. La extracción puede perder espacios entre bloques: sirve para buscar y citar la página,
   no para reconstruir el original.
+
+### 13.8 Ingesta web con snapshot congelado
+`docu web --fetch` descarga las URLs declaradas en `sources.web.urls`, extrae el texto y lo **congela**
+en `docs/generated/web/*.txt`. La cita apunta al snapshot (`.../web/x.txt#L1-LN`), no a la página viva.
+- **Allowlist obligatoria** (`sources.web.allowlist`): sin dominio declarado no se descarga nada, y se
+  rechazan otros esquemas (`file://`) y dominios que sólo se parecen.
+- **La generación no toca la red**: lee el índice `.docu/web.json`. Refrescar es una decisión
+  explícita (`--fetch`) y comparar es otra (`--check`), que reporta `vigente` o `cambió`.
+- Topes defensivos (2 MB, 20 s, un reintento) y detección de páginas sin texto: una SPA servida vacía
+  se declara como «no tiene texto útil» en vez de documentarse como si no dijera nada.
+- **Medido:** `https://docs.python.org/3/library/ast.html` → 2103 líneas congeladas y citadas en el
+  Nivel 1. `--check` detecta el cambio de hash.
+- **Bug que destapó la prueba end-to-end:** con `--root` apuntando a otro proyecto, el snapshot se
+  escribía en el directorio actual porque se usaba `profile.output_dir` en vez de la ruta ya resuelta
+  contra la raíz. Corregido en `web`, `pdf` y `site`.

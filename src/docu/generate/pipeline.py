@@ -236,6 +236,23 @@ def collect_facts(
     documents, _texts, digests = load_all(root, include=include, exclude=exclude, include_tests=include_tests)
     sources.update(digests)
     facts.extend(document.to_fact() for document in documents)
+
+    # Fuentes web congeladas: se leen del índice local, nunca de la red. La generación debe dar el
+    # mismo resultado sin conexión; refrescar es una decisión explícita (`docu web --fetch`).
+    from docu.core.profile import find as find_profile, load as load_profile
+    from docu.index.webdocs import load_documents
+
+    profile_path = find_profile(root)
+    profile = load_profile(profile_path) if profile_path else None
+    web_urls = profile.web_urls if profile else ()
+    for document in load_documents(root, web_urls):
+        if document.rel and document.usable:
+            facts.append(document.to_fact())
+            snapshot = root / document.rel
+            if snapshot.is_file():
+                sources[document.rel] = sha256_of(
+                    snapshot.read_text(encoding="utf-8").replace("\r\n", "\n").encode("utf-8")
+                ).replace("sha256:", "")[:12]
     return facts, sources
 
 

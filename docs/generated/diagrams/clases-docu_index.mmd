@@ -1,0 +1,35 @@
+classDiagram
+    class DetectedPackage <<class>> {
+        file_count()
+        citation()
+    }
+    class DocEntry <<class>> {
+        to_dict()
+        from_dict()
+        generated_at_dt()
+    }
+    class InputComponents <<class>> {
+    }
+    class Manifest <<class>> {
+        entry()
+        upsert()
+        to_dict()
+        from_dict()
+        save()
+        load()
+    }
+    class PdfDocument <<class>> {
+        citation()
+        to_fact()
+    }
+    class SymbolChunker <<class>> {
+        chunk()
+        _span()
+        _prefix()
+        _split()
+        _make()
+    }
+    class WebDocument <<class>> {
+        citation()
+        to_fact()
+    }

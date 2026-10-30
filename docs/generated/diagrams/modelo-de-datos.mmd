@@ -456,6 +456,13 @@ erDiagram
         tuple_str exact_names
         str citation
     }
+    Snapshot {
+        str url
+        str text
+        str sha
+        str captured_at
+        int status_code
+    }
     SourceAdapter {
         str name
         type kind
@@ -499,6 +506,16 @@ erDiagram
     }
     VectorStore {
         str store_id
+    }
+    WebDocument {
+        str url
+        str rel
+        str sha
+        str captured_at
+        int lines
+        int chars
+        bool usable
+        str error
     }
     _Handler {
         sinTipo server_version

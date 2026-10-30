@@ -140,6 +140,14 @@ def _build_parser() -> argparse.ArgumentParser:
     p_learn.add_argument("--endpoint", default=None, help="endpoint de federación (http/https)")
     p_learn.add_argument("--json", action="store_true")
 
+    p_web = sub.add_parser("web", help="captura fuentes web como snapshot congelado y citable")
+    p_web.add_argument("--root", default=".")
+    p_web.add_argument("--profile", default=argparse.SUPPRESS)
+    p_web.add_argument("--url", action="append", dest="web_urls", default=None, help="URL a capturar")
+    p_web.add_argument("--fetch", action="store_true", help="descarga y congela las URLs declaradas")
+    p_web.add_argument("--check", action="store_true", help="compara los snapshots con la web actual")
+    p_web.add_argument("--docs", default=None, help="directorio de la documentación generada")
+
     p_pdf = sub.add_parser("pdf", help="extrae texto de los PDFs del proyecto y reporta su estado")
     p_pdf.add_argument("--root", default=".")
     p_pdf.add_argument("--profile", default=argparse.SUPPRESS)
@@ -270,6 +278,9 @@ def _dispatch(args: argparse.Namespace) -> int:
 
     if args.command == "pdf":
         return _run_pdf(args)
+
+    if args.command == "web":
+        return _run_web(args)
 
     if args.command == "serve":
         return _run_serve(args)
@@ -458,9 +469,9 @@ def _run_site(args: argparse.Namespace) -> int:
     digest = sha256_of("|".join(f"{path}:{sha}" for path, sha in sorted(sources.items())))[:12]
     # `--out` es la web; la documentación generada (y sus diagramas) se resuelve aparte: mezclarlas
     # hacía que la web buscara los diagramas dentro de su propia carpeta de salida.
-    docs_dir = Path(args.docs) if getattr(args, "docs", None) else (
-        Path(options.profile.output_dir) if options.profile else Path("docs") / "generated"
-    )
+    # `options.out_dir` ya está resuelto contra la raíz del proyecto: usar `profile.output_dir`
+    # a secas escribía en el directorio actual cuando `--root` apuntaba a otro proyecto.
+    docs_dir = Path(args.docs) if getattr(args, "docs", None) else options.out_dir
     out_dir = Path(args.out) if args.out else docs_dir / "site"
     project = options.project or root.name
     pages = build_site(
@@ -483,6 +494,67 @@ def _run_site(args: argparse.Namespace) -> int:
     return int(ExitCode.OK)
 
 
+def _run_web(args: argparse.Namespace) -> int:
+    """Captura o inspecciona fuentes web congeladas.
+
+    Descargar es una decisión explícita: `--fetch` captura, `--check` compara con la web y sin
+    banderas sólo se muestra lo que ya está congelado. La generación nunca toca la red.
+    """
+    from docu.index.webdocs import capture_urls, check_stale, load_documents, read_index
+
+    root = Path(args.root).resolve()
+    options = _resolve(args, root)
+    urls = tuple(args.web_urls or ()) or (options.profile.web_urls if options.profile else ())
+    allowlist = options.profile.web_allowlist if options.profile else ()
+    # `options.out_dir` ya está resuelto contra la raíz del proyecto: usar `profile.output_dir`
+    # a secas escribía en el directorio actual cuando `--root` apuntaba a otro proyecto.
+    docs_dir = Path(args.docs) if getattr(args, "docs", None) else options.out_dir
+
+    if not urls:
+        print(
+            "error: no hay URLs declaradas. Añade `sources.web.urls` al perfil o pasa --url",
+            file=sys.stderr,
+        )
+        return int(ExitCode.CONFIG_ERROR)
+
+    if args.check:
+        if not allowlist:
+            print("error: `--check` necesita allowlist en el perfil", file=sys.stderr)
+            return int(ExitCode.CONFIG_ERROR)
+        for url, state in check_stale(root, allowlist):
+            print(f"  {url}: {state}")
+        return int(ExitCode.OK)
+
+    if args.fetch:
+        if not allowlist:
+            print(
+                "error: declara `sources.web.allowlist` en el perfil antes de capturar nada",
+                file=sys.stderr,
+            )
+            return int(ExitCode.CONFIG_ERROR)
+        documents, errors = capture_urls(root, urls, allowlist, docs_dir)
+        captured = sum(1 for document in documents if document.usable)
+        for document in documents:
+            mark = "✔" if document.usable else "✖"
+            detail = f"{document.lines} líneas · {document.sha[:12]}" if document.usable else document.error
+            print(f"  {mark} {document.url}: {detail}")
+        for error in errors:
+            print(f"  aviso: {error}", file=sys.stderr)
+        print(f"snapshots en {docs_dir / 'web'}")
+        if not captured:
+            print("error: ninguna fuente se pudo capturar", file=sys.stderr)
+            return int(ExitCode.UNCITABLE_SOURCE)
+        return int(ExitCode.OK)
+
+    documents = load_documents(root, urls)
+    for document in documents:
+        mark = "✔" if document.usable else "✖"
+        detail = f"{document.lines} líneas · {document.sha[:12]} · {document.captured_at}" if document.usable else document.error
+        print(f"  {mark} {document.url}: {detail}")
+    print(f"índice: {len(read_index(root))} fuentes congeladas · usa --fetch para actualizar")
+    return int(ExitCode.OK)
+
+
 def _run_pdf(args: argparse.Namespace) -> int:
     """Extrae texto de los PDFs y reporta qué se pudo leer y qué no.
 
@@ -502,9 +574,7 @@ def _run_pdf(args: argparse.Namespace) -> int:
         print(f"{options.project or root.name}: no hay PDFs en el proyecto")
         return int(ExitCode.NO_CHANGES)
 
-    docs_dir = Path(args.out) if args.out else (
-        Path(options.profile.output_dir) if options.profile else Path("docs") / "generated"
-    )
+    docs_dir = Path(args.out) if args.out else options.out_dir
     written = write_sidecars(texts, docs_dir / "pdf")
 
     if args.json:

@@ -9,7 +9,7 @@ la propia guía les da. Cada nota se sostiene en evidencia ejecutable, no en la 
 
 | # | Dimensión | Peso | Nota | Evidencia | Brecha principal |
 |---|---|---|---|---|---|
-| 1 | Ingesta y cobertura de fuentes | 12 | **50** | Código Java/Python/TS, `pom`, `pyproject`, `package.json`, `requirements`, YAML, OpenAPI | **Sin PDF ni web** (el perfil los declara, no hay adaptador) ni IaC |
+| 1 | Ingesta y cobertura de fuentes | 12 | **72** | Código Java/Python/TS, `pom`, `pyproject`, `package.json`, YAML, OpenAPI, **PDF** (CMap por fuente, cita por página) y **web** (snapshot congelado con allowlist) | Sin IaC (Terraform/CloudFormation) y sin ejecutar JavaScript de SPA |
 | 2 | Estructura y trazabilidad | 13 | **94** | Chunks sintácticos, prefijo de metadatos, paquetes, citas `archivo#L`, conformidad de 3 lenguajes | Parsers propios (no tree-sitter) y sin ERD/diccionario de datos |
 | 3 | Recuperación | 12 | **82** | recall@10 **1.000** (identificadores) y **0.850** (español), híbrido de 3 canales con glosario | MRR 0.562 < 0.60 (falta cross-encoder) |
 | 4 | Generación documental | 18 | **72** | L1/L2/L3/L4 con 0 afirmaciones sin cita, diagramas Mermaid embebidos, idempotencia byte a byte, 0 USD | Sigue siendo **extractiva**: sin prosa explicativa |
@@ -19,7 +19,7 @@ la propia guía les da. Cada nota se sostiene en evidencia ejecutable, no en la 
 | 8 | Multicapa y visualización | 8 | **88** | L1/L2/L3/L4 + diagramas (arquitectura, clases, flujo de API, ERD) + **web con divulgación progresiva** hasta el fragmento de código | Sin diagramas de secuencia (el grafo no resuelve despacho dinámico) |
 | 9 | Interoperabilidad (MCP) | 7 | **88** | 8 herramientas read-only, multi-repo, `search_code` híbrido, puente HTTP | HTTP no es Streamable HTTP/SSE |
 
-### Nota ponderada: **80 / 100** como herramienta de documentación utilizable hoy
+### Nota ponderada: **82 / 100** como herramienta de documentación utilizable hoy
 
 ### Fidelidad a la visión completa de la guía: **≈ 65 / 100**
 

@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:ca556` · archivos: 57 · afirmaciones: 982 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:15336` · archivos: 60 · afirmaciones: 1024 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -10,7 +10,7 @@ Generado por `docu 0.1.0` · fuente `sha256:ca556` · archivos: 57 · afirmacion
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **86** · métodos: **457**
+- Tipos: **90** · métodos: **479**
 
 ## 2. Arquitectura: módulos y paquetes
 
@@ -20,13 +20,13 @@ Generado por `docu 0.1.0` · fuente `sha256:ca556` · archivos: 57 · afirmacion
 | `docu.adapters` | python | 1 | `src/docu/adapters/__init__.py#L1-L1` |
 | `docu.adapters.embedders` | python | 2 | `src/docu/adapters/embedders/__init__.py#L1-L1` |
 | `docu.adapters.langs` | python | 6 | `src/docu/adapters/langs/__init__.py#L1-L1` |
-| `docu.adapters.sources` | python | 2 | `src/docu/adapters/sources/__init__.py#L1-L5` |
+| `docu.adapters.sources` | python | 3 | `src/docu/adapters/sources/__init__.py#L1-L5` |
 | `docu.audit` | python | 2 | `src/docu/audit/__init__.py#L1-L5` |
 | `docu.conformance` | python | 3 | `src/docu/conformance/__init__.py#L1-L5` |
 | `docu.core` | python | 6 | `src/docu/core/__init__.py#L1-L5` |
 | `docu.delivery` | python | 6 | `src/docu/delivery/__init__.py#L1-L5` |
 | `docu.generate` | python | 6 | `src/docu/generate/__init__.py#L1-L5` |
-| `docu.index` | python | 6 | `src/docu/index/__init__.py#L1-L5` |
+| `docu.index` | python | 7 | `src/docu/index/__init__.py#L1-L5` |
 | `docu.learn` | python | 5 | `src/docu/learn/__init__.py#L1-L5` |
 | `docu.publish` | python | 2 | `src/docu/publish/__init__.py#L1-L5` |
 | `docu.retrieve` | python | 4 | `src/docu/retrieve/__init__.py#L1-L5` |
@@ -42,13 +42,13 @@ flowchart LR
     docu_adapters["docu.adapters<br/>1 archivos"]
     docu_adapters_embedders["docu.adapters.embedders<br/>2 archivos"]
     docu_adapters_langs["docu.adapters.langs<br/>6 archivos"]
-    docu_adapters_sources["docu.adapters.sources<br/>2 archivos"]
+    docu_adapters_sources["docu.adapters.sources<br/>3 archivos"]
     docu_audit["docu.audit<br/>2 archivos"]
     docu_conformance["docu.conformance<br/>3 archivos"]
     docu_core["docu.core<br/>6 archivos"]
     docu_delivery["docu.delivery<br/>6 archivos"]
     docu_generate["docu.generate<br/>6 archivos"]
-    docu_index["docu.index<br/>6 archivos"]
+    docu_index["docu.index<br/>7 archivos"]
     docu_learn["docu.learn<br/>5 archivos"]
     docu_publish["docu.publish<br/>2 archivos"]
     docu_retrieve["docu.retrieve<br/>4 archivos"]
@@ -89,6 +89,46 @@ flowchart LR
     eval --> docu_core
     eval --> docu_index
     eval --> docu_retrieve
+```
+
+### Clases del paquete · 7 clases de docu.index
+
+```mermaid
+classDiagram
+    class DetectedPackage <<class>> {
+        file_count()
+        citation()
+    }
+    class DocEntry <<class>> {
+        to_dict()
+        from_dict()
+        generated_at_dt()
+    }
+    class InputComponents <<class>> {
+    }
+    class Manifest <<class>> {
+        entry()
+        upsert()
+        to_dict()
+        from_dict()
+        save()
+        load()
+    }
+    class PdfDocument <<class>> {
+        citation()
+        to_fact()
+    }
+    class SymbolChunker <<class>> {
+        chunk()
+        _span()
+        _prefix()
+        _split()
+        _make()
+    }
+    class WebDocument <<class>> {
+        citation()
+        to_fact()
+    }
 ```
 
 ### Clases del paquete · 5 clases de docu.adapters.langs
@@ -191,41 +231,7 @@ classDiagram
     }
 ```
 
-### Clases del paquete · 7 clases de docu.delivery
-
-```mermaid
-classDiagram
-    class CliError <<class>> {
-        __init__()
-    }
-    class ExitCode <<class>> {
-    }
-    class McpServer <<class>> {
-        __post_init__()
-        projects()
-        resolve()
-        _index_for()
-        index()
-        _glossary()
-        _require_docs()
-        call_tool()
-    }
-    class ProjectRef <<class>> {
-        has_docs()
-    }
-    class ResolvedOptions <<class>> {
-    }
-    class ToolError <<class>> {
-    }
-    class _Handler <<class>> {
-        do_GET()
-        do_POST()
-        _json()
-        log_message()
-    }
-```
-
-### modelo-de-datos · 71 entidades · 12 relaciones declaradas por tipo
+### modelo-de-datos · 73 entidades · 12 relaciones declaradas por tipo
 
 ```mermaid
 erDiagram
@@ -686,6 +692,13 @@ erDiagram
         tuple_str exact_names
         str citation
     }
+    Snapshot {
+        str url
+        str text
+        str sha
+        str captured_at
+        int status_code
+    }
     SourceAdapter {
         str name
         type kind
@@ -729,6 +742,16 @@ erDiagram
     }
     VectorStore {
         str store_id
+    }
+    WebDocument {
+        str url
+        str rel
+        str sha
+        str captured_at
+        int lines
+        int chars
+        bool usable
+        str error
     }
     _Handler {
         sinTipo server_version
@@ -830,6 +853,9 @@ erDiagram
 | class | `PdfError` | — | `src/docu/adapters/sources/pdf.py#L36-L37` |
 | class | `PdfPage` | `@dataclass` | `src/docu/adapters/sources/pdf.py#L121-L123` |
 | class | `PdfText` | `@dataclass` | `src/docu/adapters/sources/pdf.py#L127-L147` |
+| class | `WebError` | — | `src/docu/adapters/sources/web.py#L39-L40` |
+| class | `Snapshot` | `@dataclass` | `src/docu/adapters/sources/web.py#L44-L63` |
+| class | `_TextExtractor` | — | `src/docu/adapters/sources/web.py#L66-L102` |
 | class | `Check` | `@dataclass` | `src/docu/audit/verify.py#L41-L69` |
 | class | `AuditReport` | `@dataclass` | `src/docu/audit/verify.py#L73-L124` |
 | class | `Discrepancy` | `@dataclass` | `src/docu/conformance/drift.py#L38-L62` |
@@ -867,11 +893,11 @@ erDiagram
 | class | `Judge` | `@runtime_checkable` | `src/docu/core/ports.py#L122-L129` |
 | class | `Publisher` | `@runtime_checkable` | `src/docu/core/ports.py#L133-L145` |
 | class | `ProfileError` | — | `src/docu/core/profile.py#L46-L47` |
-| class | `Profile` | `@dataclass` | `src/docu/core/profile.py#L51-L105` |
-| class | `Change` | `@dataclass` | `src/docu/core/profile.py#L308-L322` |
+| class | `Profile` | `@dataclass` | `src/docu/core/profile.py#L51-L107` |
+| class | `Change` | `@dataclass` | `src/docu/core/profile.py#L318-L332` |
 | class | `YamlError` | — | `src/docu/core/yamlmini.py#L14-L15` |
-| class | `CliError` | — | `src/docu/delivery/cli.py#L174-L179` |
-| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L183-L194` |
+| class | `CliError` | — | `src/docu/delivery/cli.py#L182-L187` |
+| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L191-L202` |
 | class | `ExitCode` | — | `src/docu/delivery/exit_codes.py#L8-L16` |
 | class | `_Handler` | — | `src/docu/delivery/http_server.py#L26-L89` |
 | class | `ProjectRef` | `@dataclass` | `src/docu/delivery/mcp_server.py#L122-L131` |
@@ -887,6 +913,7 @@ erDiagram
 | class | `Manifest` | `@dataclass` | `src/docu/index/manifest.py#L72-L124` |
 | class | `DetectedPackage` | `@dataclass` | `src/docu/index/packages.py#L22-L36` |
 | class | `PdfDocument` | `@dataclass` | `src/docu/index/pdfdocs.py#L24-L50` |
+| class | `WebDocument` | `@dataclass` | `src/docu/index/webdocs.py#L18-L45` |
 | class | `FederationError` | — | `src/docu/learn/federation.py#L28-L29` |
 | class | `FederationPayload` | `@dataclass` | `src/docu/learn/federation.py#L33-L37` |
 | class | `Pattern` | `@dataclass` | `src/docu/learn/patterns.py#L25-L55` |
@@ -990,6 +1017,11 @@ erDiagram
 | `PdfText` | `chars` | `int` | — | `src/docu/adapters/sources/pdf.py#L130-L130` |
 | `PdfText` | `method` | `str` | — | `src/docu/adapters/sources/pdf.py#L131-L131` |
 | `PdfText` | `warnings` | `tuple[str, ...]` | — | `src/docu/adapters/sources/pdf.py#L132-L132` |
+| `Snapshot` | `url` | `str` | — | `src/docu/adapters/sources/web.py#L45-L45` |
+| `Snapshot` | `text` | `str` | — | `src/docu/adapters/sources/web.py#L46-L46` |
+| `Snapshot` | `sha` | `str` | — | `src/docu/adapters/sources/web.py#L47-L47` |
+| `Snapshot` | `captured_at` | `str` | — | `src/docu/adapters/sources/web.py#L48-L48` |
+| `Snapshot` | `status_code` | `int` | — | `src/docu/adapters/sources/web.py#L49-L49` |
 | `Check` | `name` | `str` | — | `src/docu/audit/verify.py#L44-L44` |
 | `Check` | `total` | `int` | — | `src/docu/audit/verify.py#L45-L45` |
 | `Check` | `failed` | `int` | — | `src/docu/audit/verify.py#L46-L46` |
@@ -1144,22 +1176,24 @@ erDiagram
 | `Profile` | `promotion_delta` | `float` | — | `src/docu/core/profile.py#L64-L64` |
 | `Profile` | `rollback_drop` | `float` | — | `src/docu/core/profile.py#L65-L65` |
 | `Profile` | `federate` | `bool` | — | `src/docu/core/profile.py#L66-L66` |
-| `Profile` | `path` | `Path | None` | — | `src/docu/core/profile.py#L67-L67` |
-| `Profile` | `raw` | `Mapping[str, object]` | — | `src/docu/core/profile.py#L68-L68` |
-| `Change` | `field` | `str` | — | `src/docu/core/profile.py#L311-L311` |
-| `Change` | `before` | `object` | — | `src/docu/core/profile.py#L312-L312` |
-| `Change` | `after` | `object` | — | `src/docu/core/profile.py#L313-L313` |
-| `Change` | `reason` | `str` | — | `src/docu/core/profile.py#L314-L314` |
-| `Change` | `applied` | `bool` | — | `src/docu/core/profile.py#L315-L315` |
-| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L186-L186` |
-| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L187-L187` |
-| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L188-L188` |
-| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L189-L189` |
-| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L190-L190` |
-| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L191-L191` |
-| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L192-L192` |
-| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L193-L193` |
-| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L194-L194` |
+| `Profile` | `web_allowlist` | `tuple[str, ...]` | — | `src/docu/core/profile.py#L67-L67` |
+| `Profile` | `web_urls` | `tuple[str, ...]` | — | `src/docu/core/profile.py#L68-L68` |
+| `Profile` | `path` | `Path | None` | — | `src/docu/core/profile.py#L69-L69` |
+| `Profile` | `raw` | `Mapping[str, object]` | — | `src/docu/core/profile.py#L70-L70` |
+| `Change` | `field` | `str` | — | `src/docu/core/profile.py#L321-L321` |
+| `Change` | `before` | `object` | — | `src/docu/core/profile.py#L322-L322` |
+| `Change` | `after` | `object` | — | `src/docu/core/profile.py#L323-L323` |
+| `Change` | `reason` | `str` | — | `src/docu/core/profile.py#L324-L324` |
+| `Change` | `applied` | `bool` | — | `src/docu/core/profile.py#L325-L325` |
+| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L194-L194` |
+| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L195-L195` |
+| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L196-L196` |
+| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L197-L197` |
+| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L198-L198` |
+| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L199-L199` |
+| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L200-L200` |
+| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L201-L201` |
+| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L202-L202` |
 | `_Handler` | `server_version` | `sin tipo declarado` | — | `src/docu/delivery/http_server.py#L27-L27` |
 | `_Handler` | `mcp` | `McpServer` | — | `src/docu/delivery/http_server.py#L28-L28` |
 | `ProjectRef` | `name` | `str` | — | `src/docu/delivery/mcp_server.py#L125-L125` |
@@ -1230,6 +1264,14 @@ erDiagram
 | `PdfDocument` | `status` | `str` | — | `src/docu/index/pdfdocs.py#L29-L29` |
 | `PdfDocument` | `usable` | `bool` | — | `src/docu/index/pdfdocs.py#L30-L30` |
 | `PdfDocument` | `warnings` | `tuple[str, ...]` | — | `src/docu/index/pdfdocs.py#L31-L31` |
+| `WebDocument` | `url` | `str` | — | `src/docu/index/webdocs.py#L19-L19` |
+| `WebDocument` | `rel` | `str` | — | `src/docu/index/webdocs.py#L20-L20` |
+| `WebDocument` | `sha` | `str` | — | `src/docu/index/webdocs.py#L21-L21` |
+| `WebDocument` | `captured_at` | `str` | — | `src/docu/index/webdocs.py#L22-L22` |
+| `WebDocument` | `lines` | `int` | — | `src/docu/index/webdocs.py#L23-L23` |
+| `WebDocument` | `chars` | `int` | — | `src/docu/index/webdocs.py#L24-L24` |
+| `WebDocument` | `usable` | `bool` | — | `src/docu/index/webdocs.py#L25-L25` |
+| `WebDocument` | `error` | `str` | — | `src/docu/index/webdocs.py#L26-L26` |
 | `FederationPayload` | `data` | `Mapping[str, object]` | — | `src/docu/learn/federation.py#L34-L34` |
 | `Pattern` | `pattern_id` | `str` | — | `src/docu/learn/patterns.py#L28-L28` |
 | `Pattern` | `stack` | `str` | — | `src/docu/learn/patterns.py#L29-L29` |
@@ -1404,6 +1446,18 @@ erDiagram
 | `_page_streams` | `def _page_streams(objects: dict[int, bytes]) -> list[bytes]` | `src/docu/adapters/sources/pdf.py#L457-L474` |
 | `extract` | `def extract(data: bytes) -> PdfText` | `src/docu/adapters/sources/pdf.py#L477-L516` |
 | `pages_text` | `def pages_text(result: PdfText) -> str` | `src/docu/adapters/sources/pdf.py#L519-L524` |
+| `Snapshot.lines` | `def lines(self) -> int` | `src/docu/adapters/sources/web.py#L52-L53` |
+| `Snapshot.usable` | `def usable(self) -> bool` | `src/docu/adapters/sources/web.py#L56-L57` |
+| `Snapshot.slug` | `def slug(self) -> str` | `src/docu/adapters/sources/web.py#L60-L63` |
+| `_TextExtractor.__init__` | `def __init__(self) -> None` | `src/docu/adapters/sources/web.py#L69-L72` |
+| `_TextExtractor.handle_starttag` | `def handle_starttag(self, tag: str, attrs) -> None` | `src/docu/adapters/sources/web.py#L74-L79` |
+| `_TextExtractor.handle_endtag` | `def handle_endtag(self, tag: str) -> None` | `src/docu/adapters/sources/web.py#L81-L86` |
+| `_TextExtractor.handle_data` | `def handle_data(self, data: str) -> None` | `src/docu/adapters/sources/web.py#L88-L91` |
+| `_TextExtractor.text` | `def text(self) -> str` | `src/docu/adapters/sources/web.py#L93-L102` |
+| `html_to_text` | `def html_to_text(html: str) -> str` | `src/docu/adapters/sources/web.py#L105-L109` |
+| `is_allowed` | `def is_allowed(url: str, allowlist: tuple[str, ...] | list[str]) -> bool` | `src/docu/adapters/sources/web.py#L112-L126` |
+| `fetch` | `def fetch(url: str, timeout: int=..., max_bytes: int=..., opener=..., attempts: int=...) -` | `src/docu/adapters/sources/web.py#L129-L166` |
+| `capture` | `def capture(url: str, allowlist: tuple[str, ...] | list[str], opener=...) -> Snapshot` | `src/docu/adapters/sources/web.py#L169-L192` |
 | `Check.passed` | `def passed(self) -> bool` | `src/docu/audit/verify.py#L51-L52` |
 | `Check.score` | `def score(self) -> float` | `src/docu/audit/verify.py#L55-L58` |
 | `Check.to_dict` | `def to_dict(self) -> dict[str, object]` | `src/docu/audit/verify.py#L60-L69` |
@@ -1474,24 +1528,16 @@ erDiagram
 | `LangAdapter.imports` | `def imports(self, path: str, source: str) -> Sequence[str]` | `src/docu/core/ports.py#L44-L45` |
 | `LangAdapter.calls` | `def calls(self, path: str, source: str) -> Sequence[tuple[str, str]]` | `src/docu/core/ports.py#L47-L52` |
 | `Chunker.chunk` | `def chunk(self, artifact: Artifact, symbols: Sequence[Symbol], source: str) -> Sequence[Ch` | `src/docu/core/ports.py#L61-L62` |
-| `Embedder.embed` | `def embed(self, texts: Sequence[str]) -> Sequence[Sequence[float]]` | `src/docu/core/ports.py#L75-L76` |
-| `VectorStore.upsert` | `def upsert(self, namespace: str, chunks: Sequence[Chunk], vectors: Sequence[Sequence[float` | `src/docu/core/ports.py#L85-L86` |
-| `VectorStore.query` | `def query(self, namespace: str, vector: Sequence[float], top_k: int, filters: Mapping[str,` | `src/docu/core/ports.py#L88-L91` |
-| `VectorStore.delete_by_filter` | `def delete_by_filter(self, namespace: str, filters: Mapping[str, Any]) -> int` | `src/docu/core/ports.py#L93-L94` |
-| `Reranker.rank` | `def rank(self, query: str, chunks: Sequence[Chunk], top_n: int) -> Sequence[tuple[Chunk, f` | `src/docu/core/ports.py#L103-L104` |
-| `RenderAdapter.render` | `def render(self, node: ContentNode, context: Mapping[str, Any]) -> str` | `src/docu/core/ports.py#L117-L118` |
-| `Judge.score` | `def score(self, document: str, evidence: Sequence[Chunk], rubric: Mapping[str, Any]) -> Me` | `src/docu/core/ports.py#L128-L129` |
-| `Publisher.propose` | `def propose(self, path: str, content: str, message: str) -> str` | `src/docu/core/ports.py#L138-L139` |
-| `Publisher.apply` | `def apply(self, proposal_id: str) -> str` | `src/docu/core/ports.py#L141-L142` |
-| `Publisher.revert` | `def revert(self, applied_id: str) -> None` | `src/docu/core/ports.py#L144-L145` |
-| `Profile.exists` | `def exists(self) -> bool` | `src/docu/core/profile.py#L71-L72` |
-| `Profile.effective_exclude` | `def effective_exclude(self) -> tuple[str, ...]` | `src/docu/core/profile.py#L75-L81` |
 
-_(257 métodos adicionales omitidos del índice)_.
+_(279 métodos adicionales omitidos del índice)_.
 
-## 10. Documentos de referencia (PDF)
+## 10. Documentos y fuentes de referencia
 
-No se encontraron PDFs en el repositorio. Cuando existan, se listan aquí con su estado de extracción y su cita por página.
+> Las citas externas apuntan a una **copia congelada** del texto, no a la página viva: una URL cambia y una cita que no se puede abrir no sirve. La unidad de cita de un PDF es la página; la de una web, la línea del snapshot.
+
+| Fuente web | Snapshot y estado | Cita |
+|---|---|---|
+| `https://docs.python.org/3/library/ast.html` | texto congelado · 2103 líneas · 68815 caract. · c996b8c64446 · 2026-10-30T15:25:58+00:00 | `out/web-demo/web/docs-python-org-3-library-ast-html.txt#L1-L2103` |
 
 ## 11. Alcance y límites
 
@@ -1499,7 +1545,7 @@ Secciones aplicables a este proyecto (y por tanto exigibles en la compuerta): **
 
 Secciones **no aplicables** —no existen en este proyecto y no se penalizan—: route.
 
-No cubierto todavía por el generador: diagramas de secuencia (el grafo de llamadas no resuelve despacho dinámico), diccionario de datos/ERD, contratos OpenAPI si no están declarados, e infraestructura provisionada (Terraform/CloudFormation). Los diagramas de componentes, clases y flujo de API están en la sección 3; la operación y el despliegue, en el documento de Nivel 2.
+No cubierto todavía por el generador: diagramas de secuencia (el grafo de llamadas no resuelve despacho dinámico), contratos OpenAPI si no están declarados, e infraestructura provisionada (Terraform/CloudFormation). Los diagramas de componentes, clases y flujo de API están en la sección 3; la operación y el despliegue, en el documento de Nivel 2.
 
 ## 12. Trazabilidad
 
@@ -1511,6 +1557,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `docu.profile.yaml` | `536bf0c2d80d` |
 | `eval/__init__.py` | `65861c4d8840` |
 | `eval/harness.py` | `6137ad8155a0` |
+| `out/web-demo/web/docs-python-org-3-library-ast-html.txt` | `e5abb20b1153` |
 | `pyproject.toml` | `a4e309a1c90a` |
 | `src/docu/__init__.py` | `ec3694c43263` |
 | `src/docu/adapters/__init__.py` | `a2c1108f5fd9` |
@@ -1524,6 +1571,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/adapters/langs/typescript.py` | `a3d823fe6f86` |
 | `src/docu/adapters/sources/__init__.py` | `0a506367a368` |
 | `src/docu/adapters/sources/pdf.py` | `e2bf7513c8a5` |
+| `src/docu/adapters/sources/web.py` | `838eb154a9dc` |
 | `src/docu/audit/__init__.py` | `db19f5507fab` |
 | `src/docu/audit/verify.py` | `fe90f029a031` |
 | `src/docu/conformance/__init__.py` | `0362d002bd6b` |
@@ -1533,10 +1581,10 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/core/contracts.py` | `f1a0c160ab51` |
 | `src/docu/core/policy.py` | `bb4c3a0a3ed5` |
 | `src/docu/core/ports.py` | `88d8cfdb18c0` |
-| `src/docu/core/profile.py` | `749de6eea118` |
+| `src/docu/core/profile.py` | `0a80beb4ea0e` |
 | `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
-| `src/docu/delivery/cli.py` | `92c428229e4a` |
+| `src/docu/delivery/cli.py` | `5fac1e906cd3` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |
 | `src/docu/delivery/mcp_server.py` | `86ed3d803200` |
@@ -1544,15 +1592,16 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/generate/__init__.py` | `91d9129019a3` |
 | `src/docu/generate/diagrams.py` | `785ba5357f99` |
 | `src/docu/generate/facts.py` | `50ee7dba477a` |
-| `src/docu/generate/markdown.py` | `390587a7d967` |
+| `src/docu/generate/markdown.py` | `abd1dc237cc8` |
 | `src/docu/generate/ops.py` | `cee221559089` |
-| `src/docu/generate/pipeline.py` | `23a012e5a24f` |
+| `src/docu/generate/pipeline.py` | `953f911e26b7` |
 | `src/docu/index/__init__.py` | `06566a17f409` |
 | `src/docu/index/chunker.py` | `7a6418ba69aa` |
 | `src/docu/index/freshness.py` | `076f96a3fb8b` |
 | `src/docu/index/manifest.py` | `f3ea859b5225` |
 | `src/docu/index/packages.py` | `03aa387201ec` |
 | `src/docu/index/pdfdocs.py` | `a3f3d144976f` |
+| `src/docu/index/webdocs.py` | `e9185b94784e` |
 | `src/docu/learn/__init__.py` | `4d33ba71c4c5` |
 | `src/docu/learn/federation.py` | `ffeb217ac871` |
 | `src/docu/learn/ledger.py` | `38818d4f92ec` |

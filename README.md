@@ -55,6 +55,8 @@ docu gen --incremental                        # regenera solo lo desactualizado
 docu audit --report out/auditoria.md          # 5 comprobaciones deterministas, sin modelos
 docu site --out out/site                      # web con divulgación progresiva (sin CDN ni JS obligatorio)
 docu pdf                                      # extrae texto de los PDFs y reporta qué se pudo leer
+docu web --fetch                              # congela las URLs del perfil (snapshot citable)
+docu web --check                              # compara el snapshot con la web actual
 docu ci check                                 # validación rápida para PR (sin modelo)
 docu ci regen --out docs/generated            # regenera lo stale y escribe .docu/pr-body.md
 docu drift --bootstrap                        # foto inicial del modelo arquitectónico

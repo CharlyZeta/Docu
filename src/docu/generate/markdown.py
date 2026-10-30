@@ -274,23 +274,35 @@ def render_l1(
     if len(methods) > 200:
         lines += [f"_({len(methods) - 200} métodos adicionales omitidos del índice)_.", ""]
 
-    lines += ["## 10. Documentos de referencia (PDF)", ""]
+    lines += ["## 10. Documentos y fuentes de referencia", ""]
     pdfs = _by_kind(facts, "pdf_document")
+    web = _by_kind(facts, "web_source")
+    lines += [
+        "> Las citas externas apuntan a una **copia congelada** del texto, no a la página viva: una URL "
+        "cambia y una cita que no se puede abrir no sirve. La unidad de cita de un PDF es la página; "
+        "la de una web, la línea del snapshot.",
+        "",
+    ]
     if pdfs:
         lines += [
-            "> La unidad de cita es la **página**: un PDF no tiene líneas estables. Los documentos que "
-            "no se pudieron leer se declaran como tales en lugar de citarse a ciegas.",
-            "",
             _table(
-                ["Documento", "Estado y extracción", "Cita"],
+                ["PDF", "Estado y extracción", "Cita"],
                 [[f"`{fact.subject}`", fact.detail, _cite(fact.citation)] for fact in pdfs],
             ),
             "",
         ]
-    else:
+    if web:
         lines += [
-            "No se encontraron PDFs en el repositorio. Cuando existan, se listan aquí con su estado "
-            "de extracción y su cita por página.",
+            _table(
+                ["Fuente web", "Snapshot y estado", "Cita"],
+                [[f"`{fact.subject}`", fact.detail, _cite(fact.citation)] for fact in web],
+            ),
+            "",
+        ]
+    if not pdfs and not web:
+        lines += [
+            "No se encontraron PDFs ni fuentes web en este proyecto. Cuando existan, se listan aquí "
+            "con su estado de captura y su cita verificable.",
             "",
         ]
 
@@ -312,8 +324,8 @@ def render_l1(
         ]
     lines += [
         "No cubierto todavía por el generador: diagramas de secuencia (el grafo de llamadas no "
-        "resuelve despacho dinámico), diccionario de datos/ERD, contratos OpenAPI si no están "
-        "declarados, e infraestructura provisionada (Terraform/CloudFormation). Los diagramas de "
+        "resuelve despacho dinámico), contratos OpenAPI si no están declarados, e infraestructura "
+        "provisionada (Terraform/CloudFormation). Los diagramas de "
         "componentes, clases y flujo de API están en la sección 3; la operación y el despliegue, en "
         "el documento de Nivel 2.",
         "",
