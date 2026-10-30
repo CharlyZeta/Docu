@@ -1,6 +1,6 @@
 # docu — Operación y despliegue (Nivel 2)
 
-Generado por `docu 0.1.0` · fuente `sha256:476ce` · archivos: 59 · afirmaciones: 1024 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:cc1c7` · archivos: 60 · afirmaciones: 1037 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -41,6 +41,6 @@ Generado por `docu 0.1.0` · fuente `sha256:476ce` · archivos: 59 · afirmacion
 
 ## 6. Alcance y límites
 
-- Afirmaciones documentadas: **1024** · entorno 0, puertos 0, servicios 0, comandos 1, jobs de CI 2
+- Afirmaciones documentadas: **1037** · entorno 0, puertos 0, servicios 0, comandos 1, jobs de CI 2
 - **No** se documentan valores de secretos ni el contenido de un `.env` real.
 - **No** se describe infraestructura provisionada que no esté declarada en el repositorio: Terraform y CloudFormation aún no se leen.

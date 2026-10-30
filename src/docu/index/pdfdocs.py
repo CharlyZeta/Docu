@@ -58,9 +58,17 @@ def discover_pdfs(
     limit: int = MAX_PDF_FILES,
 ) -> list[str]:
     """PDFs del repositorio, respetando las mismas exclusiones que el resto de la ingesta."""
-    from docu.generate.pipeline import EXCLUDED_PARTS, _is_test_path, _path_matches
+    from docu.generate.pipeline import (
+        EXCLUDED_PARTS,
+        _effective_exclude,
+        _is_test_path,
+        _path_matches,
+    )
+    from docu.index.ignore import is_ignored, load as load_ignore
 
     root_path = Path(root)
+    patterns = _effective_exclude(exclude)
+    rules = load_ignore(root_path)
     found: list[str] = []
     for candidate in sorted(root_path.rglob("*")):
         if not candidate.is_file() or candidate.suffix.lower() != ".pdf":
@@ -69,7 +77,9 @@ def discover_pdfs(
         rel_text = rel.as_posix()
         if any(part in EXCLUDED_PARTS for part in rel.parts):
             continue
-        if exclude and _path_matches(rel_text, exclude):
+        if is_ignored(rel_text, rules):
+            continue
+        if patterns and _path_matches(rel_text, patterns):
             continue
         if include and not _path_matches(rel_text, include):
             continue

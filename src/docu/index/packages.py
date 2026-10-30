@@ -150,9 +150,11 @@ def _typescript_packages(files: Mapping[str, Path]) -> list[DetectedPackage]:
         packages.append(
             DetectedPackage(
                 name=directory.replace("/", "."),
-                language="typescript",
+                # Se marca el origen: no hay archivo que declare esta unidad, y la cita apunta al
+                # primer archivo completo. Decirlo evita que la cita parezca más fuerte de lo que es.
+                language="typescript (directorio)",
                 files=tuple(members),
-                declaration=f"{first}#L1-L1",
+                declaration=f"{first}#L1-L{max(1, _line_count(Path(files[first])))}",
             )
         )
     return packages

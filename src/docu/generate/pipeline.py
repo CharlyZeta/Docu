@@ -139,6 +139,17 @@ def _path_matches(rel: str, patterns: Sequence[str]) -> bool:
     return False
 
 
+def _effective_exclude(exclude: Sequence[str]) -> tuple[str, ...]:
+    """Exclusiones del proyecto + piso de higiene + `.gitignore`.
+
+    El `.gitignore` es la declaración más autorizada de qué no es fuente: sin leerlo, un proyecto
+    indexaba `coverage/` (artefactos de reportes) y lo contaba como código en sus métricas.
+    """
+    from docu.core.profile import DEFAULT_EXCLUDE
+
+    return tuple(dict.fromkeys((*exclude, *DEFAULT_EXCLUDE)))
+
+
 def _discover(
     root: Path,
     include_tests: bool = False,
@@ -146,6 +157,10 @@ def _discover(
     exclude: Sequence[str] = (),
 ) -> dict[str, Path]:
     """Archivos relevantes, con la higiene de corpus que declare el perfil."""
+    from docu.index.ignore import is_ignored, load as load_ignore
+
+    patterns = _effective_exclude(exclude)
+    rules = load_ignore(root)
     found: dict[str, Path] = {}
     for candidate in sorted(root.rglob("*")):
         if not candidate.is_file():
@@ -154,7 +169,9 @@ def _discover(
         rel_text = rel.as_posix()
         if any(part in EXCLUDED_PARTS for part in rel.parts):
             continue
-        if exclude and _path_matches(rel_text, exclude):
+        if is_ignored(rel_text, rules):
+            continue
+        if patterns and _path_matches(rel_text, patterns):
             continue
         if include and not _path_matches(rel_text, include):
             continue
@@ -307,6 +324,10 @@ def unsupported_sources(
     exclude: Sequence[str] = (),
 ) -> dict[str, int]:
     """Cuenta archivos de lenguajes conocidos pero no soportados, por extension."""
+    from docu.index.ignore import is_ignored, load as load_ignore
+
+    patterns = _effective_exclude(exclude)
+    rules = load_ignore(root)
     counts: dict[str, int] = {}
     for candidate in root.rglob("*"):
         if not candidate.is_file():
@@ -314,7 +335,9 @@ def unsupported_sources(
         rel = candidate.relative_to(root)
         if any(part in EXCLUDED_PARTS for part in rel.parts):
             continue
-        if exclude and _path_matches(rel.as_posix(), exclude):
+        if is_ignored(rel.as_posix(), rules):
+            continue
+        if patterns and _path_matches(rel.as_posix(), patterns):
             continue
         if include and not _path_matches(rel.as_posix(), include):
             continue

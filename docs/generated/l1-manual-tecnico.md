@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:476ce` · archivos: 59 · afirmaciones: 1024 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:cc1c7` · archivos: 60 · afirmaciones: 1037 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -10,7 +10,7 @@ Generado por `docu 0.1.0` · fuente `sha256:476ce` · archivos: 59 · afirmacion
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **90** · métodos: **479**
+- Tipos: **91** · métodos: **485**
 
 ## 2. Arquitectura: módulos y paquetes
 
@@ -26,7 +26,7 @@ Generado por `docu 0.1.0` · fuente `sha256:476ce` · archivos: 59 · afirmacion
 | `docu.core` | python | 6 | `src/docu/core/__init__.py#L1-L5` |
 | `docu.delivery` | python | 6 | `src/docu/delivery/__init__.py#L1-L5` |
 | `docu.generate` | python | 6 | `src/docu/generate/__init__.py#L1-L5` |
-| `docu.index` | python | 7 | `src/docu/index/__init__.py#L1-L5` |
+| `docu.index` | python | 8 | `src/docu/index/__init__.py#L1-L5` |
 | `docu.learn` | python | 5 | `src/docu/learn/__init__.py#L1-L5` |
 | `docu.publish` | python | 2 | `src/docu/publish/__init__.py#L1-L5` |
 | `docu.retrieve` | python | 4 | `src/docu/retrieve/__init__.py#L1-L5` |
@@ -48,7 +48,7 @@ flowchart LR
     docu_core["docu.core<br/>6 archivos"]
     docu_delivery["docu.delivery<br/>6 archivos"]
     docu_generate["docu.generate<br/>6 archivos"]
-    docu_index["docu.index<br/>7 archivos"]
+    docu_index["docu.index<br/>8 archivos"]
     docu_learn["docu.learn<br/>5 archivos"]
     docu_publish["docu.publish<br/>2 archivos"]
     docu_retrieve["docu.retrieve<br/>4 archivos"]
@@ -91,7 +91,7 @@ flowchart LR
     eval --> docu_retrieve
 ```
 
-### Clases del paquete · 7 clases de docu.index
+### Clases del paquete · 8 clases de docu.index
 
 ```mermaid
 classDiagram
@@ -103,6 +103,8 @@ classDiagram
         to_dict()
         from_dict()
         generated_at_dt()
+    }
+    class IgnoreRule <<class>> {
     }
     class InputComponents <<class>> {
     }
@@ -231,7 +233,7 @@ classDiagram
     }
 ```
 
-### modelo-de-datos · 73 entidades · 12 relaciones declaradas por tipo
+### modelo-de-datos · 74 entidades · 12 relaciones declaradas por tipo
 
 ```mermaid
 erDiagram
@@ -499,6 +501,14 @@ erDiagram
         BM25 _bm25
         dict_str__list_Segment _by_name
         list_list_float _vectors
+    }
+    IgnoreRule {
+        str raw
+        str pattern
+        bool negate
+        bool directory_only
+        bool anchored
+        re_Pattern_str regex
     }
     InputComponents {
         str source_content
@@ -909,6 +919,7 @@ erDiagram
 | class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L96-L121` |
 | class | `SymbolChunker` | `@dataclass` | `src/docu/index/chunker.py#L46-L220` |
 | class | `InputComponents` | `@dataclass` | `src/docu/index/freshness.py#L26-L34` |
+| class | `IgnoreRule` | `@dataclass` | `src/docu/index/ignore.py#L18-L24` |
 | class | `DocEntry` | `@dataclass` | `src/docu/index/manifest.py#L33-L68` |
 | class | `Manifest` | `@dataclass` | `src/docu/index/manifest.py#L72-L124` |
 | class | `DetectedPackage` | `@dataclass` | `src/docu/index/packages.py#L22-L36` |
@@ -1243,6 +1254,12 @@ erDiagram
 | `InputComponents` | `embedder` | `str` | — | `src/docu/index/freshness.py#L32-L32` |
 | `InputComponents` | `chunker` | `str` | — | `src/docu/index/freshness.py#L33-L33` |
 | `InputComponents` | `profile` | `str` | — | `src/docu/index/freshness.py#L34-L34` |
+| `IgnoreRule` | `raw` | `str` | — | `src/docu/index/ignore.py#L19-L19` |
+| `IgnoreRule` | `pattern` | `str` | — | `src/docu/index/ignore.py#L20-L20` |
+| `IgnoreRule` | `negate` | `bool` | — | `src/docu/index/ignore.py#L21-L21` |
+| `IgnoreRule` | `directory_only` | `bool` | — | `src/docu/index/ignore.py#L22-L22` |
+| `IgnoreRule` | `anchored` | `bool` | — | `src/docu/index/ignore.py#L23-L23` |
+| `IgnoreRule` | `regex` | `re.Pattern[str]` | — | `src/docu/index/ignore.py#L24-L24` |
 | `DocEntry` | `level` | `str` | — | `src/docu/index/manifest.py#L36-L36` |
 | `DocEntry` | `path` | `str` | — | `src/docu/index/manifest.py#L37-L37` |
 | `DocEntry` | `input_hash` | `str` | — | `src/docu/index/manifest.py#L38-L38` |
@@ -1530,7 +1547,7 @@ erDiagram
 | `LangAdapter.calls` | `def calls(self, path: str, source: str) -> Sequence[tuple[str, str]]` | `src/docu/core/ports.py#L47-L52` |
 | `Chunker.chunk` | `def chunk(self, artifact: Artifact, symbols: Sequence[Symbol], source: str) -> Sequence[Ch` | `src/docu/core/ports.py#L61-L62` |
 
-_(279 métodos adicionales omitidos del índice)_.
+_(285 métodos adicionales omitidos del índice)_.
 
 ## 10. Documentos y fuentes de referencia
 
@@ -1592,13 +1609,14 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/generate/facts.py` | `50ee7dba477a` |
 | `src/docu/generate/markdown.py` | `abd1dc237cc8` |
 | `src/docu/generate/ops.py` | `cee221559089` |
-| `src/docu/generate/pipeline.py` | `f818f0f38338` |
+| `src/docu/generate/pipeline.py` | `8fb46f8656cc` |
 | `src/docu/index/__init__.py` | `06566a17f409` |
 | `src/docu/index/chunker.py` | `7a6418ba69aa` |
 | `src/docu/index/freshness.py` | `076f96a3fb8b` |
+| `src/docu/index/ignore.py` | `1c15a32806bd` |
 | `src/docu/index/manifest.py` | `f3ea859b5225` |
-| `src/docu/index/packages.py` | `03aa387201ec` |
-| `src/docu/index/pdfdocs.py` | `a3f3d144976f` |
+| `src/docu/index/packages.py` | `f0dc77febb01` |
+| `src/docu/index/pdfdocs.py` | `39bc1fa44d36` |
 | `src/docu/index/webdocs.py` | `e9185b94784e` |
 | `src/docu/learn/__init__.py` | `4d33ba71c4c5` |
 | `src/docu/learn/federation.py` | `ffeb217ac871` |

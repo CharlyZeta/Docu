@@ -264,6 +264,14 @@ erDiagram
         dict_str__list_Segment _by_name
         list_list_float _vectors
     }
+    IgnoreRule {
+        str raw
+        str pattern
+        bool negate
+        bool directory_only
+        bool anchored
+        re_Pattern_str regex
+    }
     InputComponents {
         str source_content
         str deps_signature
