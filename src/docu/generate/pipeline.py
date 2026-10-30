@@ -542,6 +542,17 @@ def generate(
     discovered = _discover(root_path, include_tests=include_tests, include=include, exclude=exclude)
     packages = detect_packages(discovered)
     diagrams = build_all(discovered, packages, facts, _read)
+
+    # Intención y decisiones: se extraen de lo que el proyecto ya declaró (docstrings, ADRs,
+    # comentarios con porqué). Son hechos con cita, así que entran al documento como cualquier otro.
+    from docu.generate.narrative import collect as collect_narrative
+
+    kind_counts: dict[str, int] = {}
+    for fact in facts:
+        kind_counts[fact.kind] = kind_counts.get(fact.kind, 0) + 1
+    narrative = collect_narrative(root_path, discovered, kind_counts, name, _read)
+    facts.extend(narrative.facts)
+
     missing = unsupported(facts)
     digest = sha256_of("|".join(f"{path}:{sha}" for path, sha in sorted(sources.items())))[:12]
     versions = {**DEFAULT_VERSIONS, "docu": version}
@@ -583,6 +594,7 @@ def generate(
         "unsupported": str(len(missing)),
         "applicable": ", ".join(kind for kind, needed in applicable.items() if needed),
         "not_applicable": ", ".join(kind for kind, needed in applicable.items() if not needed),
+        "intro": narrative.intro,
         "unsupported_languages": ", ".join(
             f"{name} ({count})" for name, count in _language_names(languages).items()
         ),

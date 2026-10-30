@@ -133,7 +133,7 @@ class IntegrationTests(unittest.TestCase):
         code = main(["gen", "--root", str(self.root), "--out", str(out), "--level", "l1"])
         self.assertEqual(code, 0)
         document = (out / "l1-manual-tecnico.md").read_text(encoding="utf-8")
-        self.assertIn("## 10. Documentos y fuentes de referencia", document)
+        self.assertIn("## 12. Documentos y fuentes de referencia", document)
         self.assertIn("docs/manual.pdf#p1", document)
 
     def test_pdf_command_writes_the_sidecar(self) -> None:

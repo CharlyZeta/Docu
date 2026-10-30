@@ -1,18 +1,88 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:ad827` · archivos analizados: 60 · afirmaciones: 1043 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:55e3e` · archivos analizados: 61 · afirmaciones: 1111 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
-## 1. Resumen
+## 1. Introducción
+
+> Introducción compuesta con hechos citados: cada frase sale de un conteo o de la propia documentación del proyecto. No es prosa libre.
+
+**docu** se compone de 16 dependencias declaradas, 15 paquetes, 92 tipos y 401 campos.
+
+Su propia documentación declara: «Documentación técnica que se puede verificar. Cada afirmación del documento cita el archivo y la línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.» [`README.md#L11-L12`].
+
+El repositorio deja constancia de 10 decisiones («Saltar el bloque completo para que la…»; «El inicializador se separa con `=(?!>)`…»; «son el valor. Sin esto, un workflow real…» y 7 más); están listadas con su cita en la sección *Intención y decisiones*.
+
+## 2. Resumen
 
 - Módulos de build: **0** · paquetes: **15**
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **91** · métodos: **491**
+- Tipos: **92** · métodos: **505**
 
-## 2. Arquitectura: módulos y paquetes
+## 3. Intención y decisiones
+
+**Qué dice el proyecto que es.** Extraído de sus docstrings y de su documentación; la columna *Cita* lleva al párrafo exacto.
+
+| Declaración | Intención | Cita |
+|---|---|---|
+| `docu` | Documentación técnica que se puede verificar. Cada afirmación del documento cita el archivo y la línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra. | `README.md#L11-L12` |
+| `eval/__init__.py (módulo)` | Arnés de evaluación: golden sets y línea base de recuperación (F0). | `eval/__init__.py#L1-L1` |
+| `eval/harness.py (módulo)` | Arnés de evaluación de F0 (Plan.md §5). | `eval/harness.py#L1-L14` |
+| `_fold` | Quita diacríticos: `configuración` y `configuracion` deben ser el mismo término. | `eval/harness.py#L84-L90` |
+| `tokenize` | Tokens con descomposición de CamelCase, separadores y plegado de acentos. | `eval/harness.py#L94-L106` |
+| `Segment` | Unidad recuperable. | `eval/harness.py#L119-L131` |
+| `_exact_names` | Nombres por los que un simbolo debe coincidir de forma exacta (sin descomponer). | `eval/harness.py#L194-L199` |
+| `build_symbol_corpus` | Indice de F1: chunks sintacticos para Java y ventanas para el resto de artefactos. | `eval/harness.py#L208-L220` |
+| `BM25` | BM25 Okapi en stdlib. Canal lexico de ambos indices. | `eval/harness.py#L263-L275` |
+| `_looks_like_identifier` | ¿La consulta es codigo tecleado o una pregunta humana? | `eval/harness.py#L308-L320` |
+| `_diversity` | Limita cuantos fragmentos aporta un mismo archivo (Guia-v2.md §3.4). | `eval/harness.py#L334-L346` |
+| `AutoIndex` | Indice de F2 con enrutado por tipo de consulta. | `eval/harness.py#L354-L366` |
+| `HybridIndex` | Indice de F2: denso (multilingue) + lexico + coincidencia exacta de simbolo, fusionados. | `eval/harness.py#L378-L390` |
+| `SymbolIndex` | Indice de F1: fusiona el canal lexico con un canal de coincidencia exacta de simbolo. | `eval/harness.py#L463-L475` |
+| `_channel_weights` | Enrutado por tipo de consulta: si el usuario teclea identificadores, el canal denso pesa menos. | `eval/harness.py#L433-L439` |
+| `src/docu/__init__.py (módulo)` | docu — agente autonomo de documentacion tecnica. | `src/docu/__init__.py#L1-L4` |
+| `src/docu/adapters/__init__.py (módulo)` | Implementaciones de los puertos del nucleo. Nada de aqui lo importa `docu.core`. | `src/docu/adapters/__init__.py#L1-L1` |
+| `src/docu/adapters/embedders/__init__.py (módulo)` | Adaptadores de embeddings: locales (ONNX) o por API, detras del puerto `Embedder`. | `src/docu/adapters/embedders/__init__.py#L1-L1` |
+| `src/docu/adapters/embedders/onnx_local.py (módulo)` | Embeddings locales via ONNX (default del producto: offline, sin API, reproducible). | `src/docu/adapters/embedders/onnx_local.py#L1-L5` |
+| `resolve_model_dir` | Busca el modelo ONNX sin obligar a configurarlo. | `src/docu/adapters/embedders/onnx_local.py#L21-L33` |
+| `OnnxEmbedder` | Implementa el puerto `Embedder`. Carga perezosa: importar el modulo no exige onnxruntime. | `src/docu/adapters/embedders/onnx_local.py#L41-L53` |
+| `_mean_pool_normalize` | Media enmascarada + normalizacion L2: coseno equivalente a producto escalar. | `src/docu/adapters/embedders/onnx_local.py#L108-L120` |
+| `cosine` | Similitud coseno; ambos lados vienen normalizados, pero se protege el caso general. | `src/docu/adapters/embedders/onnx_local.py#L126-L129` |
+| `src/docu/adapters/langs/__init__.py (módulo)` | Adaptadores de lenguaje: uno por lenguaje, detras del puerto `LangAdapter`. | `src/docu/adapters/langs/__init__.py#L1-L1` |
+| `src/docu/adapters/langs/_braces.py (módulo)` | Utilidades compartidas de analisis estructural para lenguajes con llaves. | `src/docu/adapters/langs/_braces.py#L1-L4` |
+| `mask_source` | Sustituye comentarios y literales por espacios, conservando los saltos de linea. | `src/docu/adapters/langs/_braces.py#L13-L25` |
+| `depth_map` | `depth[i]` = llaves abiertas antes de la posicion `i`. | `src/docu/adapters/langs/_braces.py#L72-L81` |
+| `matching_brace` | Indice de la llave de cierre correspondiente (o el final si esta desbalanceado). | `src/docu/adapters/langs/_braces.py#L85-L95` |
+| `mask_annotation_braces` | Anula las llaves que viven dentro de una anotacion. | `src/docu/adapters/langs/_braces.py#L99-L111` |
+| `matching_paren` | Indice del parentesis de cierre correspondiente. | `src/docu/adapters/langs/_braces.py#L128-L138` |
+| `iter_callables` | Recorre declaraciones `nombre(...) {` con parentesis balanceados. | `src/docu/adapters/langs/_braces.py#L149-L161` |
+| `annotations_before` | Bloque de anotaciones inmediatamente encima de una declaracion. | `src/docu/adapters/langs/_braces.py#L205-L217` |
+| `Lines` | Conversion offsets <-> numeros de linea (1-based). | `src/docu/adapters/langs/_braces.py#L234-L246` |
+| `skip_whitespace` | Avanza sobre espacios y saltos: la declaracion empieza en la primera anotacion o token. | `src/docu/adapters/langs/_braces.py#L254-L258` |
+| `declaration_start` | Inicio de la declaracion que contiene `offset`. | `src/docu/adapters/langs/_braces.py#L262-L274` |
+| `src/docu/adapters/langs/java.py (módulo)` | Adaptador Java sin dependencias externas (implementacion de referencia de F1). | `src/docu/adapters/langs/java.py#L1-L10` |
+| `mask_source` | Sustituye comentarios y literales por espacios, conservando saltos de linea. | `src/docu/adapters/langs/java.py#L61-L73` |
+| `_Lines` | Conversion offsets <-> numeros de linea (1-based). | `src/docu/adapters/langs/java.py#L146-L158` |
+
+**Decisiones registradas.** De ADRs, contratos y comentarios que explican un porqué: el lugar donde el equipo dejó escrito *por qué* algo es así.
+
+| Decisión | Estado y contexto | Cita |
+|---|---|---|
+| `Saltar el bloque completo para que la proxima anotacion no h` | Saltar el bloque completo para que la proxima anotacion no herede estas lineas. | `src/docu/adapters/langs/java.py#L506-L506` |
+| `El inicializador se separa con `=(?!>)` para no cortar los t` | El inicializador se separa con `=(?!>)` para no cortar los tipos función (`() => void`). | `src/docu/adapters/langs/typescript.py#L74-L74` |
+| `son el valor. Sin esto, un workflow real con `run: |` rompe ` | son el valor. Sin esto, un workflow real con `run: |` rompe toda la ingesta. | `src/docu/core/yamlmini.py#L96-L96` |
+| `Se publican ambos para que la diferencia no sea silenciosa.` | Se publican ambos para que la diferencia no sea silenciosa. | `src/docu/delivery/mcp_server.py#L356-L356` |
+| ``vite` puede estar en dependencies y en devDependencies: bus` | `vite` puede estar en dependencies y en devDependencies: buscar desde la seccion evita | `src/docu/generate/facts.py#L302-L302` |
+| `auditoría tiene razón en marcarla y el lector no encuentra n` | auditoría tiene razón en marcarla y el lector no encuentra nada al abrirla. | `src/docu/generate/ops.py#L211-L211` |
+| `los recupera. Sin esto, un proyecto con `tests/` en la raíz ` | los recupera. Sin esto, un proyecto con `tests/` en la raíz documenta sus propias aserciones. | `src/docu/generate/pipeline.py#L69-L69` |
+| `para que un PDF nuevo o modificado invalide la frescura, igu` | para que un PDF nuevo o modificado invalide la frescura, igual que un archivo de código. | `src/docu/generate/pipeline.py#L251-L251` |
+| `Unidades por carpeta sólo en profundidad razonable: `vendor/` | Unidades por carpeta sólo en profundidad razonable: `vendor/includes/assets/js` no es una | `src/docu/index/packages.py#L145-L145` |
+| `primer archivo completo. Decirlo evita que la cita parezca m` | primer archivo completo. Decirlo evita que la cita parezca más fuerte de lo que es. | `src/docu/index/packages.py#L154-L154` |
+
+## 4. Arquitectura: módulos y paquetes
 
 | Paquete | Lenguaje | Archivos | Cita |
 |---|---|---|---|
@@ -25,7 +95,7 @@ Generado por `docu 0.1.0` · fuente `sha256:ad827` · archivos analizados: 60 ·
 | `docu.conformance` | python | 3 | `src/docu/conformance/__init__.py#L1-L5` |
 | `docu.core` | python | 6 | `src/docu/core/__init__.py#L1-L5` |
 | `docu.delivery` | python | 6 | `src/docu/delivery/__init__.py#L1-L5` |
-| `docu.generate` | python | 6 | `src/docu/generate/__init__.py#L1-L5` |
+| `docu.generate` | python | 7 | `src/docu/generate/__init__.py#L1-L5` |
 | `docu.index` | python | 8 | `src/docu/index/__init__.py#L1-L5` |
 | `docu.learn` | python | 5 | `src/docu/learn/__init__.py#L1-L5` |
 | `docu.publish` | python | 2 | `src/docu/publish/__init__.py#L1-L5` |
@@ -34,7 +104,7 @@ Generado por `docu 0.1.0` · fuente `sha256:ad827` · archivos analizados: 60 ·
 
 > Las unidades por carpeta sólo se listan con **3 archivos o más**: por debajo de ese umbral no son una unidad de arquitectura y se omiten a propósito, no por descuido.
 
-## 3. Diagramas
+## 5. Diagramas
 
 ### Dependencias entre paquetes · 15 paquetes · 37 dependencias derivadas de imports
 
@@ -49,7 +119,7 @@ flowchart LR
     docu_conformance["docu.conformance<br/>3 archivos"]
     docu_core["docu.core<br/>6 archivos"]
     docu_delivery["docu.delivery<br/>6 archivos"]
-    docu_generate["docu.generate<br/>6 archivos"]
+    docu_generate["docu.generate<br/>7 archivos"]
     docu_index["docu.index<br/>8 archivos"]
     docu_learn["docu.learn<br/>5 archivos"]
     docu_publish["docu.publish<br/>2 archivos"]
@@ -136,6 +206,28 @@ classDiagram
     }
 ```
 
+### Clases del paquete · 5 clases de docu.generate
+
+```mermaid
+classDiagram
+    class Diagram <<class>> {
+        filename()
+    }
+    class Fact <<class>> {
+        verified()
+        location()
+    }
+    class GeneratedDoc <<class>> {
+    }
+    class GenerationResult <<class>> {
+        wrote_files()
+        pending()
+    }
+    class Narrative <<class>> {
+        facts()
+    }
+```
+
 ### Clases del paquete · 5 clases de docu.adapters.langs
 
 ```mermaid
@@ -172,75 +264,11 @@ classDiagram
     }
 ```
 
-### Clases del paquete · 18 clases de docu.core
-
-```mermaid
-classDiagram
-    class Artifact <<class>> {
-        __post_init__()
-    }
-    class Budget <<class>> {
-        spend()
-        exceeded()
-        remaining_usd()
-    }
-    class BudgetExhausted <<class>> {
-    }
-    class Change <<class>> {
-        kind()
-        describe()
-    }
-    class Chunk <<class>> {
-        __post_init__()
-        citation()
-        to_record()
-    }
-    class Chunker <<class>> {
-        chunk()
-    }
-    class Claim <<class>> {
-        verified()
-    }
-    class ContentNode <<class>> {
-        unsupported()
-        is_publishable()
-    }
-    class DocState <<class>> {
-    }
-    class Embedder <<class>> {
-        embed()
-    }
-    class FreshnessRecord <<class>> {
-        is_expired()
-    }
-    class GateDecision <<class>> {
-        may_write()
-        describe()
-    }
-    class GateOutcome <<class>> {
-    }
-    class GatePolicy <<class>> {
-        evaluate()
-    }
-    class Judge <<class>> {
-        score()
-    }
-    class LangAdapter <<class>> {
-        symbols()
-        imports()
-        calls()
-    }
-    class Metrics <<class>> {
-    }
-    class Mode <<class>> {
-    }
-```
-
-### modelo-de-datos · 24 de 74 entidades · 12 relaciones declaradas por tipo · 50 omitidas por recorte
+### modelo-de-datos · 24 de 75 entidades · 12 relaciones declaradas por tipo · 51 omitidas por recorte
 
 ```mermaid
 erDiagram
-    %% recorte: 24 de 74 entidades (las de más relaciones)
+    %% recorte: 24 de 75 entidades (las de más relaciones)
     ArchitectureModel {
         tuple_DeclaredComponent components
         tuple_Route routes
@@ -487,7 +515,7 @@ erDiagram
 |---|---|---|---|
 | `requires-python` | propiedad | >=3.11 | `pyproject.toml#L10-L10` |
 
-## 4. Dependencias
+## 6. Dependencias
 
 | Artefacto | Versión | Scope | Cita |
 |---|---|---|---|
@@ -508,11 +536,11 @@ erDiagram
 | `ruff` | >=0.6 | dev | `pyproject.toml#L25-L25` |
 | `mypy` | >=1.10 | dev | `pyproject.toml#L25-L25` |
 
-## 5. API HTTP
+## 7. API HTTP
 
 > **Sin evidencia disponible.** Esta sección no se documenta: el agente no rellena huecos con prosa plausible.
 
-## 6. Configuración
+## 8. Configuración
 
 | Clave | Valor | Cita |
 |---|---|---|
@@ -541,7 +569,7 @@ erDiagram
 | `learn.rollback_drop` | `0.05` | `docu.profile.yaml#L61-L61` |
 | `learn.federate` | `false` | `docu.profile.yaml#L62-L62` |
 
-## 7. Tipos
+## 9. Tipos
 
 | Tipo | Nombre | Anotaciones | Cita |
 |---|---|---|---|
@@ -615,6 +643,7 @@ erDiagram
 | class | `McpServer` | `@dataclass` | `src/docu/delivery/mcp_server.py#L210-L625` |
 | class | `Diagram` | `@dataclass` | `src/docu/generate/diagrams.py#L40-L50` |
 | class | `Fact` | `@dataclass` | `src/docu/generate/facts.py#L29-L44` |
+| class | `Narrative` | `@dataclass` | `src/docu/generate/narrative.py#L47-L56` |
 | class | `GeneratedDoc` | `@dataclass` | `src/docu/generate/pipeline.py#L89-L92` |
 | class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L96-L121` |
 | class | `SymbolChunker` | `@dataclass` | `src/docu/index/chunker.py#L46-L220` |
@@ -637,7 +666,7 @@ erDiagram
 | class | `Section` | `@dataclass` | `src/docu/retrieve/search.py#L65-L86` |
 | class | `DocIndex` | `@dataclass` | `src/docu/retrieve/search.py#L123-L193` |
 
-## 8. Diccionario de datos
+## 10. Diccionario de datos
 
 > Campos **declarados** en el código. El tipo es el que declara el lenguaje, no una inferencia: si aparece «sin tipo declarado», el campo no lo tiene.
 
@@ -928,6 +957,9 @@ erDiagram
 | `Fact` | `detail` | `str` | — | `src/docu/generate/facts.py#L34-L34` |
 | `Fact` | `citation` | `str` | — | `src/docu/generate/facts.py#L35-L35` |
 | `Fact` | `attributes` | `Mapping[str, str]` | — | `src/docu/generate/facts.py#L36-L36` |
+| `Narrative` | `intent` | `list[Fact]` | — | `src/docu/generate/narrative.py#L50-L50` |
+| `Narrative` | `decisions` | `list[Fact]` | — | `src/docu/generate/narrative.py#L51-L51` |
+| `Narrative` | `intro` | `str` | — | `src/docu/generate/narrative.py#L52-L52` |
 | `GeneratedDoc` | `level` | `str` | — | `src/docu/generate/pipeline.py#L90-L90` |
 | `GeneratedDoc` | `path` | `Path` | — | `src/docu/generate/pipeline.py#L91-L91` |
 | `GeneratedDoc` | `content` | `str` | — | `src/docu/generate/pipeline.py#L92-L92` |
@@ -1042,7 +1074,7 @@ erDiagram
 | `DocIndex` | `_df` | `dict[str, int]` | — | `src/docu/retrieve/search.py#L130-L130` |
 | `DocIndex` | `_avgdl` | `float` | — | `src/docu/retrieve/search.py#L131-L131` |
 
-## 9. Índice de métodos
+## 11. Índice de métodos
 
 | Símbolo | Firma | Cita |
 |---|---|---|
@@ -1247,15 +1279,15 @@ erDiagram
 | `LangAdapter.calls` | `def calls(self, path: str, source: str) -> Sequence[tuple[str, str]]` | `src/docu/core/ports.py#L47-L52` |
 | `Chunker.chunk` | `def chunk(self, artifact: Artifact, symbols: Sequence[Symbol], source: str) -> Sequence[Ch` | `src/docu/core/ports.py#L61-L62` |
 
-_(291 métodos adicionales omitidos del índice)_.
+_(305 métodos adicionales omitidos del índice)_.
 
-## 10. Documentos y fuentes de referencia
+## 12. Documentos y fuentes de referencia
 
 > Las citas externas apuntan a una **copia congelada** del texto, no a la página viva: una URL cambia y una cita que no se puede abrir no sirve. La unidad de cita de un PDF es la página; la de una web, la línea del snapshot.
 
 No se encontraron PDFs ni fuentes web en este proyecto. Cuando existan, se listan aquí con su estado de captura y su cita verificable.
 
-## 11. Alcance y límites
+## 13. Alcance y límites
 
 Secciones aplicables a este proyecto (y por tanto exigibles en la compuerta): **type, config_key, dependency, module**.
 
@@ -1263,7 +1295,7 @@ Secciones **no aplicables** —no existen en este proyecto y no se penalizan—:
 
 No cubierto todavía por el generador: diagramas de secuencia (el grafo de llamadas no resuelve despacho dinámico), contratos OpenAPI si no están declarados, e infraestructura provisionada (Terraform/CloudFormation). Los diagramas de componentes, clases y flujo de API están en la sección 3; la operación y el despliegue, en el documento de Nivel 2.
 
-## 12. Trazabilidad
+## 14. Trazabilidad
 
 Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos fuente y su huella son:
 
@@ -1307,9 +1339,10 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/generate/__init__.py` | `91d9129019a3` |
 | `src/docu/generate/diagrams.py` | `f008c57b7365` |
 | `src/docu/generate/facts.py` | `50ee7dba477a` |
-| `src/docu/generate/markdown.py` | `ac8d352359e7` |
+| `src/docu/generate/markdown.py` | `0fe6e2ac8f16` |
+| `src/docu/generate/narrative.py` | `d7df3d4837a1` |
 | `src/docu/generate/ops.py` | `cee221559089` |
-| `src/docu/generate/pipeline.py` | `8fb46f8656cc` |
+| `src/docu/generate/pipeline.py` | `66c5710fefd8` |
 | `src/docu/index/__init__.py` | `06566a17f409` |
 | `src/docu/index/chunker.py` | `7a6418ba69aa` |
 | `src/docu/index/freshness.py` | `076f96a3fb8b` |

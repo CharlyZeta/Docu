@@ -132,12 +132,12 @@ class DictionaryTests(unittest.TestCase):
     def test_section_lists_entities_and_types(self) -> None:
         facts = symbol_facts(JavaLangAdapter().symbols("Pedido.java", JAVA))
         document = render_l1("demo", facts, {}, {})
-        self.assertIn("## 8. Diccionario de datos", document)
+        self.assertIn("## 10. Diccionario de datos", document)
         self.assertIn("| `Pedido` | `clientes` | `List<Cliente>` |", document)
 
     def test_without_fields_the_gap_is_declared(self) -> None:
         document = render_l1("demo", [], {}, {})
-        self.assertIn("## 8. Diccionario de datos", document)
+        self.assertIn("## 10. Diccionario de datos", document)
         self.assertIn("Sin evidencia", document)
 
 

@@ -133,7 +133,20 @@ def render_l1(
     lines = _header(project, "Manual técnico (Nivel 1)", meta, facts)
     counts = _counts(facts)
 
-    lines += ["## 1. Resumen", ""]
+    lines += ["## 1. Introducción", ""]
+    intro = str(meta.get("intro") or "").strip()
+    if intro:
+        lines += [
+            "> Introducción compuesta con hechos citados: cada frase sale de un conteo o de la propia "
+            "documentación del proyecto. No es prosa libre.",
+            "",
+            intro,
+            "",
+        ]
+    else:
+        lines += [NO_EVIDENCE, ""]
+
+    lines += ["## 2. Resumen", ""]
     lines += [
         f"- Módulos de build: **{counts.get('module', 0)}** · paquetes: **{counts.get('package', 0)}**",
         f"- Dependencias declaradas: **{counts.get('dependency', 0)}**",
@@ -143,7 +156,47 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 2. Arquitectura: módulos y paquetes", ""]
+    lines += ["## 3. Intención y decisiones", ""]
+    intents = _dedupe(_by_kind(facts, "intent"))
+    decisions = _dedupe(_by_kind(facts, "decision"))
+    if intents:
+        lines += [
+            "**Qué dice el proyecto que es.** Extraído de sus docstrings y de su documentación; la "
+            "columna *Cita* lleva al párrafo exacto.",
+            "",
+            _table(
+                ["Declaración", "Intención", "Cita"],
+                [
+                    [f"`{fact.subject}`", fact.detail[:220], _cite(fact.citation)]
+                    for fact in intents
+                ],
+            ),
+            "",
+        ]
+    if decisions:
+        lines += [
+            "**Decisiones registradas.** De ADRs, contratos y comentarios que explican un porqué: el "
+            "lugar donde el equipo dejó escrito *por qué* algo es así.",
+            "",
+            _table(
+                ["Decisión", "Estado y contexto", "Cita"],
+                [
+                    [f"`{fact.subject}`", fact.detail[:240], _cite(fact.citation)]
+                    for fact in decisions
+                ],
+            ),
+            "",
+        ]
+    if not intents and not decisions:
+        lines += [
+            NO_EVIDENCE,
+            "",
+            "> El proyecto no declara su intención en docstrings, README ni ADRs, ni deja comentarios "
+            "que expliquen un porqué. Esta sección no la inventa.",
+            "",
+        ]
+
+    lines += ["## 4. Arquitectura: módulos y paquetes", ""]
     module_rows = [
         [f"`{fact.subject}`", fact.detail, _cite(fact.citation)]
         for fact in _by_kind(facts, "module")
@@ -170,7 +223,7 @@ def render_l1(
             "",
         ]
 
-    lines += ["## 3. Diagramas", ""]
+    lines += ["## 5. Diagramas", ""]
     lines += _diagrams_block(diagrams, facts)
 
     parent = _dedupe(_by_kind(facts, "parent"))
@@ -181,7 +234,7 @@ def render_l1(
         rows += [[f"`{f.subject}`", "propiedad", f.detail, _cite(f.citation)] for f in properties]
         lines += [_table(["Elemento", "Tipo", "Valor", "Cita"], rows), ""]
 
-    lines += ["## 4. Dependencias", ""]
+    lines += ["## 6. Dependencias", ""]
     lines += [
         _table(
             ["Artefacto", "Versión", "Scope", "Cita"],
@@ -193,7 +246,7 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 5. API HTTP", ""]
+    lines += ["## 7. API HTTP", ""]
     lines += [
         _table(
             ["Verbo", "Ruta", "Handler", "Cita"],
@@ -210,7 +263,7 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 6. Configuración", ""]
+    lines += ["## 8. Configuración", ""]
     lines += [
         _table(
             ["Clave", "Valor", "Cita"],
@@ -222,7 +275,7 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 7. Tipos", ""]
+    lines += ["## 9. Tipos", ""]
     lines += [
         _table(
             ["Tipo", "Nombre", "Anotaciones", "Cita"],
@@ -241,7 +294,7 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 8. Diccionario de datos", ""]
+    lines += ["## 10. Diccionario de datos", ""]
     fields = _by_kind(facts, "field")
     if fields:
         lines += [
@@ -271,7 +324,7 @@ def render_l1(
     else:
         lines += [NO_EVIDENCE, ""]
 
-    lines += ["## 9. Índice de métodos", ""]
+    lines += ["## 11. Índice de métodos", ""]
     methods = _by_kind(facts, "method")
     rows = [
         [f"`{fact.subject}`", f"`{(fact.detail or '')[:90]}`", _cite(fact.citation)] for fact in methods[:200]
@@ -280,7 +333,7 @@ def render_l1(
     if len(methods) > 200:
         lines += [f"_({len(methods) - 200} métodos adicionales omitidos del índice)_.", ""]
 
-    lines += ["## 10. Documentos y fuentes de referencia", ""]
+    lines += ["## 12. Documentos y fuentes de referencia", ""]
     pdfs = _by_kind(facts, "pdf_document")
     web = _by_kind(facts, "web_source")
     lines += [
@@ -312,7 +365,7 @@ def render_l1(
             "",
         ]
 
-    lines += ["## 11. Alcance y límites", ""]
+    lines += ["## 13. Alcance y límites", ""]
     lines += [
         "Secciones aplicables a este proyecto (y por tanto exigibles en la compuerta): "
         f"**{meta.get('applicable', '—') or '—'}**.",
@@ -337,7 +390,7 @@ def render_l1(
         "",
     ]
 
-    lines += ["## 12. Trazabilidad", ""]
+    lines += ["## 14. Trazabilidad", ""]
     lines += [
         "Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos fuente y su "
         "huella son:",

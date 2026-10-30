@@ -206,7 +206,7 @@ class PipelineTests(unittest.TestCase):
             code = main(["gen", "--root", str(root), "--level", "l1"])
             self.assertEqual(code, 0)
             document = (root / "docs" / "generated" / "l1-manual-tecnico.md").read_text(encoding="utf-8")
-            self.assertIn("## 10. Documentos y fuentes de referencia", document)
+            self.assertIn("## 12. Documentos y fuentes de referencia", document)
             self.assertIn("https://docs.python.org/3/library/ast.html", document)
             self.assertIn("web/docs-python-org", document)
 
