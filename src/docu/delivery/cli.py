@@ -21,8 +21,19 @@ from docu.delivery.exit_codes import ExitCode
 DEFAULT_PROFILE = "docu.profile.yaml"
 
 _EPILOG = """\
-Códigos de salida: 0 ok · 10 sin cambios · 20 revision · 30 presupuesto agotado
+Códigos de salida: 0 ok · 10 sin cambios · 20 revisión · 30 presupuesto agotado
                   40 fuente no citable · 50 no implementado · 60 perfil inválido
+                  70 error interno
+
+Qué devuelve cada comando:
+  gen     0 publicado · 20 la compuerta pide revisión · 10 sin cambios (--incremental)
+          40 nada documentable · 60 perfil inválido
+  status  0 todo fresco · 20 hay páginas stale (usá `docu gen --incremental`)
+  audit   0 sin hallazgos · 20 hallazgos o nota bajo `--min-score`
+  site    0 web escrita · 40 nada documentable
+  pdf     0 texto extraído · 10 no hay PDFs · 40 ningún PDF usable
+  web     0 capturado · 10 sin URLs declaradas · 40 ninguna fuente capturada
+  ci      0 verde · 20 frescura rota o compuerta en revisión
 """
 
 
@@ -56,6 +67,11 @@ def _build_parser() -> argparse.ArgumentParser:
     # `--profile` viaja también en el subcomando: exigir el orden global es fricción gratuita.
     p_gen.add_argument("--profile", default=argparse.SUPPRESS, help="perfil del proyecto")
     p_gen.add_argument("--level", choices=["l1", "l2", "l3", "l4"], action="append", default=None)
+    p_gen.add_argument(
+        "--levels",
+        default=None,
+        help="niveles separados por coma (alias de --level, p. ej. --levels l1,l2)",
+    )
     p_gen.add_argument("--mode", choices=[m.value for m in Mode], default=None)
     p_gen.add_argument("--root", default=".", help="raíz del proyecto a documentar")
     p_gen.add_argument("--out", default=None, help="directorio de salida (default: el del perfil)")
@@ -88,6 +104,11 @@ def _build_parser() -> argparse.ArgumentParser:
     p_status.add_argument("--profile", default=argparse.SUPPRESS)
     p_status.add_argument("--manifest", default=None)
     p_status.add_argument("--json", action="store_true", help="salida legible por máquina")
+    p_status.add_argument(
+        "--why",
+        action="store_true",
+        help="lista los archivos que invalidaron la frescura (agregados, modificados, eliminados)",
+    )
 
     p_ci = sub.add_parser("ci", help="integraciones de CI (validar y proponer PR)")
     ci_sub = p_ci.add_subparsers(dest="ci_command", required=True)
@@ -218,7 +239,11 @@ def _resolve(args: argparse.Namespace, root: Path) -> ResolvedOptions:
     except ProfileError as error:
         raise CliError(f"perfil inválido: {error}", ExitCode.CONFIG_ERROR) from None
 
-    cli_levels = tuple(getattr(args, "level", None) or ())
+    # `--levels l1,l2` es alias cómodo de `--level l1 --level l2`.
+    shorthand = getattr(args, "levels", None)
+    cli_levels = tuple(
+        item.strip() for item in (shorthand or "").split(",") if item.strip()
+    ) or tuple(getattr(args, "level", None) or ())
     levels = cli_levels or (profile.levels if profile else ("l1", "l4"))
     out = getattr(args, "out", None) or (profile.output_dir if profile else "docs/generated")
     ttl = getattr(args, "ttl_days", None) or (profile.ttl_days if profile else 90)
@@ -238,7 +263,7 @@ def _resolve(args: argparse.Namespace, root: Path) -> ResolvedOptions:
 
 def _force_utf8() -> None:
     """Consolas Windows heredadas usan cp1252: sin esto, los acentos salen rotos."""
-    for stream in (sys.stdout, sys.stderr):
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
         reconfigure = getattr(stream, "reconfigure", None)
         if reconfigure is not None:
             try:
@@ -833,7 +858,7 @@ def _run_generate(args: argparse.Namespace) -> int:
     print(
         f"{result.project}: {len(result.facts)} afirmaciones · "
         f"sin cita: {len(result.unsupported)} · "
-        f"completitud {result.metrics.completeness:.1f}/10 · "
+        f"completitud de compuerta {result.metrics.completeness:.1f}/10 · "
         f"concisión {result.metrics.conciseness:.1f}/10 · {result.elapsed_s:.2f}s · {origin}"
     )
     if states:
@@ -853,6 +878,14 @@ def _run_generate(args: argparse.Namespace) -> int:
     else:
         for doc in result.docs:
             print(f"  escrito: {doc.path}")
+        if result.docs:
+            relative = str(options.out_dir).replace(str(root), "").strip("\\/").replace("\\", "/")
+            folder = relative or options.out_dir.name
+            print(
+                "  aislar del repo (git y prettier revisan archivos no versionados):\n"
+                f'    echo "{folder}/" >> .gitignore\n'
+                f'    echo "{folder}/" >> .prettierignore'
+            )
     if args.incremental and not result.docs:
         print("sin cambios: todas las páginas están frescas")
         return int(ExitCode.NO_CHANGES)
@@ -902,7 +935,7 @@ def _run_status(args: argparse.Namespace, quiet_ok: bool) -> int:
     print(f"proyecto: {manifest.project if manifest else Path(args.root).name} ({origin})")
     for level, state in states.items():
         marker = {"fresh": "✔", "stale": "✖", "expired": "⏰"}.get(state.value, "?")
-        print(f"  {marker} {level}: {state.value}  ({hashes[level][:19]}…)")
+        print(f"  {marker} {level}: {state.value}  ({hashes.get(level, "—")[:19]}…)")
 
     all_fresh = manifest is not None and all(state is DocState.FRESH for state in states.values())
     if all_fresh:
@@ -914,7 +947,41 @@ def _run_status(args: argparse.Namespace, quiet_ok: bool) -> int:
             "hay páginas desactualizadas: ejecuta `docu gen --incremental` o `docu ci regen`",
             file=sys.stderr,
         )
+        if getattr(args, "why", False):
+            _print_status_why(root, options, manifest)
     return int(ExitCode.NEEDS_REVIEW)
+
+
+def _print_status_why(root: Path, options, manifest) -> None:
+    """Qué archivos invalidaron la frescura. Sin esto, «stale» es una acusación sin nombre.
+
+    Compara las huellas guardadas en el manifest con las actuales: lista agregados, modificados y
+    eliminados. Editar `.gitignore` aparece aquí como lo que es —cambia el inventario— en lugar de
+    como un fantasma.
+    """
+    from docu.generate.pipeline import collect_facts
+
+    _facts, current = collect_facts(
+        root, include=options.include, exclude=options.exclude
+    )
+    recorded: dict[str, str] = {}
+    for level in options.levels:
+        entry = manifest.entry(level) if manifest is not None else None
+        if entry is not None and entry.sources:
+            recorded = dict(entry.sources)
+            break
+    if not recorded:
+        print("  no hay inventario guardado: la primera generación lo escribirá", file=sys.stderr)
+        return
+    added = sorted(set(current) - set(recorded))
+    removed = sorted(set(recorded) - set(current))
+    changed = sorted(path for path in set(current) & set(recorded) if current[path] != recorded[path])
+    print(f"  causa ({len(added) + len(removed) + len(changed)} archivos):", file=sys.stderr)
+    for label, paths in (("nuevo", added), ("modificado", changed), ("eliminado", removed)):
+        for path in paths[:10]:
+            print(f"    {label}: {path}", file=sys.stderr)
+        if len(paths) > 10:
+            print(f"    {label}: … y {len(paths) - 10} más", file=sys.stderr)
 
 
 def _run_ci_regen(args: argparse.Namespace) -> int:

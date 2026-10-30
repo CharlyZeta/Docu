@@ -85,6 +85,16 @@ class ToolTests(unittest.TestCase):
         self._tmp = tempfile.TemporaryDirectory()
         self.root = Path(self._tmp.name)
         self.docs = build_docs(self.root)
+        # Fixture mínimo para `verify_citation` y `get_diagram`.
+        (self.root / "src").mkdir(exist_ok=True)
+        (self.root / "src" / "app.py").write_text(
+            "class App:\n    def run(self):\n        return 1\n", encoding="utf-8"
+        )
+        diagrams = self.docs / "diagrams"
+        diagrams.mkdir(exist_ok=True)
+        (diagrams / "arquitectura.mmd").write_text(
+            'flowchart LR\n    a["a"]\n    b["b"]\n    a --> b\n', encoding="utf-8"
+        )
         self.server = build_server(self.root, self.docs)
 
     def tearDown(self) -> None:
@@ -102,6 +112,48 @@ class ToolTests(unittest.TestCase):
         assert response is not None
         content = response["result"]["content"][0]["text"]
         return json.loads(content)
+
+    def test_list_projects_uses_the_documented_name(self) -> None:
+        """F-05: devolvía `name: ""` porque no leía el nombre del manifest."""
+        payload = self._call("list_projects", {})
+        self.assertTrue(payload["projects"])
+        for project in payload["projects"]:
+            self.assertTrue(project["name"], msg="el nombre no puede venir vacío")
+
+    def test_verify_citation_accepts_a_valid_range(self) -> None:
+        payload = self._call("verify_citation", {"citation": "src/app.py#L1-L3"})
+        self.assertTrue(payload["ok"])
+        self.assertIn("class", payload["content"])
+
+    def test_verify_citation_rejects_a_missing_file(self) -> None:
+        payload = self._call("verify_citation", {"citation": "src/noexiste.py#L1-L2"})
+        self.assertFalse(payload["ok"])
+        self.assertIn("no existe", payload["reason"])
+
+    def test_verify_citation_rejects_a_bad_range(self) -> None:
+        payload = self._call("verify_citation", {"citation": "src/app.py#L1-L9999"})
+        self.assertFalse(payload["ok"])
+        self.assertIn("rango", payload["reason"])
+
+    def test_verify_citation_requires_the_format(self) -> None:
+        with self.assertRaises(ToolError):
+            self.server.call_tool("verify_citation", {"citation": "src/app.py"})
+
+    def test_get_diagram_lists_and_returns(self) -> None:
+        listing = self._call("get_diagram", {})
+        self.assertIn("arquitectura", listing["available"])
+        payload = self._call("get_diagram", {"name": "arquitectura"})
+        self.assertIn("flowchart", payload["mermaid"])
+
+    def test_get_diagram_rejects_unknown_name(self) -> None:
+        with self.assertRaises(ToolError):
+            self.server.call_tool("get_diagram", {"name": "no-existe"})
+
+    def test_list_unsupported_reports_languages_and_gaps(self) -> None:
+        payload = self._call("list_unsupported", {})
+        self.assertIn("unsupported_languages", payload)
+        self.assertIn("sections_without_evidence", payload)
+        self.assertIsInstance(payload["uncitable_facts"], int)
 
     def test_search_docs_returns_citations(self) -> None:
         payload = self._call("search_docs", {"query": "refresh token"})

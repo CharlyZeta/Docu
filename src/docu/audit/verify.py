@@ -310,7 +310,17 @@ def audit(
             level = f"l{match.group(1)}" if match else path.stem
             documents[level] = path.read_text(encoding="utf-8")
 
-    report = AuditReport(project=profile.project if profile else root_path.name)
+    # El nombre documentado vive en el manifest; el del directorio es un fallback.
+    from docu.index.manifest import Manifest
+    from docu.generate.pipeline import manifest_file
+
+    manifest = Manifest.load(manifest_file(root_path, None))
+    project_name = (
+        (profile.project if profile and profile.project else None)
+        or (manifest.project if manifest is not None else None)
+        or root_path.name
+    )
+    report = AuditReport(project=project_name)
     report.checks["citations"] = check_citations(facts, root_path)
     report.checks["duplicates"] = check_duplicates(facts)
     report.checks["consistency"] = check_consistency(documents)

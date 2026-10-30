@@ -1,4 +1,5 @@
 erDiagram
+    %% recorte: 24 de 74 entidades (las de más relaciones)
     ArchitectureModel {
         tuple_DeclaredComponent components
         tuple_Route routes
@@ -16,10 +17,6 @@ erDiagram
         Mapping_str__Any metadata
         str schema_version
     }
-    AuditReport {
-        str project
-        dict_str__Check checks
-    }
     AutoIndex {
         Sequence_Segment segments
         object embedder
@@ -34,52 +31,9 @@ erDiagram
         list_int _lengths
         float _avgdl
     }
-    Budget {
-        float max_cost_usd
-        float max_seconds
-        int max_pages
-        int max_llm_calls
-        float spent_usd
-        float elapsed_s
-        int pages_written
-        int llm_calls
-    }
     Candidate {
         Pattern pattern
         Sequence_str reasons
-    }
-    Case {
-        str id
-        str category
-        str question
-        tuple_Expected expected
-        str answer
-        str notes
-        str query
-    }
-    CaseResult {
-        str case_id
-        str category
-        float recall
-        bool hit
-        float mrr
-        bool line_hit
-        tuple_str retrieved
-        float elapsed_ms
-    }
-    Change {
-        str field
-        object before
-        object after
-        str reason
-        bool applied
-    }
-    Check {
-        str name
-        int total
-        int failed
-        tuple_str details
-        str note
     }
     Chunk {
         str chunk_id
@@ -94,28 +48,6 @@ erDiagram
         SymbolKind symbol_kind
         int line_start
         int line_end
-    }
-    Chunker {
-        str name
-    }
-    Claim {
-        str text
-        Sequence_str evidence
-    }
-    CodeChunk {
-        str path
-        int start
-        int end
-        str text
-        str symbol
-        str kind
-        tuple_str tokens
-        tuple_str exact_names
-    }
-    CodeFacts {
-        tuple_RouteFact routes
-        Mapping_str__str components
-        tuple_tuple_str__str dependencies
     }
     CodeIndex {
         list_CodeChunk chunks
@@ -141,88 +73,11 @@ erDiagram
         dict_str__str rendered
         str schema_version
     }
-    Decision {
-        str action
-        str pattern_id
-        float delta
-        Sequence_str reasons
-    }
-    DeclaredComponent {
-        str name
-        str kind
-        tuple_Route provides
-        tuple_str depends_on
-        str source
-    }
-    DetectedPackage {
-        str name
-        str language
-        tuple_str files
-        str declaration
-    }
-    Diagram {
-        str name
-        str kind
-        str mermaid
-        str note
-    }
-    Discrepancy {
-        str kind
-        str subject
-        str detail
-        str code_citation
-        str declaration_source
-    }
-    DocEntry {
-        str level
-        str path
-        str input_hash
-        str generated_at
-        str content_hash
-        int ttl_days
-        Mapping_str__str sources
-    }
-    DocIndex {
-        list_Section sections
-        float k1
-        float b
-        Mapping_str__Sequence_st glossary
-        dict_str__int _df
-        float _avgdl
-    }
     DriftReport {
         ArchitectureModel model
         list_Discrepancy discrepancies
         int routes_in_code
         int components_in_code
-    }
-    Embedder {
-        str embedder_id
-        int dim
-    }
-    Expected {
-        str path
-        str symbol
-        tuple_int__int lines
-        bool optional
-    }
-    Fact {
-        str kind
-        str subject
-        str detail
-        str citation
-        Mapping_str__str attributes
-    }
-    FederationPayload {
-        Mapping_str__object data
-    }
-    FreshnessRecord {
-        str node_id
-        str input_hash
-        DocState state
-        datetime generated_at
-        int ttl_days
-        str schema_version
     }
     GateDecision {
         GateOutcome outcome
@@ -232,11 +87,6 @@ erDiagram
         Thresholds thresholds
         bool require_zero_unsupported
         bool require_fresh
-    }
-    GeneratedDoc {
-        str level
-        Path path
-        str content
     }
     GenerationResult {
         str project
@@ -264,40 +114,6 @@ erDiagram
         dict_str__list_Segment _by_name
         list_list_float _vectors
     }
-    IgnoreRule {
-        str raw
-        str pattern
-        bool negate
-        bool directory_only
-        bool anchored
-        re_Pattern_str regex
-    }
-    InputComponents {
-        str source_content
-        str deps_signature
-        str template
-        str embedder
-        str chunker
-        str profile
-    }
-    JavaLangAdapter {
-        str language
-        tuple_str file_globs
-    }
-    Judge {
-        str judge_id
-        float temperature
-    }
-    LangAdapter {
-        str language
-        Sequence_str file_globs
-    }
-    Manifest {
-        str project
-        list_DocEntry docs
-        Mapping_str__str versions
-        str schema_version
-    }
     McpServer {
         Path root
         Path docs_dir
@@ -319,21 +135,6 @@ erDiagram
         int unsupported_claims
         str schema_version
     }
-    OnnxEmbedder {
-        Path model_dir
-        str embedder_id
-        int max_length
-        int batch_size
-        object _session
-        object _tokenizer
-        tuple_str _input_names
-        int _dim
-    }
-    Page {
-        str name
-        str title
-        str html
-    }
     Pattern {
         str pattern_id
         str stack
@@ -341,32 +142,6 @@ erDiagram
         Mapping_str__float metrics
         int runs
         str notes
-    }
-    PatternLibrary {
-        dict_str__Pattern patterns
-        list_dict_str__object history
-        str version
-        str schema_version
-    }
-    PdfDocument {
-        str rel
-        int pages
-        int chars
-        str method
-        str status
-        bool usable
-        tuple_str warnings
-    }
-    PdfPage {
-        int number
-        str text
-    }
-    PdfText {
-        tuple_PdfPage pages
-        int total_pages
-        int chars
-        str method
-        tuple_str warnings
     }
     Profile {
         str project
@@ -382,22 +157,6 @@ erDiagram
         float promotion_delta
         float rollback_drop
     }
-    ProjectRef {
-        str name
-        Path root
-        Path docs_dir
-    }
-    Publisher {
-        str publisher_id
-    }
-    PythonLangAdapter {
-        str language
-        tuple_str file_globs
-    }
-    RenderAdapter {
-        str name
-        str target
-    }
     Report {
         str project
         int k
@@ -410,9 +169,6 @@ erDiagram
         str generated_at
         str schema_version
     }
-    Reranker {
-        str reranker_id
-    }
     ResolvedOptions {
         Profile profile
         str project
@@ -423,15 +179,6 @@ erDiagram
         tuple_str exclude
         Thresholds thresholds
         Path manifest
-    }
-    Route {
-        str verb
-        str path
-    }
-    RouteFact {
-        str key
-        str citation
-        str handler
     }
     RunRecord {
         str run_id
@@ -447,34 +194,6 @@ erDiagram
         int pages_skipped
         float cost_usd
     }
-    Section {
-        str document
-        str heading
-        str body
-        str level
-        tuple_str tokens
-        tuple_str citations
-    }
-    Segment {
-        str path
-        int start
-        int end
-        str text
-        tuple_str tokens
-        tuple_str exact_names
-        str citation
-    }
-    Snapshot {
-        str url
-        str text
-        str sha
-        str captured_at
-        int status_code
-    }
-    SourceAdapter {
-        str name
-        type kind
-    }
     Symbol {
         str name
         str qualname
@@ -486,11 +205,6 @@ erDiagram
         Sequence__Symbol children
         Sequence_str annotations
         str schema_version
-    }
-    SymbolChunker {
-        str name
-        int max_tokens
-        int overlap_tokens
     }
     SymbolIndex {
         Sequence_Segment segments
@@ -507,23 +221,6 @@ erDiagram
         float completeness
         float attribution
         float conciseness
-    }
-    TypeScriptLangAdapter {
-        str language
-        tuple_str file_globs
-    }
-    VectorStore {
-        str store_id
-    }
-    WebDocument {
-        str url
-        str rel
-        str sha
-        str captured_at
-        int lines
-        int chars
-        bool usable
-        str error
     }
     _Handler {
         sinTipo server_version

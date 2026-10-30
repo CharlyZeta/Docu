@@ -82,7 +82,7 @@ def _header(
         "",
         f"Generado por `docu {meta.get('version', '0.1.0')}`{stamp} · "
         f"fuente `{meta.get('digest', '—')}` · "
-        f"archivos: {meta.get('sources', '0')} · "
+        f"archivos analizados: {meta.get('sources', '0')} · "
         f"afirmaciones: {len(facts)} · sin cita: {meta.get('unsupported', '0')}",
         "",
         "> Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del "
@@ -163,6 +163,12 @@ def render_l1(
         lines += [_table(["Paquete", "Lenguaje", "Archivos", "Cita"], package_rows), ""]
     if not module_rows and not package_rows:
         lines += [NO_EVIDENCE, ""]
+    if package_rows:
+        lines += [
+            "> Las unidades por carpeta sólo se listan con **3 archivos o más**: por debajo de ese "
+            "umbral no son una unidad de arquitectura y se omiten a propósito, no por descuido.",
+            "",
+        ]
 
     lines += ["## 3. Diagramas", ""]
     lines += _diagrams_block(diagrams, facts)

@@ -451,3 +451,33 @@ Ordenados por retorno esperado, no por facilidad. Ninguno está empezado.
 
 **Regla que no cambia:** cualquier feature nuevo se apoya en los hechos con cita; si no puede citar, se
 declara como hueco.
+
+---
+
+## 15. Feedback de la prueba en un proyecto ajeno (SalesHub)
+
+18 hallazgos reportados por el agente que probó `docu` sobre un repositorio real. Estado al cerrar:
+
+| ID | Hallazgo | Estado |
+|---|---|---|
+| F-01 | `.mjs` no se indexaba | **corregido**: `.mjs` y `.cjs` soportados |
+| F-02 | `coverage/` indexado pese al `.gitignore` | **corregido**: se lee `.gitignore` y el piso de exclusiones aplica siempre |
+| F-03 | El índice de búsqueda y el manual no coincidían (79 vs 95 archivos) | **corregido**: se publican `files_indexed` y `files_documented` |
+| F-04 | Mojibake en la query MCP (`dÃ³nde`) | **corregido**: stdin/out en UTF-8; verificado con "dónde" y "ñ" |
+| F-05 | `list_projects` devolvía `name: ""` | **corregido**: nombre tomado del manifest |
+| F-06 | No usa la documentación existente del repo como evidencia | **pendiente**: P1 de la sección 14 |
+| F-07 | Cualquier cambio invalidaba la frescura | **mitigado**: `docu status --why` nombra los archivos responsables |
+| F-08 | Paquetes con menos de 3 archivos omitidos en silencio | **corregido**: el umbral se declara en el documento |
+| F-09 | Exit code de `status` sin documentar | **corregido**: devuelve 20 (documentado) y `--help` lista el código de cada comando |
+| F-10 | Canal denso inactivo sin explicación | **corregido**: `capabilities.dense_reason` |
+| F-11 | La fuerza de la cita no se distingue | **parcial**: los paquetes por carpeta citan el archivo completo y se etiquetan `(directorio)` |
+| F-12 | Nombre de proyecto inconsistente | **corregido**: `audit` y MCP usan el nombre del manifest |
+| F-13 | No advertía aislar la salida de git/Prettier | **corregido**: `gen` imprime las dos líneas para `.gitignore` y `.prettierignore` |
+| F-14 | Sin selección de niveles | **corregido**: `--levels l1,l2` |
+| F-15 | Faltaban `verify_citation`, `get_diagram`, `list_unsupported` | **corregido**: las tres implementadas y probadas |
+| F-16 | "Completitud 10/10" se leía como cobertura real | **corregido**: se muestra como **completitud de compuerta** |
+| F-17 | ERD de 25 KB en un archivo | **corregido**: recorte a 24 entidades con comentario de recorte (9 KB) |
+| F-18 | Aviso de PHP no configurable | **corregido**: al respetar `.gitignore`, el mirror dejó de contarse |
+
+**Lección de método:** las cuatro pruebas ciegas destaparon 12 defectos que ningún test interno
+encontraba, y el más grave (F-02) afectaba a **cualquier** proyecto sin perfil.

@@ -87,7 +87,7 @@ TYPE_LITERALS = frozenset(
 @dataclass(frozen=True, slots=True)
 class TypeScriptLangAdapter:
     language: str = "typescript"
-    file_globs: tuple[str, ...] = ("*.ts", "*.tsx", "*.js", "*.jsx")
+    file_globs: tuple[str, ...] = ("*.ts", "*.tsx", "*.js", "*.jsx", "*.mjs", "*.cjs")
 
     # ------------------------------------------------------------------ simbolos
 

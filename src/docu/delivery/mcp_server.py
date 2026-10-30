@@ -31,8 +31,11 @@ READ_ONLY_TOOLS = (
     "get_module",
     "get_symbol_doc",
     "list_gaps",
+    "list_unsupported",
     "get_architecture",
     "get_freshness",
+    "verify_citation",
+    "get_diagram",
 )
 
 #: Esquema comun: todas las herramientas aceptan `project` cuando el servidor sirve varios repos.
@@ -115,6 +118,44 @@ TOOL_DEFINITIONS: tuple[dict[str, Any], ...] = (
         "description": "Estado de frescura de cada nivel (fresh/stale/expired) según el manifest.",
         "inputSchema": {"type": "object", "properties": {"project": PROJECT_PROPERTY}},
     },
+    {
+        "name": "verify_citation",
+        "description": (
+            "Verifica una cita `ruta#Lx-Ly` contra el repositorio y devuelve las líneas citadas. "
+            "Es la comprobación que sostiene todo el documento: si la cita no resuelve, la "
+            "afirmación no vale."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "citation": {"type": "string", "description": "Cita en formato ruta#L10-L20"},
+                "project": PROJECT_PROPERTY,
+            },
+            "required": ["citation"],
+        },
+    },
+    {
+        "name": "get_diagram",
+        "description": (
+            "Devuelve un diagrama Mermaid generado (arquitectura, modelo-de-datos, api-flujo, "
+            "clases-*), o la lista de disponibles si no se pide nombre."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string", "description": "Nombre del diagrama sin extensión"},
+                "project": PROJECT_PROPERTY,
+            },
+        },
+    },
+    {
+        "name": "list_unsupported",
+        "description": (
+            "Qué NO está documentado y por qué: lenguajes no soportados, secciones sin evidencia y "
+            "fuentes externas no capturadas."
+        ),
+        "inputSchema": {"type": "object", "properties": {"project": PROJECT_PROPERTY}},
+    },
 )
 
 
@@ -129,6 +170,36 @@ class ProjectRef:
     @property
     def has_docs(self) -> bool:
         return self.docs_dir.exists() and any(self.docs_dir.glob("*.md"))
+
+    @property
+    def project_name(self) -> str:
+        """Nombre documentado del proyecto (el del manifest), no el del directorio.
+
+        Sin esto, `list_projects` devolvía `name: ""` y un agente multi-proyecto no podía saber qué
+        estaba consultando.
+        """
+        from docu.generate.pipeline import manifest_file
+        from docu.index.manifest import Manifest
+
+        manifest = Manifest.load(manifest_file(self.root, None))
+        if manifest is not None and manifest.project:
+            return manifest.project
+        return self.root.name
+
+
+def _documented_files(ref: "ProjectRef") -> int:
+    """Archivos que el manual declaró haber analizado (inventario del manifest)."""
+    from docu.generate.pipeline import manifest_file
+    from docu.index.manifest import Manifest
+
+    manifest = Manifest.load(manifest_file(ref.root, None))
+    if manifest is None:
+        return 0
+    for level in ("l1", "l2", "l4"):
+        entry = manifest.entry(level)
+        if entry is not None and entry.sources:
+            return len(entry.sources)
+    return 0
 
 
 class ToolError(Exception):
@@ -250,7 +321,7 @@ class McpServer:
         return {
             "projects": [
                 {
-                    "name": ref.name,
+                    "name": ref.project_name,
                     "root": str(ref.root),
                     "docs_dir": str(ref.docs_dir),
                     "documented": ref.has_docs,
@@ -279,7 +350,12 @@ class McpServer:
         return {
             "project": ref.name,
             "query": query,
-            "capabilities": index.capabilities(),  # type: ignore[attr-defined]
+            "capabilities": {
+                **index.capabilities(),  # type: ignore[attr-defined]
+                # F-03: el manual cuenta todos los archivos analizados; el índice, los de código.
+                # Se publican ambos para que la diferencia no sea silenciosa.
+                "files_documented": _documented_files(ref),
+            },
             "results": [chunk.to_dict(score) for chunk, score in hits],
             "total": len(hits),
         }
@@ -391,6 +467,86 @@ class McpServer:
             "generated": manifest is not None,
             "states": {level: state.value for level, state in states.items()},
             "hashes": hashes,
+        }
+
+    def _tool_verify_citation(self, arguments: Mapping[str, Any]) -> dict[str, Any]:
+        """Comprueba una cita contra el repositorio: existencia, rango y contenido."""
+        import re as regex
+
+        ref = self.resolve(arguments)
+        raw = str(arguments.get("citation") or "").strip()
+        match = regex.match(r"(?P<path>.+?)#L(?P<start>\d+)-L(?P<end>\d+)$", raw)
+        if match is None:
+            raise ToolError("la cita debe tener formato `ruta#L10-L20`")
+        path = ref.root / match.group("path")
+        start, end = int(match.group("start")), int(match.group("end"))
+        if not path.is_file():
+            return {
+                "citation": raw,
+                "ok": False,
+                "reason": "el archivo citado no existe",
+                "project": ref.project_name,
+            }
+        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+        if start < 1 or end > len(lines) or end < start:
+            return {
+                "citation": raw,
+                "ok": False,
+                "reason": f"rango fuera del archivo ({len(lines)} líneas)",
+                "project": ref.project_name,
+            }
+        span = lines[start - 1 : min(end, start + 60)]
+        return {
+            "citation": raw,
+            "ok": True,
+            "project": ref.project_name,
+            "lines": len(lines),
+            "content": "\n".join(span),
+            "truncated": end - start + 1 > len(span),
+        }
+
+    def _tool_get_diagram(self, arguments: Mapping[str, Any]) -> dict[str, Any]:
+        ref = self.resolve(arguments)
+        directory = ref.docs_dir / "diagrams"
+        available = sorted(path.stem for path in directory.glob("*.mmd")) if directory.is_dir() else []
+        name = str(arguments.get("name") or "").strip()
+        if not name:
+            return {"project": ref.project_name, "available": available}
+        target = directory / f"{name}.mmd"
+        if not target.is_file():
+            raise ToolError(
+                f"diagrama desconocido: {name!r}. Disponibles: {', '.join(available) or 'ninguno'}"
+            )
+        return {
+            "project": ref.project_name,
+            "name": name,
+            "mermaid": target.read_text(encoding="utf-8"),
+            "available": available,
+        }
+
+    def _tool_list_unsupported(self, arguments: Mapping[str, Any]) -> dict[str, Any]:
+        """Lo que el documento declara como no cubierto: lenguajes, secciones y fuentes."""
+        from docu.generate.facts import unsupported as uncitable
+        from docu.generate.pipeline import collect_facts, unsupported_sources
+        from docu.generate.markdown import NO_EVIDENCE_MARKER
+
+        ref = self.resolve(arguments)
+        facts, _sources = collect_facts(ref.root)
+        languages = unsupported_sources(ref.root)
+        gaps: list[str] = []
+        for document in sorted(ref.docs_dir.glob("*.md")):
+            text = document.read_text(encoding="utf-8", errors="replace")
+            for block in text.split("## ")[1:]:
+                title = block.splitlines()[0].strip()
+                if NO_EVIDENCE_MARKER in block:
+                    gaps.append(f"{document.name}: {title}")
+        return {
+            "project": ref.project_name,
+            "unsupported_languages": {
+                extension: count for extension, count in languages.items()
+            },
+            "uncitable_facts": len(uncitable(facts)),
+            "sections_without_evidence": gaps,
         }
 
     # ------------------------------------------------------------------ protocolo

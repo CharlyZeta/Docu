@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:cc1c7` · archivos: 60 · afirmaciones: 1037 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:ad827` · archivos analizados: 60 · afirmaciones: 1043 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -10,7 +10,7 @@ Generado por `docu 0.1.0` · fuente `sha256:cc1c7` · archivos: 60 · afirmacion
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **91** · métodos: **485**
+- Tipos: **91** · métodos: **491**
 
 ## 2. Arquitectura: módulos y paquetes
 
@@ -32,9 +32,11 @@ Generado por `docu 0.1.0` · fuente `sha256:cc1c7` · archivos: 60 · afirmacion
 | `docu.retrieve` | python | 4 | `src/docu/retrieve/__init__.py#L1-L5` |
 | `eval` | python | 2 | `eval/__init__.py#L1-L1` |
 
+> Las unidades por carpeta sólo se listan con **3 archivos o más**: por debajo de ese umbral no son una unidad de arquitectura y se omiten a propósito, no por descuido.
+
 ## 3. Diagramas
 
-### Dependencias entre paquetes · 15 paquetes · 36 dependencias derivadas de imports
+### Dependencias entre paquetes · 15 paquetes · 37 dependencias derivadas de imports
 
 ```mermaid
 flowchart LR
@@ -57,6 +59,7 @@ flowchart LR
     docu_adapters_langs --> docu_core
     docu_audit --> docu_core
     docu_audit --> docu_generate
+    docu_audit --> docu_index
     docu_conformance --> docu_adapters_langs
     docu_conformance --> docu_core
     docu_conformance --> docu_generate
@@ -233,10 +236,11 @@ classDiagram
     }
 ```
 
-### modelo-de-datos · 74 entidades · 12 relaciones declaradas por tipo
+### modelo-de-datos · 24 de 74 entidades · 12 relaciones declaradas por tipo · 50 omitidas por recorte
 
 ```mermaid
 erDiagram
+    %% recorte: 24 de 74 entidades (las de más relaciones)
     ArchitectureModel {
         tuple_DeclaredComponent components
         tuple_Route routes
@@ -254,10 +258,6 @@ erDiagram
         Mapping_str__Any metadata
         str schema_version
     }
-    AuditReport {
-        str project
-        dict_str__Check checks
-    }
     AutoIndex {
         Sequence_Segment segments
         object embedder
@@ -272,52 +272,9 @@ erDiagram
         list_int _lengths
         float _avgdl
     }
-    Budget {
-        float max_cost_usd
-        float max_seconds
-        int max_pages
-        int max_llm_calls
-        float spent_usd
-        float elapsed_s
-        int pages_written
-        int llm_calls
-    }
     Candidate {
         Pattern pattern
         Sequence_str reasons
-    }
-    Case {
-        str id
-        str category
-        str question
-        tuple_Expected expected
-        str answer
-        str notes
-        str query
-    }
-    CaseResult {
-        str case_id
-        str category
-        float recall
-        bool hit
-        float mrr
-        bool line_hit
-        tuple_str retrieved
-        float elapsed_ms
-    }
-    Change {
-        str field
-        object before
-        object after
-        str reason
-        bool applied
-    }
-    Check {
-        str name
-        int total
-        int failed
-        tuple_str details
-        str note
     }
     Chunk {
         str chunk_id
@@ -332,28 +289,6 @@ erDiagram
         SymbolKind symbol_kind
         int line_start
         int line_end
-    }
-    Chunker {
-        str name
-    }
-    Claim {
-        str text
-        Sequence_str evidence
-    }
-    CodeChunk {
-        str path
-        int start
-        int end
-        str text
-        str symbol
-        str kind
-        tuple_str tokens
-        tuple_str exact_names
-    }
-    CodeFacts {
-        tuple_RouteFact routes
-        Mapping_str__str components
-        tuple_tuple_str__str dependencies
     }
     CodeIndex {
         list_CodeChunk chunks
@@ -379,88 +314,11 @@ erDiagram
         dict_str__str rendered
         str schema_version
     }
-    Decision {
-        str action
-        str pattern_id
-        float delta
-        Sequence_str reasons
-    }
-    DeclaredComponent {
-        str name
-        str kind
-        tuple_Route provides
-        tuple_str depends_on
-        str source
-    }
-    DetectedPackage {
-        str name
-        str language
-        tuple_str files
-        str declaration
-    }
-    Diagram {
-        str name
-        str kind
-        str mermaid
-        str note
-    }
-    Discrepancy {
-        str kind
-        str subject
-        str detail
-        str code_citation
-        str declaration_source
-    }
-    DocEntry {
-        str level
-        str path
-        str input_hash
-        str generated_at
-        str content_hash
-        int ttl_days
-        Mapping_str__str sources
-    }
-    DocIndex {
-        list_Section sections
-        float k1
-        float b
-        Mapping_str__Sequence_st glossary
-        dict_str__int _df
-        float _avgdl
-    }
     DriftReport {
         ArchitectureModel model
         list_Discrepancy discrepancies
         int routes_in_code
         int components_in_code
-    }
-    Embedder {
-        str embedder_id
-        int dim
-    }
-    Expected {
-        str path
-        str symbol
-        tuple_int__int lines
-        bool optional
-    }
-    Fact {
-        str kind
-        str subject
-        str detail
-        str citation
-        Mapping_str__str attributes
-    }
-    FederationPayload {
-        Mapping_str__object data
-    }
-    FreshnessRecord {
-        str node_id
-        str input_hash
-        DocState state
-        datetime generated_at
-        int ttl_days
-        str schema_version
     }
     GateDecision {
         GateOutcome outcome
@@ -470,11 +328,6 @@ erDiagram
         Thresholds thresholds
         bool require_zero_unsupported
         bool require_fresh
-    }
-    GeneratedDoc {
-        str level
-        Path path
-        str content
     }
     GenerationResult {
         str project
@@ -502,40 +355,6 @@ erDiagram
         dict_str__list_Segment _by_name
         list_list_float _vectors
     }
-    IgnoreRule {
-        str raw
-        str pattern
-        bool negate
-        bool directory_only
-        bool anchored
-        re_Pattern_str regex
-    }
-    InputComponents {
-        str source_content
-        str deps_signature
-        str template
-        str embedder
-        str chunker
-        str profile
-    }
-    JavaLangAdapter {
-        str language
-        tuple_str file_globs
-    }
-    Judge {
-        str judge_id
-        float temperature
-    }
-    LangAdapter {
-        str language
-        Sequence_str file_globs
-    }
-    Manifest {
-        str project
-        list_DocEntry docs
-        Mapping_str__str versions
-        str schema_version
-    }
     McpServer {
         Path root
         Path docs_dir
@@ -557,21 +376,6 @@ erDiagram
         int unsupported_claims
         str schema_version
     }
-    OnnxEmbedder {
-        Path model_dir
-        str embedder_id
-        int max_length
-        int batch_size
-        object _session
-        object _tokenizer
-        tuple_str _input_names
-        int _dim
-    }
-    Page {
-        str name
-        str title
-        str html
-    }
     Pattern {
         str pattern_id
         str stack
@@ -579,32 +383,6 @@ erDiagram
         Mapping_str__float metrics
         int runs
         str notes
-    }
-    PatternLibrary {
-        dict_str__Pattern patterns
-        list_dict_str__object history
-        str version
-        str schema_version
-    }
-    PdfDocument {
-        str rel
-        int pages
-        int chars
-        str method
-        str status
-        bool usable
-        tuple_str warnings
-    }
-    PdfPage {
-        int number
-        str text
-    }
-    PdfText {
-        tuple_PdfPage pages
-        int total_pages
-        int chars
-        str method
-        tuple_str warnings
     }
     Profile {
         str project
@@ -620,22 +398,6 @@ erDiagram
         float promotion_delta
         float rollback_drop
     }
-    ProjectRef {
-        str name
-        Path root
-        Path docs_dir
-    }
-    Publisher {
-        str publisher_id
-    }
-    PythonLangAdapter {
-        str language
-        tuple_str file_globs
-    }
-    RenderAdapter {
-        str name
-        str target
-    }
     Report {
         str project
         int k
@@ -648,9 +410,6 @@ erDiagram
         str generated_at
         str schema_version
     }
-    Reranker {
-        str reranker_id
-    }
     ResolvedOptions {
         Profile profile
         str project
@@ -661,15 +420,6 @@ erDiagram
         tuple_str exclude
         Thresholds thresholds
         Path manifest
-    }
-    Route {
-        str verb
-        str path
-    }
-    RouteFact {
-        str key
-        str citation
-        str handler
     }
     RunRecord {
         str run_id
@@ -685,34 +435,6 @@ erDiagram
         int pages_skipped
         float cost_usd
     }
-    Section {
-        str document
-        str heading
-        str body
-        str level
-        tuple_str tokens
-        tuple_str citations
-    }
-    Segment {
-        str path
-        int start
-        int end
-        str text
-        tuple_str tokens
-        tuple_str exact_names
-        str citation
-    }
-    Snapshot {
-        str url
-        str text
-        str sha
-        str captured_at
-        int status_code
-    }
-    SourceAdapter {
-        str name
-        type kind
-    }
     Symbol {
         str name
         str qualname
@@ -724,11 +446,6 @@ erDiagram
         Sequence__Symbol children
         Sequence_str annotations
         str schema_version
-    }
-    SymbolChunker {
-        str name
-        int max_tokens
-        int overlap_tokens
     }
     SymbolIndex {
         Sequence_Segment segments
@@ -745,23 +462,6 @@ erDiagram
         float completeness
         float attribution
         float conciseness
-    }
-    TypeScriptLangAdapter {
-        str language
-        tuple_str file_globs
-    }
-    VectorStore {
-        str store_id
-    }
-    WebDocument {
-        str url
-        str rel
-        str sha
-        str captured_at
-        int lines
-        int chars
-        bool usable
-        str error
     }
     _Handler {
         sinTipo server_version
@@ -906,14 +606,14 @@ erDiagram
 | class | `Profile` | `@dataclass` | `src/docu/core/profile.py#L51-L107` |
 | class | `Change` | `@dataclass` | `src/docu/core/profile.py#L318-L332` |
 | class | `YamlError` | — | `src/docu/core/yamlmini.py#L14-L15` |
-| class | `CliError` | — | `src/docu/delivery/cli.py#L187-L192` |
-| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L196-L207` |
+| class | `CliError` | — | `src/docu/delivery/cli.py#L208-L213` |
+| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L217-L228` |
 | class | `ExitCode` | — | `src/docu/delivery/exit_codes.py#L8-L16` |
 | class | `_Handler` | — | `src/docu/delivery/http_server.py#L26-L89` |
-| class | `ProjectRef` | `@dataclass` | `src/docu/delivery/mcp_server.py#L122-L131` |
-| class | `ToolError` | — | `src/docu/delivery/mcp_server.py#L134-L135` |
-| class | `McpServer` | `@dataclass` | `src/docu/delivery/mcp_server.py#L139-L469` |
-| class | `Diagram` | `@dataclass` | `src/docu/generate/diagrams.py#L39-L49` |
+| class | `ProjectRef` | `@dataclass` | `src/docu/delivery/mcp_server.py#L163-L187` |
+| class | `ToolError` | — | `src/docu/delivery/mcp_server.py#L205-L206` |
+| class | `McpServer` | `@dataclass` | `src/docu/delivery/mcp_server.py#L210-L625` |
+| class | `Diagram` | `@dataclass` | `src/docu/generate/diagrams.py#L40-L50` |
 | class | `Fact` | `@dataclass` | `src/docu/generate/facts.py#L29-L44` |
 | class | `GeneratedDoc` | `@dataclass` | `src/docu/generate/pipeline.py#L89-L92` |
 | class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L96-L121` |
@@ -933,7 +633,7 @@ erDiagram
 | class | `Decision` | `@dataclass` | `src/docu/learn/promotion.py#L21-L33` |
 | class | `Page` | `@dataclass` | `src/docu/publish/site.py#L124-L127` |
 | class | `CodeChunk` | `@dataclass` | `src/docu/retrieve/hybrid.py#L33-L59` |
-| class | `CodeIndex` | `@dataclass` | `src/docu/retrieve/hybrid.py#L113-L249` |
+| class | `CodeIndex` | `@dataclass` | `src/docu/retrieve/hybrid.py#L113-L253` |
 | class | `Section` | `@dataclass` | `src/docu/retrieve/search.py#L65-L86` |
 | class | `DocIndex` | `@dataclass` | `src/docu/retrieve/search.py#L123-L193` |
 
@@ -1196,33 +896,33 @@ erDiagram
 | `Change` | `after` | `object` | — | `src/docu/core/profile.py#L323-L323` |
 | `Change` | `reason` | `str` | — | `src/docu/core/profile.py#L324-L324` |
 | `Change` | `applied` | `bool` | — | `src/docu/core/profile.py#L325-L325` |
-| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L199-L199` |
-| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L200-L200` |
-| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L201-L201` |
-| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L202-L202` |
-| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L203-L203` |
-| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L204-L204` |
-| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L205-L205` |
-| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L206-L206` |
-| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L207-L207` |
+| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L220-L220` |
+| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L221-L221` |
+| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L222-L222` |
+| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L223-L223` |
+| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L224-L224` |
+| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L225-L225` |
+| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L226-L226` |
+| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L227-L227` |
+| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L228-L228` |
 | `_Handler` | `server_version` | `sin tipo declarado` | — | `src/docu/delivery/http_server.py#L27-L27` |
 | `_Handler` | `mcp` | `McpServer` | — | `src/docu/delivery/http_server.py#L28-L28` |
-| `ProjectRef` | `name` | `str` | — | `src/docu/delivery/mcp_server.py#L125-L125` |
-| `ProjectRef` | `root` | `Path` | — | `src/docu/delivery/mcp_server.py#L126-L126` |
-| `ProjectRef` | `docs_dir` | `Path` | — | `src/docu/delivery/mcp_server.py#L127-L127` |
-| `McpServer` | `root` | `Path` | — | `src/docu/delivery/mcp_server.py#L147-L147` |
-| `McpServer` | `docs_dir` | `Path` | — | `src/docu/delivery/mcp_server.py#L148-L148` |
-| `McpServer` | `manifest_path` | `Path | None` | — | `src/docu/delivery/mcp_server.py#L149-L149` |
-| `McpServer` | `profile_path` | `Path | None` | — | `src/docu/delivery/mcp_server.py#L150-L150` |
-| `McpServer` | `workspace` | `Path | None` | — | `src/docu/delivery/mcp_server.py#L151-L151` |
-| `McpServer` | `dense` | `bool` | — | `src/docu/delivery/mcp_server.py#L152-L152` |
-| `McpServer` | `_refs` | `dict[str, ProjectRef]` | — | `src/docu/delivery/mcp_server.py#L153-L153` |
-| `McpServer` | `_indexes` | `dict[str, DocIndex]` | — | `src/docu/delivery/mcp_server.py#L154-L154` |
-| `McpServer` | `_code_indexes` | `dict[str, object]` | — | `src/docu/delivery/mcp_server.py#L155-L155` |
-| `Diagram` | `name` | `str` | — | `src/docu/generate/diagrams.py#L42-L42` |
-| `Diagram` | `kind` | `str` | — | `src/docu/generate/diagrams.py#L43-L43` |
-| `Diagram` | `mermaid` | `str` | — | `src/docu/generate/diagrams.py#L44-L44` |
-| `Diagram` | `note` | `str` | — | `src/docu/generate/diagrams.py#L45-L45` |
+| `ProjectRef` | `name` | `str` | — | `src/docu/delivery/mcp_server.py#L166-L166` |
+| `ProjectRef` | `root` | `Path` | — | `src/docu/delivery/mcp_server.py#L167-L167` |
+| `ProjectRef` | `docs_dir` | `Path` | — | `src/docu/delivery/mcp_server.py#L168-L168` |
+| `McpServer` | `root` | `Path` | — | `src/docu/delivery/mcp_server.py#L218-L218` |
+| `McpServer` | `docs_dir` | `Path` | — | `src/docu/delivery/mcp_server.py#L219-L219` |
+| `McpServer` | `manifest_path` | `Path | None` | — | `src/docu/delivery/mcp_server.py#L220-L220` |
+| `McpServer` | `profile_path` | `Path | None` | — | `src/docu/delivery/mcp_server.py#L221-L221` |
+| `McpServer` | `workspace` | `Path | None` | — | `src/docu/delivery/mcp_server.py#L222-L222` |
+| `McpServer` | `dense` | `bool` | — | `src/docu/delivery/mcp_server.py#L223-L223` |
+| `McpServer` | `_refs` | `dict[str, ProjectRef]` | — | `src/docu/delivery/mcp_server.py#L224-L224` |
+| `McpServer` | `_indexes` | `dict[str, DocIndex]` | — | `src/docu/delivery/mcp_server.py#L225-L225` |
+| `McpServer` | `_code_indexes` | `dict[str, object]` | — | `src/docu/delivery/mcp_server.py#L226-L226` |
+| `Diagram` | `name` | `str` | — | `src/docu/generate/diagrams.py#L43-L43` |
+| `Diagram` | `kind` | `str` | — | `src/docu/generate/diagrams.py#L44-L44` |
+| `Diagram` | `mermaid` | `str` | — | `src/docu/generate/diagrams.py#L45-L45` |
+| `Diagram` | `note` | `str` | — | `src/docu/generate/diagrams.py#L46-L46` |
 | `Fact` | `kind` | `str` | — | `src/docu/generate/facts.py#L32-L32` |
 | `Fact` | `subject` | `str` | — | `src/docu/generate/facts.py#L33-L33` |
 | `Fact` | `detail` | `str` | — | `src/docu/generate/facts.py#L34-L34` |
@@ -1491,7 +1191,7 @@ erDiagram
 | `check_coverage` | `def check_coverage(facts: Sequence[Fact], root: Path) -> Check` | `src/docu/audit/verify.py#L232-L242` |
 | `_evidence_kinds` | `def _evidence_kinds(kind: str) -> tuple[str, ...]` | `src/docu/audit/verify.py#L245-L248` |
 | `check_freshness` | `def check_freshness(root: Path, levels: Sequence[str], manifest_path: Path | str | None=..` | `src/docu/audit/verify.py#L251-L281` |
-| `audit` | `def audit(root: Path | str, docs_dir: Path | str | None=..., levels: Sequence[str]=..., pr` | `src/docu/audit/verify.py#L287-L325` |
+| `audit` | `def audit(root: Path | str, docs_dir: Path | str | None=..., levels: Sequence[str]=..., pr` | `src/docu/audit/verify.py#L287-L335` |
 | `Discrepancy.severity` | `def severity(self) -> str` | `src/docu/conformance/drift.py#L46-L47` |
 | `Discrepancy.action` | `def action(self) -> str` | `src/docu/conformance/drift.py#L50-L51` |
 | `Discrepancy.to_dict` | `def to_dict(self) -> dict[str, object]` | `src/docu/conformance/drift.py#L53-L62` |
@@ -1547,7 +1247,7 @@ erDiagram
 | `LangAdapter.calls` | `def calls(self, path: str, source: str) -> Sequence[tuple[str, str]]` | `src/docu/core/ports.py#L47-L52` |
 | `Chunker.chunk` | `def chunk(self, artifact: Artifact, symbols: Sequence[Symbol], source: str) -> Sequence[Ch` | `src/docu/core/ports.py#L61-L62` |
 
-_(285 métodos adicionales omitidos del índice)_.
+_(291 métodos adicionales omitidos del índice)_.
 
 ## 10. Documentos y fuentes de referencia
 
@@ -1583,12 +1283,12 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/adapters/langs/java.py` | `1a35a611ab39` |
 | `src/docu/adapters/langs/python.py` | `41d930d37760` |
 | `src/docu/adapters/langs/registry.py` | `97c5aef6b7cd` |
-| `src/docu/adapters/langs/typescript.py` | `a3d823fe6f86` |
+| `src/docu/adapters/langs/typescript.py` | `b24202ca64d6` |
 | `src/docu/adapters/sources/__init__.py` | `0a506367a368` |
 | `src/docu/adapters/sources/pdf.py` | `e2bf7513c8a5` |
 | `src/docu/adapters/sources/web.py` | `838eb154a9dc` |
 | `src/docu/audit/__init__.py` | `db19f5507fab` |
-| `src/docu/audit/verify.py` | `fe90f029a031` |
+| `src/docu/audit/verify.py` | `41376bbd1912` |
 | `src/docu/conformance/__init__.py` | `0362d002bd6b` |
 | `src/docu/conformance/drift.py` | `8cba54b3c1fd` |
 | `src/docu/conformance/model.py` | `1353357e8785` |
@@ -1599,15 +1299,15 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/core/profile.py` | `0a80beb4ea0e` |
 | `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
-| `src/docu/delivery/cli.py` | `d049a1867e81` |
+| `src/docu/delivery/cli.py` | `a2f1ccfc6e8e` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |
-| `src/docu/delivery/mcp_server.py` | `86ed3d803200` |
+| `src/docu/delivery/mcp_server.py` | `ab622e99436c` |
 | `src/docu/delivery/proposal.py` | `d3f93708a83b` |
 | `src/docu/generate/__init__.py` | `91d9129019a3` |
-| `src/docu/generate/diagrams.py` | `785ba5357f99` |
+| `src/docu/generate/diagrams.py` | `f008c57b7365` |
 | `src/docu/generate/facts.py` | `50ee7dba477a` |
-| `src/docu/generate/markdown.py` | `abd1dc237cc8` |
+| `src/docu/generate/markdown.py` | `ac8d352359e7` |
 | `src/docu/generate/ops.py` | `cee221559089` |
 | `src/docu/generate/pipeline.py` | `8fb46f8656cc` |
 | `src/docu/index/__init__.py` | `06566a17f409` |
@@ -1627,5 +1327,5 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/publish/site.py` | `a8523d0bb8ec` |
 | `src/docu/retrieve/__init__.py` | `d44cd2bb75d8` |
 | `src/docu/retrieve/glossary.py` | `d45a6ee652f1` |
-| `src/docu/retrieve/hybrid.py` | `8b665a8ae4c9` |
+| `src/docu/retrieve/hybrid.py` | `03b1d5e83bcb` |
 | `src/docu/retrieve/search.py` | `13d6e62bb88d` |

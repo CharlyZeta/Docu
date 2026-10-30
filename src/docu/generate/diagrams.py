@@ -27,6 +27,7 @@ MAX_CLASSES_PER_DIAGRAM = 18
 MAX_METHODS_PER_CLASS = 8
 MAX_CLASS_DIAGRAMS = 3
 MAX_FIELDS_PER_ENTITY = 12
+MAX_ERD_ENTITIES = 24
 MAX_API_ROUTES = 40
 
 _INHERITANCE_RE = re.compile(
@@ -247,9 +248,24 @@ def erd_diagram(facts: Sequence[Fact]) -> Diagram | None:
         return None
 
     entities = set(fields_by_entity)
+    degree: dict[str, int] = {}
+    for entity in entities:
+        for fact in fields_by_entity[entity]:
+            target, _plural = _entity_type(fact.detail)
+            if target in entities and target != entity:
+                degree[entity] = degree.get(entity, 0) + 1
+                degree[target] = degree.get(target, 0) + 1
+    # Recorte por relación y luego por campos: un `.mmd` de 25 KB con 94 entidades no se renderiza
+    # bien en la mayoría de visores y esconde el modelo detrás de las interfaces de props.
+    ranked = sorted(entities, key=lambda name: (-degree.get(name, 0), -len(fields_by_entity[name]), name))
+    chosen = ranked[:MAX_ERD_ENTITIES]
+    omitted = len(ranked) - len(chosen)
+
     lines = ["erDiagram"]
+    if omitted:
+        lines.append(f"    %% recorte: {len(chosen)} de {len(ranked)} entidades (las de más relaciones)")
     relations: list[str] = []
-    for entity in sorted(fields_by_entity):
+    for entity in sorted(chosen):
         lines.append(f"    {_node_id(entity)} {{")
         for fact in fields_by_entity[entity][:MAX_FIELDS_PER_ENTITY]:
             declared = fact.detail if fact.detail != "sin tipo declarado" else "sinTipo"
@@ -264,11 +280,14 @@ def erd_diagram(facts: Sequence[Fact]) -> Diagram | None:
                     f'    {_node_id(entity)} {cardinality} {_node_id(target)} : "{fact.subject.rsplit(".", 1)[-1]}"'
                 )
     lines.extend(dict.fromkeys(relations))
+    note = f"{len(chosen)} de {len(entities)} entidades · {len(dict.fromkeys(relations))} relaciones declaradas por tipo"
+    if omitted:
+        note += f" · {omitted} omitidas por recorte"
     return Diagram(
         name="modelo-de-datos",
         kind="erd",
         mermaid="\n".join(lines),
-        note=f"{len(entities)} entidades · {len(dict.fromkeys(relations))} relaciones declaradas por tipo",
+        note=note,
     )
 
 

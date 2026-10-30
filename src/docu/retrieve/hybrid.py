@@ -145,7 +145,11 @@ class CodeIndex:
             "chunks": len(self.chunks),
             "channels": ["lexical", "symbol"] + (["dense"] if self.dense_available else []),
             "dense": self.dense_available,
-            "files": len({chunk.path for chunk in self.chunks}),
+            # Un degradado silencioso parece un problema de calidad de la búsqueda: se explica.
+            "dense_reason": ""
+            if self.dense_available
+            else "modelo ONNX no descargado (docu no lo incluye: 113 MB); se usan léxico y símbolo",
+            "files_indexed": len({chunk.path for chunk in self.chunks}),
         }
 
     # ------------------------------------------------------------------ canales
