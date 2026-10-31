@@ -578,3 +578,24 @@ build anterior.
 **Otras dos verificaciones del mismo feedback, sobre datos reales:**
 - F-21: la prosa que antes se rechazaba («React 19», «Vite 6,») ahora se **acepta** (6 frases).
 - F-22: la prosa aparece en `l1` **y** en `l4`, con el sello del redactor.
+
+### 13.14 Portada del README a partir del video
+
+`Docu.mp4` (10 s, 1280×720, H.264) es una animación isométrica: fuentes → documento con
+afirmaciones verificadas → artefactos. **Un `.mp4` del repositorio no se reproduce en una cabecera de
+README**: GitHub sólo sirve videos subidos con el editor web (`user-attachments`), y un `<video src>`
+relativo se sanea. Opciones y decisión:
+
+| Opción | Resultado |
+|---|---|
+| `<video>` apuntando al archivo del repo | GitHub lo descarta; no se ve |
+| GIF animado | funciona, pero exige decodificar H.264: no hay ffmpeg y no se agrega una dependencia por una portada |
+| Portada PNG desde un frame real | **elegida**: cabe en el repo, se ve en cualquier visor y no depende de nada |
+
+`docs/brand/make-cover.py` compone `docs/brand/portada.png` con el frame extraído del video (miniaturas
+del shell de Windows, sin ffmpeg), el logotipo, la promesa y el sello de licencia. El frame queda en
+`docs/brand/frame-video.png` como evidencia de origen.
+
+La cabecera enlaza además `Docu.mp4` con la explicación de que, para verlo dentro del README, hay que
+subirlo una vez con el editor web. Cuatro tests nuevos verifican que la imagen existe, pesa menos de
+1,5 MB y tiene texto alternativo.

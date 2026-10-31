@@ -1,6 +1,6 @@
 # docu — README de onboarding (Nivel 4)
 
-Generado por `docu 0.1.0` · fuente `sha256:9cced` · archivos analizados: 64 · afirmaciones: 1203 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:42e27` · archivos analizados: 65 · afirmaciones: 1208 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -30,13 +30,13 @@ Proyecto **docu** con 0 módulos, 15 paquetes, 97 tipos y 0 rutas HTTP documenta
 
 > El repositorio **ya documenta** esto. Se cita para no duplicarlo ni contradecirlo.
 
-**Actualizar la instalación** — Instalado como herramienta, `docu` es una **copia congelada** del día de la instalación: los comandos nuevos no aparecen solos. [`README.md#L63-L76`]
+**Actualizar la instalación** — Instalado como herramienta, `docu` es una **copia congelada** del día de la instalación: los comandos nuevos no aparecen solos. [`README.md#L74-L87`]
 
 ## Puesta en marcha
 
 > El repositorio **ya documenta** esto. Se cita para no duplicarlo ni contradecirlo.
 
-**Empezar en tres comandos** — docu init --root . --apply    # detecta el stack y escribe el perfil docu gen --root .             # genera los niveles con sus citas docu audit --root .           # cinco comprobaciones, nota ponderada [`README.md#L52-L63`]
+**Empezar en tres comandos** — docu init --root . --apply    # detecta el stack y escribe el perfil docu gen --root .             # genera los niveles con sus citas docu audit --root .           # cinco comprobaciones, nota ponderada [`README.md#L63-L74`]
 
 ## Endpoints principales
 
@@ -44,4 +44,4 @@ Proyecto **docu** con 0 módulos, 15 paquetes, 97 tipos y 0 rutas HTTP documenta
 
 ## Fuentes
 
-Documento generado leyendo 64 archivos del repositorio. Las secciones sin evidencia se declaran como huecos, no se rellenan.
+Documento generado leyendo 65 archivos del repositorio. Las secciones sin evidencia se declaran como huecos, no se rellenan.

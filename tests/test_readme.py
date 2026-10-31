@@ -76,6 +76,35 @@ class ExitCodeTests(unittest.TestCase):
         )
 
 
+class AssetTests(unittest.TestCase):
+    """La cabecera del README: toda imagen local tiene que existir y pesar lo razonable."""
+
+    def setUp(self) -> None:
+        self.raiz = Path(__file__).resolve().parent.parent
+        self.texto = (self.raiz / "README.md").read_text(encoding="utf-8")
+
+    def test_local_images_exist(self) -> None:
+        import re
+
+        for ruta in re.findall(r"<img[^>]+src=\"([^\"]+)\"", self.texto):
+            if ruta.startswith(("http://", "https://")):
+                continue
+            self.assertTrue((self.raiz / ruta).is_file(), f"la imagen {ruta} no existe")
+
+    def test_cover_is_present_and_not_heavy(self) -> None:
+        portada = self.raiz / "docs" / "brand" / "portada.png"
+        self.assertTrue(portada.is_file())
+        self.assertIn("docs/brand/portada.png", self.texto)
+        self.assertLess(portada.stat().st_size, 1_500_000, "la portada pesa demasiado para un README")
+
+    def test_cover_has_alt_text(self) -> None:
+        self.assertIn("alt=\"docu:", self.texto)
+
+    def test_video_is_linked_with_its_limit_explained(self) -> None:
+        self.assertIn("Docu.mp4", self.texto)
+        self.assertIn("editor web de GitHub", self.texto)
+
+
 class VersionTests(unittest.TestCase):
     def test_version_reports_path_and_command_count(self) -> None:
         """Sin la ruta y el número de comandos no se puede detectar un binario viejo."""

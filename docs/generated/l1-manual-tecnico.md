@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:9cced` · archivos analizados: 64 · afirmaciones: 1203 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:42e27` · archivos analizados: 65 · afirmaciones: 1208 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -12,7 +12,7 @@ Generado por `docu 0.1.0` · fuente `sha256:9cced` · archivos analizados: 64 ·
 
 Su propia documentación declara: «Agente autonomo de documentacion tecnica: agnostico, verificable e incremental.» [`pyproject.toml#L8-L8`].
 
-El repositorio deja constancia de 12 decisiones («Saltar el bloque completo para que la…»; «El inicializador se separa con `=(?!>)`…»; «son el valor. Sin esto, un workflow real…» y 9 más); están listadas con su cita en la sección *Intención y decisiones*.
+El repositorio deja constancia de 13 decisiones («Se oscurece apenas el arte para que el…»; «Saltar el bloque completo para que la…»; «El inicializador se separa con `=(?!>)`…» y 10 más); están listadas con su cita en la sección *Intención y decisiones*.
 
 ## 2. Resumen
 
@@ -20,7 +20,7 @@ El repositorio deja constancia de 12 decisiones («Saltar el bloque completo par
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **97** · métodos: **548**
+- Tipos: **97** · métodos: **552**
 
 ## 3. Intención y decisiones
 
@@ -29,7 +29,9 @@ El repositorio deja constancia de 12 decisiones («Saltar el bloque completo par
 | Declaración | Intención | Cita |
 |---|---|---|
 | `pyproject.toml (description)` | Agente autonomo de documentacion tecnica: agnostico, verificable e incremental. | `pyproject.toml#L8-L8` |
-| `docu` | Documentación técnica que se puede verificar. Cada afirmación del documento cita el archivo y la línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra. | `README.md#L11-L12` |
+| `docu` | Documentación técnica que se puede verificar. Cada afirmación del documento cita el archivo y la línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra. | `README.md#L15-L16` |
+| `docs/brand/make-cover.py (módulo)` | Portada del README a partir de un frame del video y del sistema de diseño de `docu`. | `docs/brand/make-cover.py#L1-L11` |
+| `_espaciado` | Texto con espaciado entre letras: el logotipo respira, el texto normal no. | `docs/brand/make-cover.py#L45-L50` |
 | `eval/__init__.py (módulo)` | Arnés de evaluación: golden sets y línea base de recuperación (F0). | `eval/__init__.py#L1-L1` |
 | `eval/harness.py (módulo)` | Arnés de evaluación de F0 (Plan.md §5). | `eval/harness.py#L1-L14` |
 | `_fold` | Quita diacríticos: `configuración` y `configuracion` deben ser el mismo término. | `eval/harness.py#L84-L90` |
@@ -71,6 +73,7 @@ El repositorio deja constancia de 12 decisiones («Saltar el bloque completo par
 
 | Decisión | Estado y contexto | Cita |
 |---|---|---|
+| `Se oscurece apenas el arte para que el logotipo tenga contra` | Se oscurece apenas el arte para que el logotipo tenga contraste sin tapar la ilustración. | `docs/brand/make-cover.py#L57-L57` |
 | `Saltar el bloque completo para que la proxima anotacion no h` | Saltar el bloque completo para que la proxima anotacion no herede estas lineas. | `src/docu/adapters/langs/java.py#L506-L506` |
 | `El inicializador se separa con `=(?!>)` para no cortar los t` | El inicializador se separa con `=(?!>)` para no cortar los tipos función (`() => void`). | `src/docu/adapters/langs/typescript.py#L74-L74` |
 | `son el valor. Sin esto, un workflow real con `run: |` rompe ` | son el valor. Sin esto, un workflow real con `run: |` rompe toda la ingesta. | `src/docu/core/yamlmini.py#L96-L96` |
@@ -88,21 +91,21 @@ El repositorio deja constancia de 12 decisiones («Saltar el bloque completo par
 
 | Sección | Cita |
 |---|---|
-| `README.md › docu` | `README.md#L1-L16` |
-| `README.md › El problema, en dos frases` | `README.md#L16-L22` |
-| `README.md › Qué obtenés` | `README.md#L22-L37` |
-| `README.md › Cómo funciona` | `README.md#L37-L52` |
-| `README.md › Empezar en tres comandos` | `README.md#L52-L63` |
-| `README.md › Actualizar la instalación` | `README.md#L63-L76` |
-| `README.md › Lo que lo hace distinto` | `README.md#L76-L86` |
-| `README.md › Los cuatro niveles` | `README.md#L86-L99` |
-| `README.md › Diagramas y web` | `README.md#L99-L108` |
-| `README.md › Servidor MCP` | `README.md#L108-L121` |
-| `README.md › Higiene del corpus` | `README.md#L121-L127` |
-| `README.md › Códigos de salida` | `README.md#L127-L142` |
-| `README.md › Volver a cero` | `README.md#L142-L156` |
-| `README.md › Probar sin tocar tu proyecto` | `README.md#L156-L166` |
-| `README.md › Límites declarados` | `README.md#L166-L175` |
+| `README.md › docu` | `README.md#L1-L27` |
+| `README.md › El problema, en dos frases` | `README.md#L27-L33` |
+| `README.md › Qué obtenés` | `README.md#L33-L48` |
+| `README.md › Cómo funciona` | `README.md#L48-L63` |
+| `README.md › Empezar en tres comandos` | `README.md#L63-L74` |
+| `README.md › Actualizar la instalación` | `README.md#L74-L87` |
+| `README.md › Lo que lo hace distinto` | `README.md#L87-L97` |
+| `README.md › Los cuatro niveles` | `README.md#L97-L110` |
+| `README.md › Diagramas y web` | `README.md#L110-L119` |
+| `README.md › Servidor MCP` | `README.md#L119-L132` |
+| `README.md › Higiene del corpus` | `README.md#L132-L138` |
+| `README.md › Códigos de salida` | `README.md#L138-L153` |
+| `README.md › Volver a cero` | `README.md#L153-L167` |
+| `README.md › Probar sin tocar tu proyecto` | `README.md#L167-L177` |
+| `README.md › Límites declarados` | `README.md#L177-L186` |
 
 ## 4. Arquitectura: módulos y paquetes
 
@@ -1144,6 +1147,10 @@ erDiagram
 
 | Símbolo | Firma | Cita |
 |---|---|---|
+| `_fuente` | `def _fuente(rutas: tuple[str, ...], tamano: int) -> ImageFont.FreeTypeFont` | `docs/brand/make-cover.py#L37-L41` |
+| `_espaciado` | `def _espaciado(dibujo: ImageDraw.ImageDraw, xy: tuple[int, int], texto: str, fuente, extra` | `docs/brand/make-cover.py#L44-L50` |
+| `componer` | `def componer(frame: Path, destino: Path) -> Path` | `docs/brand/make-cover.py#L53-L95` |
+| `main` | `def main(argv: list[str]) -> int` | `docs/brand/make-cover.py#L98-L102` |
 | `_fold` | `def _fold(text: str) -> str` | `eval/harness.py#L83-L90` |
 | `tokenize` | `def tokenize(text: str) -> list[str]` | `eval/harness.py#L93-L111` |
 | `_matches` | `def _matches(path: str, patterns: Sequence[str]) -> bool` | `eval/harness.py#L134-L136` |
@@ -1340,12 +1347,8 @@ erDiagram
 | `Budget.spend` | `def spend(self) -> None` | `src/docu/core/policy.py#L50-L56` |
 | `Budget.exceeded` | `def exceeded(self) -> list[str]` | `src/docu/core/policy.py#L58-L68` |
 | `Budget.remaining_usd` | `def remaining_usd(self) -> float` | `src/docu/core/policy.py#L71-L72` |
-| `GatePolicy.evaluate` | `def evaluate(self, metrics: Metrics, mode: Mode) -> GateDecision` | `src/docu/core/policy.py#L83-L104` |
-| `SourceAdapter.discover` | `def discover(self, root: str, include: Sequence[str], exclude: Sequence[str]) -> Iterable[` | `src/docu/core/ports.py#L24-L25` |
-| `SourceAdapter.read` | `def read(self, artifact: Artifact) -> str | bytes` | `src/docu/core/ports.py#L27-L28` |
-| `LangAdapter.symbols` | `def symbols(self, path: str, source: str) -> Sequence[Symbol]` | `src/docu/core/ports.py#L41-L42` |
 
-_(348 métodos adicionales omitidos del índice)_.
+_(352 métodos adicionales omitidos del índice)_.
 
 ## 12. Documentos y fuentes de referencia
 
@@ -1368,6 +1371,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | Archivo | sha256 |
 |---|---|
 | `.github/workflows/docu.yml` | `1a164973b830` |
+| `docs/brand/make-cover.py` | `e26de1be6179` |
 | `docu.profile.yaml` | `536bf0c2d80d` |
 | `eval/__init__.py` | `65861c4d8840` |
 | `eval/harness.py` | `6137ad8155a0` |

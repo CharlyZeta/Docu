@@ -1,12 +1,23 @@
 # docu
 
+<p align="center">
+  <img src="docs/brand/portada.png" alt="docu: fuentes del repositorio, documento con afirmaciones verificadas y artefactos generados" width="100%">
+</p>
+
 [![CI](https://github.com/CharlyZeta/Docu/actions/workflows/docu.yml/badge.svg)](https://github.com/CharlyZeta/Docu/actions/workflows/docu.yml)
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776ab?logo=python&logoColor=white)
 ![Licencia](https://img.shields.io/badge/licencia-MIT-green)
 ![Dependencias](https://img.shields.io/badge/dependencias-0-blue)
 ![Sin LLM](https://img.shields.io/badge/LLM-no%20requerido-purple)
 ![Auditoría](https://img.shields.io/badge/auditor%C3%ADa-determinista-brightgreen)
-![Tests](https://img.shields.io/badge/tests-611-brightgreen)
+![Tests](https://img.shields.io/badge/tests-615-brightgreen)
+
+**Documentación técnica que se puede verificar.** Cada afirmación del documento cita el archivo y la
+línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.
+
+[▶ Ver la animación de 10 s](Docu.mp4) · si querés que se reproduzca dentro del README, subilo una vez
+con el editor web de GitHub (arrastrá el archivo) y reemplazá el enlace por la URL que devuelve:
+GitHub sólo reproduce videos subidos así, no los del repositorio.
 
 **Documentación técnica que se puede verificar.** Cada afirmación del documento cita el archivo y la
 línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.
