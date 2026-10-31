@@ -1,12 +1,12 @@
 # docu — README de onboarding (Nivel 4)
 
-Generado por `docu 0.1.0` · fuente `sha256:bc6e6` · archivos analizados: 63 · afirmaciones: 1155 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:1d386` · archivos analizados: 63 · afirmaciones: 1158 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
 ## Qué es
 
-Proyecto **docu** con 0 módulos, 15 paquetes, 95 tipos y 0 rutas HTTP documentadas.
+Proyecto **docu** con 0 módulos, 15 paquetes, 96 tipos y 0 rutas HTTP documentadas.
 
 | Módulo / paquete | Cita |
 |---|---|

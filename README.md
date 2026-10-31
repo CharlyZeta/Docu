@@ -6,7 +6,7 @@
 ![Dependencias](https://img.shields.io/badge/dependencias-0-blue)
 ![Sin LLM](https://img.shields.io/badge/LLM-no%20requerido-purple)
 ![Auditoría](https://img.shields.io/badge/auditor%C3%ADa-determinista-brightgreen)
-![Tests](https://img.shields.io/badge/tests-588-brightgreen)
+![Tests](https://img.shields.io/badge/tests-590-brightgreen)
 
 **Documentación técnica que se puede verificar.** Cada afirmación del documento cita el archivo y la
 línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.
@@ -59,6 +59,19 @@ docu audit --root .           # cinco comprobaciones, nota ponderada
 
 Instalación: `uv tool install git+https://github.com/CharlyZeta/Docu` (o `pipx`, o `pip install -e .`).
 Sólo requiere Python 3.11+; el núcleo no tiene dependencias.
+
+### Actualizar la instalación
+
+Instalado como herramienta, `docu` es una **copia congelada** del día de la instalación: los comandos
+nuevos no aparecen solos.
+
+```bash
+uv tool install --force git+https://github.com/CharlyZeta/Docu   # o: pipx reinstall docu
+docu --version    # versión, cantidad de comandos y desde qué ruta se ejecuta
+```
+
+Si un comando «no existe», `docu --version` lo confirma: menos comandos que el repositorio = binario
+viejo. Para desarrollo, `pip install -e .` refleja los cambios sin reinstalar.
 
 ## Lo que lo hace distinto
 

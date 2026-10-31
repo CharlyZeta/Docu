@@ -39,8 +39,36 @@ Qué devuelve cada comando:
 """
 
 
+def _version_text(commands: int = 0) -> str:
+    """Versión, esquema y **desde dónde se está ejecutando**.
+
+    Instalado con `uv tool` o `pipx`, `docu` es una copia congelada del día de la instalación: los
+    comandos nuevos no aparecen hasta reinstalar. Sin la ruta en el `--version` no hay forma de darse
+    cuenta de que estás usando un binario viejo.
+    """
+    import docu as package
+
+    origin = Path(package.__file__).resolve().parent if package.__file__ else "?"
+    suffix = f" · {commands} comandos" if commands else ""
+    return f"docu {__version__} (schema {SCHEMA_VERSION}){suffix} · {origin}"
+
+
+class _Parser(argparse.ArgumentParser):
+    """ArgumentParser que explica el caso más común de «comando desconocido»: binario viejo."""
+
+    def error(self, message: str) -> None:  # pragma: no cover - lo ejerce argparse
+        if "invalid choice" in message:
+            message += (
+                "\n\nSi instalaste docu como herramienta (`uv tool install` / `pipx install`), tu copia "
+                "puede ser anterior a este comando. Actualizá con:\n"
+                "  uv tool install --force <ruta-del-repo>   ·   pipx reinstall docu\n"
+                "Y comprobá con `docu --version`, que muestra la ruta desde la que se ejecuta."
+            )
+        super().error(message)
+
+
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
+    parser = _Parser(
         prog="docu",
         description="Agente autónomo de documentación técnica: agnóstico, verificable e incremental.",
         epilog=_EPILOG,
@@ -51,7 +79,6 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help=f"ruta del perfil (default: {DEFAULT_PROFILE} en la raíz del proyecto)",
     )
-    parser.add_argument("--version", action="version", version=f"docu {__version__} (schema {SCHEMA_VERSION})")
 
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -215,6 +242,13 @@ def _build_parser() -> argparse.ArgumentParser:
         help="carpeta que contiene varios repositorios documentados (un servidor, varios proyectos)",
     )
 
+    # Se registra al final para poder informar el número de comandos: si tu binario tiene menos que
+    # el repositorio, está desactualizado.
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=_version_text(len(sub.choices or {})),
+    )
     return parser
 
 

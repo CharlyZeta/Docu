@@ -32,7 +32,12 @@ class CommandTests(unittest.TestCase):
         """`docu <cmd>` en el README debe ser un subcomando real."""
         mentioned = set(re.findall(r"(?m)^\s*docu\s+([a-z_-]+)", readme_text()))
         mentioned |= set(re.findall(r"`docu ([a-z_-]+)", readme_text()))
-        unknown = {name for name in mentioned if name not in self.subcommands and name != "--help"}
+        # Los flags (--version, --help) no son subcomandos.
+        unknown = {
+            name
+            for name in mentioned
+            if name not in self.subcommands and not name.startswith("-")
+        }
         self.assertFalse(
             unknown,
             msg=f"el README menciona comandos inexistentes: {sorted(unknown)}. "
@@ -69,6 +74,32 @@ class ExitCodeTests(unittest.TestCase):
         self.assertFalse(
             documented - known, msg=f"el README documenta códigos inexistentes: {documented - known}"
         )
+
+
+class VersionTests(unittest.TestCase):
+    def test_version_reports_path_and_command_count(self) -> None:
+        """Sin la ruta y el número de comandos no se puede detectar un binario viejo."""
+        from docu.delivery.cli import _version_text
+
+        text = _version_text(14)
+        self.assertIn("docu 0.1.0", text)
+        self.assertIn("schema", text)
+        self.assertIn("14 comandos", text)
+        self.assertIn("docu", text.split("·")[-1])
+
+    def test_unknown_command_explains_a_stale_install(self) -> None:
+        import contextlib
+        import io
+
+        from docu.delivery.cli import _build_parser
+
+        parser = _build_parser()
+        buffer = io.StringIO()
+        with contextlib.redirect_stderr(buffer), self.assertRaises(SystemExit):
+            parser.parse_args(["comando-que-no-existe"])
+        message = buffer.getvalue()
+        self.assertIn("uv tool install --force", message)
+        self.assertIn("--version", message)
 
 
 class NumberTests(unittest.TestCase):

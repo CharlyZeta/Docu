@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:bc6e6` · archivos analizados: 63 · afirmaciones: 1155 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:1d386` · archivos analizados: 63 · afirmaciones: 1158 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -8,7 +8,7 @@ Generado por `docu 0.1.0` · fuente `sha256:bc6e6` · archivos analizados: 63 ·
 
 > Introducción compuesta con hechos citados: cada frase sale de un conteo o de la propia documentación del proyecto. No es prosa libre.
 
-**docu** se compone de 16 dependencias declaradas, 15 paquetes, 95 tipos y 415 campos.
+**docu** se compone de 16 dependencias declaradas, 15 paquetes, 96 tipos y 415 campos.
 
 Su propia documentación declara: «Documentación técnica que se puede verificar. Cada afirmación del documento cita el archivo y la línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.» [`README.md#L11-L12`].
 
@@ -20,7 +20,7 @@ El repositorio deja constancia de 10 decisiones («Saltar el bloque completo par
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **95** · métodos: **532**
+- Tipos: **96** · métodos: **534**
 
 ## 3. Intención y decisiones
 
@@ -234,7 +234,7 @@ classDiagram
     }
 ```
 
-### Clases del paquete · 8 clases de docu.delivery
+### Clases del paquete · 9 clases de docu.delivery
 
 ```mermaid
 classDiagram
@@ -271,6 +271,9 @@ classDiagram
         do_POST()
         _json()
         log_message()
+    }
+    class _Parser <<class>> {
+        error()
     }
 ```
 
@@ -645,8 +648,9 @@ erDiagram
 | class | `Change` | `@dataclass` | `src/docu/core/profile.py#L318-L332` |
 | class | `YamlError` | — | `src/docu/core/yamlmini.py#L14-L15` |
 | class | `CleanPlan` | `@dataclass` | `src/docu/delivery/cleanup.py#L34-L59` |
-| class | `CliError` | — | `src/docu/delivery/cli.py#L231-L236` |
-| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L240-L251` |
+| class | `_Parser` | — | `src/docu/delivery/cli.py#L56-L67` |
+| class | `CliError` | — | `src/docu/delivery/cli.py#L265-L270` |
+| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L274-L285` |
 | class | `ExitCode` | — | `src/docu/delivery/exit_codes.py#L8-L16` |
 | class | `_Handler` | — | `src/docu/delivery/http_server.py#L26-L89` |
 | class | `ProjectRef` | `@dataclass` | `src/docu/delivery/mcp_server.py#L163-L187` |
@@ -943,15 +947,15 @@ erDiagram
 | `CleanPlan` | `state` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L39-L39` |
 | `CleanPlan` | `ledger` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L40-L40` |
 | `CleanPlan` | `warnings` | `list[str]` | — | `src/docu/delivery/cleanup.py#L41-L41` |
-| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L243-L243` |
-| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L244-L244` |
-| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L245-L245` |
-| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L246-L246` |
-| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L247-L247` |
-| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L248-L248` |
-| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L249-L249` |
-| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L250-L250` |
-| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L251-L251` |
+| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L277-L277` |
+| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L278-L278` |
+| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L279-L279` |
+| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L280-L280` |
+| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L281-L281` |
+| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L282-L282` |
+| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L283-L283` |
+| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L284-L284` |
+| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L285-L285` |
 | `_Handler` | `server_version` | `sin tipo declarado` | — | `src/docu/delivery/http_server.py#L27-L27` |
 | `_Handler` | `mcp` | `McpServer` | — | `src/docu/delivery/http_server.py#L28-L28` |
 | `ProjectRef` | `name` | `str` | — | `src/docu/delivery/mcp_server.py#L166-L166` |
@@ -1306,7 +1310,7 @@ erDiagram
 | `LangAdapter.calls` | `def calls(self, path: str, source: str) -> Sequence[tuple[str, str]]` | `src/docu/core/ports.py#L47-L52` |
 | `Chunker.chunk` | `def chunk(self, artifact: Artifact, symbols: Sequence[Symbol], source: str) -> Sequence[Ch` | `src/docu/core/ports.py#L61-L62` |
 
-_(332 métodos adicionales omitidos del índice)_.
+_(334 métodos adicionales omitidos del índice)_.
 
 ## 12. Documentos y fuentes de referencia
 
@@ -1359,7 +1363,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
 | `src/docu/delivery/cleanup.py` | `553e144f9f89` |
-| `src/docu/delivery/cli.py` | `bfd9b9fb8acc` |
+| `src/docu/delivery/cli.py` | `f5ba2fa63e77` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |
 | `src/docu/delivery/mcp_server.py` | `ab622e99436c` |
