@@ -167,13 +167,16 @@ def state_of(
     ttl_days: int = 90,
     file_exists: bool = True,
 ) -> DocState:
-    """Estado de la página. Sin manifest equivale a `stale`: nunca se ha generado.
+    """Estado de la página. Sin entrada en el manifest equivale a `stale`: nunca se ha generado.
 
-    `file_exists=False` también es `stale`: un hash intacto con el archivo borrado no es frescura,
-    es una mentira del registro.
+    Un hash intacto con el archivo borrado **no** es frescura: es un registro que miente. Se devuelve
+    `MISSING`, distinto de `STALE`, para que el mensaje pueda decir qué hacer: generar de nuevo, no
+    incrementar.
     """
-    if entry is None or not file_exists:
+    if entry is None:
         return DocState.STALE
+    if not file_exists:
+        return DocState.MISSING
     return classify(
         stored_hash=entry.input_hash,
         current_hash=current_hash,

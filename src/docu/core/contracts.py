@@ -63,6 +63,9 @@ class DocState(str, Enum):
     FRESH = "fresh"
     STALE = "stale"
     EXPIRED = "expired"
+    #: El manifest declara la página pero el archivo no está en disco. No es «fresco» ni «viejo»:
+    #: es inexistente, y confundirlo con frescura es un éxito silencioso.
+    MISSING = "missing"
 
 
 class Mode(str, Enum):

@@ -38,8 +38,11 @@ MIN_JUDGE_SCORE = 3.5
 NUMBER_RE = re.compile(r"\d[\d.,]*\s*%?")
 HEADING_RE = re.compile(r"(?m)^\s{0,3}#{1,6}\s")
 
-#: Hechos que se ofrecen al redactor: los que un lector necesita para entender el proyecto.
-NARRATIVE_KINDS = ("module", "package", "route", "dependency", "type", "field", "intent", "decision")
+#: Hechos que se ofrecen al redactor, **en orden de prioridad**: primero lo que dice qué es el
+#: producto (intención, decisiones, metadatos), después su superficie y sólo al final los detalles.
+NARRATIVE_KINDS = ("intent", "decision", "route", "module", "package", "dependency", "type", "field")
+#: Sin estos, una introducción sólo puede enumerar tecnología.
+PURPOSE_KINDS = ("intent", "decision")
 
 
 @dataclass(slots=True)
@@ -84,8 +87,14 @@ def build_request(
     project: str, facts: Sequence[Fact], language: str = "es", limit: int = 120
 ) -> dict[str, object]:
     """Contrato de redacción: qué puede decir el agente y cómo debe devolverlo."""
-    selected = [fact for fact in facts if fact.kind in NARRATIVE_KINDS][:limit]
-    return {
+    ordered: list[Fact] = []
+    for kind in NARRATIVE_KINDS:
+        ordered.extend(fact for fact in facts if fact.kind == kind)
+        if len(ordered) >= limit:
+            break
+    selected = ordered[:limit]
+    has_purpose = any(fact.kind in PURPOSE_KINDS for fact in facts)
+    payload: dict[str, object] = {
         "project": project,
         "language": language,
         "task": (
@@ -108,6 +117,7 @@ def build_request(
                 ]
             },
         },
+        "has_purpose_facts": has_purpose,
         "facts": [
             {
                 "id": fact_id(fact),
@@ -119,6 +129,12 @@ def build_request(
             for fact in selected
         ],
     }
+    if not has_purpose:
+        payload["warning"] = (
+            "no hay hechos que describan el propósito del producto (ni docstring, ni README, ni"
+            " description del manifiesto): la introducción sólo podrá ser técnica"
+        )
+    return payload
 
 
 def render_request_markdown(request: Mapping[str, object]) -> str:
@@ -170,7 +186,27 @@ def render_request_markdown(request: Mapping[str, object]) -> str:
 
 
 def _numbers(text: str) -> set[str]:
-    return {match.group(0).replace(" ", "") for match in NUMBER_RE.finditer(text)}
+    """Cifras normalizadas: sin espacios, sin `%`, sin puntuación final y con punto decimal.
+
+    `'6,'` (la coma de «Vite 6, escrita») y `'^6.2.3'` tienen que poder compararse: sin esto, el
+    validador rechazaba versiones y cantidades que sí estaban en los hechos, y empujaba al redactor a
+    omitirlas.
+    """
+    found: set[str] = set()
+    for match in NUMBER_RE.finditer(text):
+        token = match.group(0).replace(" ", "").replace("%", "").replace(",", ".")
+        token = token.rstrip(".;:")
+        if token:
+            found.add(token)
+    return found
+
+
+def _number_supported(number: str, supported: set[str]) -> bool:
+    """¿La cifra está en los hechos? Igualdad, o prefijo de versión (`19` ⊂ `19.0.1`)."""
+    if number in supported:
+        return True
+    # Prefijo de versión: «Vite 6» contra ^6.2.3, «React 19» contra ^19.0.1.
+    return any(candidate.startswith(number + ".") for candidate in supported)
 
 
 def validate(
@@ -219,8 +255,9 @@ def validate(
             cited_text = " ".join(
                 f"{index[item].subject} {index[item].detail}" for item in ids if item in index
             )
+            supported = _numbers(cited_text)
             invented = {
-                number for number in _numbers(text) if number not in _numbers(cited_text)
+                number for number in _numbers(text) if not _number_supported(number, supported)
             }
             if invented:
                 response.errors.append(

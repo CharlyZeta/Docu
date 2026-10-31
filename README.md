@@ -6,7 +6,7 @@
 ![Dependencias](https://img.shields.io/badge/dependencias-0-blue)
 ![Sin LLM](https://img.shields.io/badge/LLM-no%20requerido-purple)
 ![Auditoría](https://img.shields.io/badge/auditor%C3%ADa-determinista-brightgreen)
-![Tests](https://img.shields.io/badge/tests-590-brightgreen)
+![Tests](https://img.shields.io/badge/tests-596-brightgreen)
 
 **Documentación técnica que se puede verificar.** Cada afirmación del documento cita el archivo y la
 línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.

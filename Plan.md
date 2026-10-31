@@ -513,3 +513,21 @@ Un comando de borrado mal hecho es peor que no tenerlo, así que:
 
 Cierra el ciclo de vida completo: `init` → `gen` → `audit` → `status` → `clean` → `gen` desde cero.
 12 tests.
+
+### 13.11 Revisión del build del 31-10 (F-19 a F-25)
+
+Segunda verificación del agente de SalesHub sobre el binario reinstalado. Siete hallazgos, seis
+corregidos en el mismo día:
+
+| ID | Hallazgo | Corrección |
+|---|---|---|
+| F-19 | El binario instalado divergía del source sin señal | **corregido**: `--version` informa ruta y cantidad de comandos; un comando desconocido explica cómo actualizar |
+| F-20 | `status` declaraba `fresh` con la salida borrada | **corregido**: estado `missing` propio; `"generated": false` y `"missing": [...]` en `--json`; el mensaje sugiere `docu gen`, no `--incremental` |
+| F-21 | El validador de prosa rechazaba cifras que sí estaban en los hechos | **corregido**: normalización (puntuación, decimales) y prefijo de versión (`19` ⊂ `19.0.1`, `6` ⊂ `6.2.3`) |
+| F-22 | La prosa se aplicaba en L1 pero no en L4 | **corregido**: el onboarding embebe la prosa delegada con su procedencia |
+| F-23 | Los hechos ofrecidos no describían el producto | **corregido**: prioridad por tipo y `description` de `package.json`/`pyproject.toml` como `intent`; si no hay propósito, la petición lo advierte |
+| F-24 | `status` sin manifest se contradecía | **corregido**: una sola línea, exit 10, sin hashes ni `stale`; `ci check` sí falla, porque no hay documentación versionada |
+| F-25 | `clean --force` no llegaba a cero | **corregido**: borra `prose-*` y `judge-*`, retira carpetas vacías y dice qué sobrevive (`ledger`, perfil) |
+
+**Lección:** dos de los siete (F-20 y F-24) eran estados que el producto no sabía nombrar. La regla que
+faltaba: *cada estado tiene que tener un nombre, un mensaje y un código de salida*.

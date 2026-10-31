@@ -16,6 +16,7 @@ docstrings ni ADRs, el documento lo dice en lugar de inventar una motivación.
 from __future__ import annotations
 
 import ast
+import json
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -242,6 +243,54 @@ def why_comments(rel: str, source: str) -> list[Fact]:
     return facts
 
 
+def metadata_facts(root: Path) -> list[Fact]:
+    """Propósito declarado en los metadatos del proyecto.
+
+    prose --emit ofrecía sólo rutas, dependencias y tipos: con eso una introducción no puede decir
+    *qué hace* el producto. El description de package.json y de pyproject.toml sí lo dice, y es
+    una fuente citables como cualquier otra.
+    """
+    facts: list[Fact] = []
+    package = root / "package.json"
+    if package.is_file():
+        try:
+            payload = json.loads(package.read_text(encoding="utf-8", errors="replace"))
+        except (OSError, json.JSONDecodeError):
+            payload = None
+        description = payload.get("description") if isinstance(payload, dict) else None
+        if isinstance(description, str) and len(description.strip()) >= 20:
+            texto = package.read_text(encoding="utf-8", errors="replace")
+            line = _line_of(texto, max(0, texto.find("description")))
+            facts.append(
+                Fact(
+                    kind="intent",
+                    subject="package.json (description)",
+                    detail=description.strip()[:MAX_TEXT],
+                    citation=_citation("package.json", line, line),
+                    attributes={"source": "package.json"},
+                )
+            )
+    pyproject = root / "pyproject.toml"
+    if pyproject.is_file():
+        try:
+            text = pyproject.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            text = ""
+        match = re.search(r'(?m)^\s*description\s*=\s*["\'](?P<text>.+?)["\']\s*$', text)
+        if match and len(match.group("text")) >= 20:
+            line = _line_of(text, match.start())
+            facts.append(
+                Fact(
+                    kind="intent",
+                    subject="pyproject.toml (description)",
+                    detail=match.group("text")[:MAX_TEXT],
+                    citation=_citation("pyproject.toml", line, line),
+                    attributes={"source": "pyproject.toml"},
+                )
+            )
+    return facts
+
+
 def collect(
     root: Path,
     files: Mapping[str, Path],
@@ -250,7 +299,7 @@ def collect(
     read,
 ) -> Narrative:
     """Recolecta intención y decisiones, y compone la introducción con lo que encontró."""
-    collected: list[Fact] = []
+    collected: list[Fact] = list(metadata_facts(root))
 
     for candidate in INTENT_DOCS + ("CHANGELOG.md",):
         path = root / candidate

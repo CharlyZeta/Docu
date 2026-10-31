@@ -438,6 +438,17 @@ def render_l4(
         f"{counts.get('package', 0)} paquetes, "
         f"{counts.get('type', 0)} tipos y {counts.get('route', 0)} rutas HTTP documentadas.",
         "",
+    ]
+    prose = str(meta.get("prose") or "").strip()
+    if prose:
+        # El onboarding es el único lugar donde una introducción hace falta: la prosa delegada va
+        # también aquí, con su procedencia.
+        lines += [prose, ""]
+        details = [f"redactor: `{meta.get('prose_reviewer') or 'agente'}`"]
+        if meta.get("prose_judge"):
+            details.append(f"juez: `{meta['prose_judge']}` ({meta.get('prose_score', '—')}/5)")
+        lines += [f"_({'; '.join(details)} · validada por docu: ninguna cifra nueva)_", ""]
+    lines += [
         _table(
             ["Módulo / paquete", "Cita"],
             [

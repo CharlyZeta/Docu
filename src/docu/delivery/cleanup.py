@@ -25,7 +25,17 @@ DOC_SUFFIXES = (".md",)
 #: Si alguien generó dentro de docs/, su README.md o su guia.md no se tocan.
 GENERATED_DOC_RE = re.compile(r"^l\d+-.+\.md$")
 ARTIFACT_DIRS = ("diagrams", "web", "pdf", "site")
-STATE_FILES = ("manifest.json", "web.json", "prose.json")
+STATE_FILES = (
+    "manifest.json",
+    "web.json",
+    "prose.json",
+    # Artefactos del ciclo de prosa delegada: se generan en .docu/ y no son historial.
+    "prose-request.json",
+    "prose-request.md",
+    "prose-response.json",
+    "judge-request.json",
+    "judge-verdict.json",
+)
 LEDGER_FILE = "ledger.jsonl"
 STATE_DIR = ".docu"
 

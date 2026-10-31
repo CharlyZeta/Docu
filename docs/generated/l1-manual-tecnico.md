@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:1d386` · archivos analizados: 63 · afirmaciones: 1158 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:2939a` · archivos analizados: 63 · afirmaciones: 1162 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -10,9 +10,9 @@ Generado por `docu 0.1.0` · fuente `sha256:1d386` · archivos analizados: 63 ·
 
 **docu** se compone de 16 dependencias declaradas, 15 paquetes, 96 tipos y 415 campos.
 
-Su propia documentación declara: «Documentación técnica que se puede verificar. Cada afirmación del documento cita el archivo y la línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.» [`README.md#L11-L12`].
+Su propia documentación declara: «Agente autonomo de documentacion tecnica: agnostico, verificable e incremental.» [`pyproject.toml#L8-L8`].
 
-El repositorio deja constancia de 10 decisiones («Saltar el bloque completo para que la…»; «El inicializador se separa con `=(?!>)`…»; «son el valor. Sin esto, un workflow real…» y 7 más); están listadas con su cita en la sección *Intención y decisiones*.
+El repositorio deja constancia de 12 decisiones («Saltar el bloque completo para que la…»; «El inicializador se separa con `=(?!>)`…»; «son el valor. Sin esto, un workflow real…» y 9 más); están listadas con su cita en la sección *Intención y decisiones*.
 
 ## 2. Resumen
 
@@ -20,7 +20,7 @@ El repositorio deja constancia de 10 decisiones («Saltar el bloque completo par
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **96** · métodos: **534**
+- Tipos: **96** · métodos: **536**
 
 ## 3. Intención y decisiones
 
@@ -28,6 +28,7 @@ El repositorio deja constancia de 10 decisiones («Saltar el bloque completo par
 
 | Declaración | Intención | Cita |
 |---|---|---|
+| `pyproject.toml (description)` | Agente autonomo de documentacion tecnica: agnostico, verificable e incremental. | `pyproject.toml#L8-L8` |
 | `docu` | Documentación técnica que se puede verificar. Cada afirmación del documento cita el archivo y la línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra. | `README.md#L11-L12` |
 | `eval/__init__.py (módulo)` | Arnés de evaluación: golden sets y línea base de recuperación (F0). | `eval/__init__.py#L1-L1` |
 | `eval/harness.py (módulo)` | Arnés de evaluación de F0 (Plan.md §5). | `eval/harness.py#L1-L14` |
@@ -65,7 +66,6 @@ El repositorio deja constancia de 10 decisiones («Saltar el bloque completo par
 | `declaration_start` | Inicio de la declaracion que contiene `offset`. | `src/docu/adapters/langs/_braces.py#L262-L274` |
 | `src/docu/adapters/langs/java.py (módulo)` | Adaptador Java sin dependencias externas (implementacion de referencia de F1). | `src/docu/adapters/langs/java.py#L1-L10` |
 | `mask_source` | Sustituye comentarios y literales por espacios, conservando saltos de linea. | `src/docu/adapters/langs/java.py#L61-L73` |
-| `_Lines` | Conversion offsets <-> numeros de linea (1-based). | `src/docu/adapters/langs/java.py#L146-L158` |
 
 **Decisiones registradas.** De ADRs, contratos y comentarios que explican un porqué: el lugar donde el equipo dejó escrito *por qué* algo es así.
 
@@ -74,11 +74,13 @@ El repositorio deja constancia de 10 decisiones («Saltar el bloque completo par
 | `Saltar el bloque completo para que la proxima anotacion no h` | Saltar el bloque completo para que la proxima anotacion no herede estas lineas. | `src/docu/adapters/langs/java.py#L506-L506` |
 | `El inicializador se separa con `=(?!>)` para no cortar los t` | El inicializador se separa con `=(?!>)` para no cortar los tipos función (`() => void`). | `src/docu/adapters/langs/typescript.py#L74-L74` |
 | `son el valor. Sin esto, un workflow real con `run: |` rompe ` | son el valor. Sin esto, un workflow real con `run: |` rompe toda la ingesta. | `src/docu/core/yamlmini.py#L96-L96` |
+| `contradecirse, porque el incremental necesita justamente el ` | contradecirse, porque el incremental necesita justamente el manifest que falta. | `src/docu/delivery/cli.py#L1169-L1169` |
 | `Se publican ambos para que la diferencia no sea silenciosa.` | Se publican ambos para que la diferencia no sea silenciosa. | `src/docu/delivery/mcp_server.py#L356-L356` |
 | ``vite` puede estar en dependencies y en devDependencies: bus` | `vite` puede estar en dependencies y en devDependencies: buscar desde la seccion evita | `src/docu/generate/facts.py#L302-L302` |
 | `auditoría tiene razón en marcarla y el lector no encuentra n` | auditoría tiene razón en marcarla y el lector no encuentra nada al abrirla. | `src/docu/generate/ops.py#L211-L211` |
 | `los recupera. Sin esto, un proyecto con `tests/` en la raíz ` | los recupera. Sin esto, un proyecto con `tests/` en la raíz documenta sus propias aserciones. | `src/docu/generate/pipeline.py#L69-L69` |
 | `para que un PDF nuevo o modificado invalide la frescura, igu` | para que un PDF nuevo o modificado invalide la frescura, igual que un archivo de código. | `src/docu/generate/pipeline.py#L251-L251` |
+| `Sin estos, una introducción sólo puede enumerar tecnología.` | Sin estos, una introducción sólo puede enumerar tecnología. | `src/docu/generate/prose.py#L44-L44` |
 | `Unidades por carpeta sólo en profundidad razonable: `vendor/` | Unidades por carpeta sólo en profundidad razonable: `vendor/includes/assets/js` no es una | `src/docu/index/packages.py#L145-L145` |
 | `primer archivo completo. Decirlo evita que la cita parezca m` | primer archivo completo. Decirlo evita que la cita parezca más fuerte de lo que es. | `src/docu/index/packages.py#L154-L154` |
 
@@ -618,18 +620,18 @@ erDiagram
 | class | `ArchitectureModel` | `@dataclass` | `src/docu/conformance/model.py#L53-L79` |
 | class | `SourceKind` | — | `src/docu/core/contracts.py#L35-L42` |
 | class | `SymbolKind` | — | `src/docu/core/contracts.py#L45-L57` |
-| class | `DocState` | — | `src/docu/core/contracts.py#L60-L65` |
-| class | `Mode` | — | `src/docu/core/contracts.py#L68-L73` |
-| class | `GateOutcome` | — | `src/docu/core/contracts.py#L76-L81` |
-| class | `Artifact` | `@dataclass` | `src/docu/core/contracts.py#L88-L111` |
-| class | `Symbol` | `@dataclass` | `src/docu/core/contracts.py#L115-L131` |
-| class | `Chunk` | `@dataclass` | `src/docu/core/contracts.py#L138-L193` |
-| class | `Claim` | `@dataclass` | `src/docu/core/contracts.py#L200-L211` |
-| class | `ContentNode` | `@dataclass` | `src/docu/core/contracts.py#L215-L237` |
-| class | `Metrics` | `@dataclass` | `src/docu/core/contracts.py#L244-L254` |
-| class | `GateDecision` | `@dataclass` | `src/docu/core/contracts.py#L258-L271` |
-| class | `RunRecord` | `@dataclass` | `src/docu/core/contracts.py#L278-L322` |
-| class | `FreshnessRecord` | `@dataclass` | `src/docu/core/contracts.py#L329-L341` |
+| class | `DocState` | — | `src/docu/core/contracts.py#L60-L68` |
+| class | `Mode` | — | `src/docu/core/contracts.py#L71-L76` |
+| class | `GateOutcome` | — | `src/docu/core/contracts.py#L79-L84` |
+| class | `Artifact` | `@dataclass` | `src/docu/core/contracts.py#L91-L114` |
+| class | `Symbol` | `@dataclass` | `src/docu/core/contracts.py#L118-L134` |
+| class | `Chunk` | `@dataclass` | `src/docu/core/contracts.py#L141-L196` |
+| class | `Claim` | `@dataclass` | `src/docu/core/contracts.py#L203-L214` |
+| class | `ContentNode` | `@dataclass` | `src/docu/core/contracts.py#L218-L240` |
+| class | `Metrics` | `@dataclass` | `src/docu/core/contracts.py#L247-L257` |
+| class | `GateDecision` | `@dataclass` | `src/docu/core/contracts.py#L261-L274` |
+| class | `RunRecord` | `@dataclass` | `src/docu/core/contracts.py#L281-L325` |
+| class | `FreshnessRecord` | `@dataclass` | `src/docu/core/contracts.py#L332-L344` |
 | class | `BudgetExhausted` | — | `src/docu/core/policy.py#L15-L16` |
 | class | `Thresholds` | `@dataclass` | `src/docu/core/policy.py#L20-L34` |
 | class | `Budget` | `@dataclass` | `src/docu/core/policy.py#L38-L72` |
@@ -647,7 +649,7 @@ erDiagram
 | class | `Profile` | `@dataclass` | `src/docu/core/profile.py#L51-L107` |
 | class | `Change` | `@dataclass` | `src/docu/core/profile.py#L318-L332` |
 | class | `YamlError` | — | `src/docu/core/yamlmini.py#L14-L15` |
-| class | `CleanPlan` | `@dataclass` | `src/docu/delivery/cleanup.py#L34-L59` |
+| class | `CleanPlan` | `@dataclass` | `src/docu/delivery/cleanup.py#L44-L69` |
 | class | `_Parser` | — | `src/docu/delivery/cli.py#L56-L67` |
 | class | `CliError` | — | `src/docu/delivery/cli.py#L265-L270` |
 | class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L274-L285` |
@@ -658,11 +660,11 @@ erDiagram
 | class | `McpServer` | `@dataclass` | `src/docu/delivery/mcp_server.py#L210-L625` |
 | class | `Diagram` | `@dataclass` | `src/docu/generate/diagrams.py#L40-L50` |
 | class | `Fact` | `@dataclass` | `src/docu/generate/facts.py#L29-L44` |
-| class | `Narrative` | `@dataclass` | `src/docu/generate/narrative.py#L47-L56` |
+| class | `Narrative` | `@dataclass` | `src/docu/generate/narrative.py#L48-L57` |
 | class | `GeneratedDoc` | `@dataclass` | `src/docu/generate/pipeline.py#L89-L92` |
 | class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L96-L121` |
-| class | `ProseResponse` | `@dataclass` | `src/docu/generate/prose.py#L46-L56` |
-| class | `Verdict` | `@dataclass` | `src/docu/generate/prose.py#L60-L71` |
+| class | `ProseResponse` | `@dataclass` | `src/docu/generate/prose.py#L49-L59` |
+| class | `Verdict` | `@dataclass` | `src/docu/generate/prose.py#L63-L74` |
 | class | `SymbolChunker` | `@dataclass` | `src/docu/index/chunker.py#L46-L220` |
 | class | `InputComponents` | `@dataclass` | `src/docu/index/freshness.py#L26-L34` |
 | class | `IgnoreRule` | `@dataclass` | `src/docu/index/ignore.py#L18-L24` |
@@ -812,85 +814,85 @@ erDiagram
 | `ArchitectureModel` | `routes` | `tuple[Route, ...]` | — | `src/docu/conformance/model.py#L55-L55` |
 | `ArchitectureModel` | `sources` | `tuple[str, ...]` | — | `src/docu/conformance/model.py#L56-L56` |
 | `ArchitectureModel` | `schema_version` | `str` | — | `src/docu/conformance/model.py#L57-L57` |
-| `Artifact` | `artifact_id` | `str` | — | `src/docu/core/contracts.py#L95-L95` |
-| `Artifact` | `kind` | `SourceKind` | — | `src/docu/core/contracts.py#L96-L96` |
-| `Artifact` | `uri` | `str` | — | `src/docu/core/contracts.py#L97-L97` |
-| `Artifact` | `content_hash` | `str` | — | `src/docu/core/contracts.py#L98-L98` |
-| `Artifact` | `captured_at` | `datetime` | — | `src/docu/core/contracts.py#L99-L99` |
-| `Artifact` | `lang` | `str | None` | — | `src/docu/core/contracts.py#L100-L100` |
-| `Artifact` | `snapshot_path` | `str | None` | — | `src/docu/core/contracts.py#L101-L101` |
-| `Artifact` | `metadata` | `Mapping[str, Any]` | — | `src/docu/core/contracts.py#L102-L102` |
-| `Artifact` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L103-L103` |
-| `Symbol` | `name` | `str` | — | `src/docu/core/contracts.py#L118-L118` |
-| `Symbol` | `qualname` | `str` | — | `src/docu/core/contracts.py#L119-L119` |
-| `Symbol` | `kind` | `SymbolKind` | — | `src/docu/core/contracts.py#L120-L120` |
-| `Symbol` | `path` | `str` | — | `src/docu/core/contracts.py#L121-L121` |
-| `Symbol` | `line_start` | `int` | — | `src/docu/core/contracts.py#L122-L122` |
-| `Symbol` | `line_end` | `int` | — | `src/docu/core/contracts.py#L123-L123` |
-| `Symbol` | `signature` | `str | None` | — | `src/docu/core/contracts.py#L124-L124` |
-| `Symbol` | `children` | `Sequence['Symbol']` | — | `src/docu/core/contracts.py#L125-L125` |
-| `Symbol` | `annotations` | `Sequence[str]` | — | `src/docu/core/contracts.py#L126-L126` |
-| `Symbol` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L127-L127` |
-| `Chunk` | `chunk_id` | `str` | — | `src/docu/core/contracts.py#L141-L141` |
-| `Chunk` | `artifact_id` | `str` | — | `src/docu/core/contracts.py#L142-L142` |
-| `Chunk` | `source_type` | `SourceKind` | — | `src/docu/core/contracts.py#L143-L143` |
-| `Chunk` | `content` | `str` | — | `src/docu/core/contracts.py#L144-L144` |
-| `Chunk` | `content_prefix` | `str` | — | `src/docu/core/contracts.py#L145-L145` |
-| `Chunk` | `content_hash` | `str` | — | `src/docu/core/contracts.py#L146-L146` |
-| `Chunk` | `file_path` | `str` | — | `src/docu/core/contracts.py#L147-L147` |
-| `Chunk` | `lang` | `str | None` | — | `src/docu/core/contracts.py#L148-L148` |
-| `Chunk` | `enclosing_symbol` | `str | None` | — | `src/docu/core/contracts.py#L149-L149` |
-| `Chunk` | `symbol_kind` | `SymbolKind` | — | `src/docu/core/contracts.py#L150-L150` |
-| `Chunk` | `line_start` | `int` | — | `src/docu/core/contracts.py#L151-L151` |
-| `Chunk` | `line_end` | `int` | — | `src/docu/core/contracts.py#L152-L152` |
-| `Chunk` | `ingested_at` | `datetime` | — | `src/docu/core/contracts.py#L153-L153` |
-| `Chunk` | `repo` | `str | None` | — | `src/docu/core/contracts.py#L154-L154` |
-| `Chunk` | `commit` | `str | None` | — | `src/docu/core/contracts.py#L155-L155` |
-| `Chunk` | `dependencies` | `Sequence[str]` | — | `src/docu/core/contracts.py#L156-L156` |
-| `Chunk` | `embed_model` | `str | None` | — | `src/docu/core/contracts.py#L157-L157` |
-| `Chunk` | `chunker` | `str` | — | `src/docu/core/contracts.py#L158-L158` |
-| `Chunk` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L159-L159` |
-| `Claim` | `text` | `str` | — | `src/docu/core/contracts.py#L206-L206` |
-| `Claim` | `evidence` | `Sequence[str]` | — | `src/docu/core/contracts.py#L207-L207` |
-| `ContentNode` | `node_id` | `str` | — | `src/docu/core/contracts.py#L222-L222` |
-| `ContentNode` | `kind` | `str` | — | `src/docu/core/contracts.py#L223-L223` |
-| `ContentNode` | `title` | `str` | — | `src/docu/core/contracts.py#L224-L224` |
-| `ContentNode` | `claims` | `list[Claim]` | — | `src/docu/core/contracts.py#L225-L225` |
-| `ContentNode` | `levels` | `tuple[str, ...]` | — | `src/docu/core/contracts.py#L226-L226` |
-| `ContentNode` | `state` | `DocState` | — | `src/docu/core/contracts.py#L227-L227` |
-| `ContentNode` | `confidence` | `float` | — | `src/docu/core/contracts.py#L228-L228` |
-| `ContentNode` | `rendered` | `dict[str, str]` | — | `src/docu/core/contracts.py#L229-L229` |
-| `ContentNode` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L230-L230` |
-| `Metrics` | `accuracy` | `float` | — | `src/docu/core/contracts.py#L247-L247` |
-| `Metrics` | `completeness` | `float` | — | `src/docu/core/contracts.py#L248-L248` |
-| `Metrics` | `attribution` | `float` | — | `src/docu/core/contracts.py#L249-L249` |
-| `Metrics` | `conciseness` | `float` | — | `src/docu/core/contracts.py#L250-L250` |
-| `Metrics` | `freshness` | `float` | — | `src/docu/core/contracts.py#L251-L251` |
-| `Metrics` | `cost_usd` | `float` | — | `src/docu/core/contracts.py#L252-L252` |
-| `Metrics` | `unsupported_claims` | `int` | — | `src/docu/core/contracts.py#L253-L253` |
-| `Metrics` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L254-L254` |
-| `GateDecision` | `outcome` | `GateOutcome` | — | `src/docu/core/contracts.py#L261-L261` |
-| `GateDecision` | `reasons` | `tuple[str, ...]` | — | `src/docu/core/contracts.py#L262-L262` |
-| `RunRecord` | `run_id` | `str` | — | `src/docu/core/contracts.py#L281-L281` |
-| `RunRecord` | `project` | `str` | — | `src/docu/core/contracts.py#L282-L282` |
-| `RunRecord` | `commit` | `str | None` | — | `src/docu/core/contracts.py#L283-L283` |
-| `RunRecord` | `mode` | `Mode` | — | `src/docu/core/contracts.py#L284-L284` |
-| `RunRecord` | `started_at` | `datetime` | — | `src/docu/core/contracts.py#L285-L285` |
-| `RunRecord` | `finished_at` | `datetime | None` | — | `src/docu/core/contracts.py#L286-L286` |
-| `RunRecord` | `versions` | `dict[str, str]` | — | `src/docu/core/contracts.py#L287-L287` |
-| `RunRecord` | `metrics` | `Metrics | None` | — | `src/docu/core/contracts.py#L288-L288` |
-| `RunRecord` | `gate` | `GateDecision | None` | — | `src/docu/core/contracts.py#L289-L289` |
-| `RunRecord` | `pages_written` | `int` | — | `src/docu/core/contracts.py#L290-L290` |
-| `RunRecord` | `pages_skipped` | `int` | — | `src/docu/core/contracts.py#L291-L291` |
-| `RunRecord` | `cost_usd` | `float` | — | `src/docu/core/contracts.py#L292-L292` |
-| `RunRecord` | `errors` | `list[str]` | — | `src/docu/core/contracts.py#L293-L293` |
-| `RunRecord` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L294-L294` |
-| `FreshnessRecord` | `node_id` | `str` | — | `src/docu/core/contracts.py#L332-L332` |
-| `FreshnessRecord` | `input_hash` | `str` | — | `src/docu/core/contracts.py#L333-L333` |
-| `FreshnessRecord` | `state` | `DocState` | — | `src/docu/core/contracts.py#L334-L334` |
-| `FreshnessRecord` | `generated_at` | `datetime` | — | `src/docu/core/contracts.py#L335-L335` |
-| `FreshnessRecord` | `ttl_days` | `int` | — | `src/docu/core/contracts.py#L336-L336` |
-| `FreshnessRecord` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L337-L337` |
+| `Artifact` | `artifact_id` | `str` | — | `src/docu/core/contracts.py#L98-L98` |
+| `Artifact` | `kind` | `SourceKind` | — | `src/docu/core/contracts.py#L99-L99` |
+| `Artifact` | `uri` | `str` | — | `src/docu/core/contracts.py#L100-L100` |
+| `Artifact` | `content_hash` | `str` | — | `src/docu/core/contracts.py#L101-L101` |
+| `Artifact` | `captured_at` | `datetime` | — | `src/docu/core/contracts.py#L102-L102` |
+| `Artifact` | `lang` | `str | None` | — | `src/docu/core/contracts.py#L103-L103` |
+| `Artifact` | `snapshot_path` | `str | None` | — | `src/docu/core/contracts.py#L104-L104` |
+| `Artifact` | `metadata` | `Mapping[str, Any]` | — | `src/docu/core/contracts.py#L105-L105` |
+| `Artifact` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L106-L106` |
+| `Symbol` | `name` | `str` | — | `src/docu/core/contracts.py#L121-L121` |
+| `Symbol` | `qualname` | `str` | — | `src/docu/core/contracts.py#L122-L122` |
+| `Symbol` | `kind` | `SymbolKind` | — | `src/docu/core/contracts.py#L123-L123` |
+| `Symbol` | `path` | `str` | — | `src/docu/core/contracts.py#L124-L124` |
+| `Symbol` | `line_start` | `int` | — | `src/docu/core/contracts.py#L125-L125` |
+| `Symbol` | `line_end` | `int` | — | `src/docu/core/contracts.py#L126-L126` |
+| `Symbol` | `signature` | `str | None` | — | `src/docu/core/contracts.py#L127-L127` |
+| `Symbol` | `children` | `Sequence['Symbol']` | — | `src/docu/core/contracts.py#L128-L128` |
+| `Symbol` | `annotations` | `Sequence[str]` | — | `src/docu/core/contracts.py#L129-L129` |
+| `Symbol` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L130-L130` |
+| `Chunk` | `chunk_id` | `str` | — | `src/docu/core/contracts.py#L144-L144` |
+| `Chunk` | `artifact_id` | `str` | — | `src/docu/core/contracts.py#L145-L145` |
+| `Chunk` | `source_type` | `SourceKind` | — | `src/docu/core/contracts.py#L146-L146` |
+| `Chunk` | `content` | `str` | — | `src/docu/core/contracts.py#L147-L147` |
+| `Chunk` | `content_prefix` | `str` | — | `src/docu/core/contracts.py#L148-L148` |
+| `Chunk` | `content_hash` | `str` | — | `src/docu/core/contracts.py#L149-L149` |
+| `Chunk` | `file_path` | `str` | — | `src/docu/core/contracts.py#L150-L150` |
+| `Chunk` | `lang` | `str | None` | — | `src/docu/core/contracts.py#L151-L151` |
+| `Chunk` | `enclosing_symbol` | `str | None` | — | `src/docu/core/contracts.py#L152-L152` |
+| `Chunk` | `symbol_kind` | `SymbolKind` | — | `src/docu/core/contracts.py#L153-L153` |
+| `Chunk` | `line_start` | `int` | — | `src/docu/core/contracts.py#L154-L154` |
+| `Chunk` | `line_end` | `int` | — | `src/docu/core/contracts.py#L155-L155` |
+| `Chunk` | `ingested_at` | `datetime` | — | `src/docu/core/contracts.py#L156-L156` |
+| `Chunk` | `repo` | `str | None` | — | `src/docu/core/contracts.py#L157-L157` |
+| `Chunk` | `commit` | `str | None` | — | `src/docu/core/contracts.py#L158-L158` |
+| `Chunk` | `dependencies` | `Sequence[str]` | — | `src/docu/core/contracts.py#L159-L159` |
+| `Chunk` | `embed_model` | `str | None` | — | `src/docu/core/contracts.py#L160-L160` |
+| `Chunk` | `chunker` | `str` | — | `src/docu/core/contracts.py#L161-L161` |
+| `Chunk` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L162-L162` |
+| `Claim` | `text` | `str` | — | `src/docu/core/contracts.py#L209-L209` |
+| `Claim` | `evidence` | `Sequence[str]` | — | `src/docu/core/contracts.py#L210-L210` |
+| `ContentNode` | `node_id` | `str` | — | `src/docu/core/contracts.py#L225-L225` |
+| `ContentNode` | `kind` | `str` | — | `src/docu/core/contracts.py#L226-L226` |
+| `ContentNode` | `title` | `str` | — | `src/docu/core/contracts.py#L227-L227` |
+| `ContentNode` | `claims` | `list[Claim]` | — | `src/docu/core/contracts.py#L228-L228` |
+| `ContentNode` | `levels` | `tuple[str, ...]` | — | `src/docu/core/contracts.py#L229-L229` |
+| `ContentNode` | `state` | `DocState` | — | `src/docu/core/contracts.py#L230-L230` |
+| `ContentNode` | `confidence` | `float` | — | `src/docu/core/contracts.py#L231-L231` |
+| `ContentNode` | `rendered` | `dict[str, str]` | — | `src/docu/core/contracts.py#L232-L232` |
+| `ContentNode` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L233-L233` |
+| `Metrics` | `accuracy` | `float` | — | `src/docu/core/contracts.py#L250-L250` |
+| `Metrics` | `completeness` | `float` | — | `src/docu/core/contracts.py#L251-L251` |
+| `Metrics` | `attribution` | `float` | — | `src/docu/core/contracts.py#L252-L252` |
+| `Metrics` | `conciseness` | `float` | — | `src/docu/core/contracts.py#L253-L253` |
+| `Metrics` | `freshness` | `float` | — | `src/docu/core/contracts.py#L254-L254` |
+| `Metrics` | `cost_usd` | `float` | — | `src/docu/core/contracts.py#L255-L255` |
+| `Metrics` | `unsupported_claims` | `int` | — | `src/docu/core/contracts.py#L256-L256` |
+| `Metrics` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L257-L257` |
+| `GateDecision` | `outcome` | `GateOutcome` | — | `src/docu/core/contracts.py#L264-L264` |
+| `GateDecision` | `reasons` | `tuple[str, ...]` | — | `src/docu/core/contracts.py#L265-L265` |
+| `RunRecord` | `run_id` | `str` | — | `src/docu/core/contracts.py#L284-L284` |
+| `RunRecord` | `project` | `str` | — | `src/docu/core/contracts.py#L285-L285` |
+| `RunRecord` | `commit` | `str | None` | — | `src/docu/core/contracts.py#L286-L286` |
+| `RunRecord` | `mode` | `Mode` | — | `src/docu/core/contracts.py#L287-L287` |
+| `RunRecord` | `started_at` | `datetime` | — | `src/docu/core/contracts.py#L288-L288` |
+| `RunRecord` | `finished_at` | `datetime | None` | — | `src/docu/core/contracts.py#L289-L289` |
+| `RunRecord` | `versions` | `dict[str, str]` | — | `src/docu/core/contracts.py#L290-L290` |
+| `RunRecord` | `metrics` | `Metrics | None` | — | `src/docu/core/contracts.py#L291-L291` |
+| `RunRecord` | `gate` | `GateDecision | None` | — | `src/docu/core/contracts.py#L292-L292` |
+| `RunRecord` | `pages_written` | `int` | — | `src/docu/core/contracts.py#L293-L293` |
+| `RunRecord` | `pages_skipped` | `int` | — | `src/docu/core/contracts.py#L294-L294` |
+| `RunRecord` | `cost_usd` | `float` | — | `src/docu/core/contracts.py#L295-L295` |
+| `RunRecord` | `errors` | `list[str]` | — | `src/docu/core/contracts.py#L296-L296` |
+| `RunRecord` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L297-L297` |
+| `FreshnessRecord` | `node_id` | `str` | — | `src/docu/core/contracts.py#L335-L335` |
+| `FreshnessRecord` | `input_hash` | `str` | — | `src/docu/core/contracts.py#L336-L336` |
+| `FreshnessRecord` | `state` | `DocState` | — | `src/docu/core/contracts.py#L337-L337` |
+| `FreshnessRecord` | `generated_at` | `datetime` | — | `src/docu/core/contracts.py#L338-L338` |
+| `FreshnessRecord` | `ttl_days` | `int` | — | `src/docu/core/contracts.py#L339-L339` |
+| `FreshnessRecord` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L340-L340` |
 | `Thresholds` | `accuracy` | `float` | — | `src/docu/core/policy.py#L23-L23` |
 | `Thresholds` | `completeness` | `float` | — | `src/docu/core/policy.py#L24-L24` |
 | `Thresholds` | `attribution` | `float` | — | `src/docu/core/policy.py#L25-L25` |
@@ -942,11 +944,11 @@ erDiagram
 | `Change` | `after` | `object` | — | `src/docu/core/profile.py#L323-L323` |
 | `Change` | `reason` | `str` | — | `src/docu/core/profile.py#L324-L324` |
 | `Change` | `applied` | `bool` | — | `src/docu/core/profile.py#L325-L325` |
-| `CleanPlan` | `documents` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L37-L37` |
-| `CleanPlan` | `artifacts` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L38-L38` |
-| `CleanPlan` | `state` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L39-L39` |
-| `CleanPlan` | `ledger` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L40-L40` |
-| `CleanPlan` | `warnings` | `list[str]` | — | `src/docu/delivery/cleanup.py#L41-L41` |
+| `CleanPlan` | `documents` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L47-L47` |
+| `CleanPlan` | `artifacts` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L48-L48` |
+| `CleanPlan` | `state` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L49-L49` |
+| `CleanPlan` | `ledger` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L50-L50` |
+| `CleanPlan` | `warnings` | `list[str]` | — | `src/docu/delivery/cleanup.py#L51-L51` |
 | `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L277-L277` |
 | `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L278-L278` |
 | `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L279-L279` |
@@ -979,9 +981,9 @@ erDiagram
 | `Fact` | `detail` | `str` | — | `src/docu/generate/facts.py#L34-L34` |
 | `Fact` | `citation` | `str` | — | `src/docu/generate/facts.py#L35-L35` |
 | `Fact` | `attributes` | `Mapping[str, str]` | — | `src/docu/generate/facts.py#L36-L36` |
-| `Narrative` | `intent` | `list[Fact]` | — | `src/docu/generate/narrative.py#L50-L50` |
-| `Narrative` | `decisions` | `list[Fact]` | — | `src/docu/generate/narrative.py#L51-L51` |
-| `Narrative` | `intro` | `str` | — | `src/docu/generate/narrative.py#L52-L52` |
+| `Narrative` | `intent` | `list[Fact]` | — | `src/docu/generate/narrative.py#L51-L51` |
+| `Narrative` | `decisions` | `list[Fact]` | — | `src/docu/generate/narrative.py#L52-L52` |
+| `Narrative` | `intro` | `str` | — | `src/docu/generate/narrative.py#L53-L53` |
 | `GeneratedDoc` | `level` | `str` | — | `src/docu/generate/pipeline.py#L90-L90` |
 | `GeneratedDoc` | `path` | `Path` | — | `src/docu/generate/pipeline.py#L91-L91` |
 | `GeneratedDoc` | `content` | `str` | — | `src/docu/generate/pipeline.py#L92-L92` |
@@ -999,15 +1001,15 @@ erDiagram
 | `GenerationResult` | `unsupported_languages` | `Mapping[str, int]` | — | `src/docu/generate/pipeline.py#L108-L108` |
 | `GenerationResult` | `diagrams` | `tuple[str, ...]` | — | `src/docu/generate/pipeline.py#L109-L109` |
 | `GenerationResult` | `dry_run` | `bool` | — | `src/docu/generate/pipeline.py#L110-L110` |
-| `ProseResponse` | `reviewer` | `str` | — | `src/docu/generate/prose.py#L49-L49` |
-| `ProseResponse` | `sections` | `dict[str, list[dict[str, object]]]` | — | `src/docu/generate/prose.py#L50-L50` |
-| `ProseResponse` | `errors` | `list[str]` | — | `src/docu/generate/prose.py#L51-L51` |
-| `ProseResponse` | `warnings` | `list[str]` | — | `src/docu/generate/prose.py#L52-L52` |
-| `Verdict` | `judge` | `str` | — | `src/docu/generate/prose.py#L63-L63` |
-| `Verdict` | `score` | `float` | — | `src/docu/generate/prose.py#L64-L64` |
-| `Verdict` | `criteria` | `dict[str, float]` | — | `src/docu/generate/prose.py#L65-L65` |
-| `Verdict` | `issues` | `list[str]` | — | `src/docu/generate/prose.py#L66-L66` |
-| `Verdict` | `errors` | `list[str]` | — | `src/docu/generate/prose.py#L67-L67` |
+| `ProseResponse` | `reviewer` | `str` | — | `src/docu/generate/prose.py#L52-L52` |
+| `ProseResponse` | `sections` | `dict[str, list[dict[str, object]]]` | — | `src/docu/generate/prose.py#L53-L53` |
+| `ProseResponse` | `errors` | `list[str]` | — | `src/docu/generate/prose.py#L54-L54` |
+| `ProseResponse` | `warnings` | `list[str]` | — | `src/docu/generate/prose.py#L55-L55` |
+| `Verdict` | `judge` | `str` | — | `src/docu/generate/prose.py#L66-L66` |
+| `Verdict` | `score` | `float` | — | `src/docu/generate/prose.py#L67-L67` |
+| `Verdict` | `criteria` | `dict[str, float]` | — | `src/docu/generate/prose.py#L68-L68` |
+| `Verdict` | `issues` | `list[str]` | — | `src/docu/generate/prose.py#L69-L69` |
+| `Verdict` | `errors` | `list[str]` | — | `src/docu/generate/prose.py#L70-L70` |
 | `SymbolChunker` | `name` | `str` | — | `src/docu/index/chunker.py#L49-L49` |
 | `SymbolChunker` | `max_tokens` | `int` | — | `src/docu/index/chunker.py#L50-L50` |
 | `SymbolChunker` | `overlap_tokens` | `int` | — | `src/docu/index/chunker.py#L51-L51` |
@@ -1285,19 +1287,19 @@ erDiagram
 | `to_yaml` | `def to_yaml(model: ArchitectureModel, project: str) -> str` | `src/docu/conformance/model.py#L195-L218` |
 | `utcnow` | `def utcnow() -> datetime` | `src/docu/core/contracts.py#L22-L24` |
 | `sha256_of` | `def sha256_of(data: str | bytes) -> str` | `src/docu/core/contracts.py#L27-L29` |
-| `Artifact.__post_init__` | `def __post_init__(self) -> None` | `src/docu/core/contracts.py#L105-L111` |
-| `Symbol.is_container` | `def is_container(self) -> bool` | `src/docu/core/contracts.py#L130-L131` |
-| `Chunk.__post_init__` | `def __post_init__(self) -> None` | `src/docu/core/contracts.py#L161-L165` |
-| `Chunk.citation` | `def citation(self) -> str` | `src/docu/core/contracts.py#L168-L170` |
-| `Chunk.to_record` | `def to_record(self) -> dict[str, Any]` | `src/docu/core/contracts.py#L172-L193` |
-| `Claim.verified` | `def verified(self) -> bool` | `src/docu/core/contracts.py#L210-L211` |
-| `ContentNode.unsupported` | `def unsupported(self) -> list[Claim]` | `src/docu/core/contracts.py#L233-L234` |
-| `ContentNode.is_publishable` | `def is_publishable(self) -> bool` | `src/docu/core/contracts.py#L236-L237` |
-| `GateDecision.may_write` | `def may_write(self) -> bool` | `src/docu/core/contracts.py#L265-L267` |
-| `GateDecision.describe` | `def describe(self) -> str` | `src/docu/core/contracts.py#L269-L271` |
-| `RunRecord.duration_s` | `def duration_s(self) -> float | None` | `src/docu/core/contracts.py#L297-L300` |
-| `RunRecord.to_jsonl` | `def to_jsonl(self) -> str` | `src/docu/core/contracts.py#L302-L322` |
-| `FreshnessRecord.is_expired` | `def is_expired(self, now: datetime | None=...) -> bool` | `src/docu/core/contracts.py#L339-L341` |
+| `Artifact.__post_init__` | `def __post_init__(self) -> None` | `src/docu/core/contracts.py#L108-L114` |
+| `Symbol.is_container` | `def is_container(self) -> bool` | `src/docu/core/contracts.py#L133-L134` |
+| `Chunk.__post_init__` | `def __post_init__(self) -> None` | `src/docu/core/contracts.py#L164-L168` |
+| `Chunk.citation` | `def citation(self) -> str` | `src/docu/core/contracts.py#L171-L173` |
+| `Chunk.to_record` | `def to_record(self) -> dict[str, Any]` | `src/docu/core/contracts.py#L175-L196` |
+| `Claim.verified` | `def verified(self) -> bool` | `src/docu/core/contracts.py#L213-L214` |
+| `ContentNode.unsupported` | `def unsupported(self) -> list[Claim]` | `src/docu/core/contracts.py#L236-L237` |
+| `ContentNode.is_publishable` | `def is_publishable(self) -> bool` | `src/docu/core/contracts.py#L239-L240` |
+| `GateDecision.may_write` | `def may_write(self) -> bool` | `src/docu/core/contracts.py#L268-L270` |
+| `GateDecision.describe` | `def describe(self) -> str` | `src/docu/core/contracts.py#L272-L274` |
+| `RunRecord.duration_s` | `def duration_s(self) -> float | None` | `src/docu/core/contracts.py#L300-L303` |
+| `RunRecord.to_jsonl` | `def to_jsonl(self) -> str` | `src/docu/core/contracts.py#L305-L325` |
+| `FreshnessRecord.is_expired` | `def is_expired(self, now: datetime | None=...) -> bool` | `src/docu/core/contracts.py#L342-L344` |
 | `Thresholds.as_mapping` | `def as_mapping(self) -> Mapping[str, float]` | `src/docu/core/policy.py#L28-L34` |
 | `Budget.spend` | `def spend(self) -> None` | `src/docu/core/policy.py#L50-L56` |
 | `Budget.exceeded` | `def exceeded(self) -> list[str]` | `src/docu/core/policy.py#L58-L68` |
@@ -1310,7 +1312,7 @@ erDiagram
 | `LangAdapter.calls` | `def calls(self, path: str, source: str) -> Sequence[tuple[str, str]]` | `src/docu/core/ports.py#L47-L52` |
 | `Chunker.chunk` | `def chunk(self, artifact: Artifact, symbols: Sequence[Symbol], source: str) -> Sequence[Ch` | `src/docu/core/ports.py#L61-L62` |
 
-_(334 métodos adicionales omitidos del índice)_.
+_(336 métodos adicionales omitidos del índice)_.
 
 ## 12. Documentos y fuentes de referencia
 
@@ -1356,14 +1358,14 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/conformance/drift.py` | `8cba54b3c1fd` |
 | `src/docu/conformance/model.py` | `1353357e8785` |
 | `src/docu/core/__init__.py` | `f6d1da76275b` |
-| `src/docu/core/contracts.py` | `f1a0c160ab51` |
+| `src/docu/core/contracts.py` | `2a79af0cd07f` |
 | `src/docu/core/policy.py` | `bb4c3a0a3ed5` |
 | `src/docu/core/ports.py` | `88d8cfdb18c0` |
 | `src/docu/core/profile.py` | `0a80beb4ea0e` |
 | `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
-| `src/docu/delivery/cleanup.py` | `553e144f9f89` |
-| `src/docu/delivery/cli.py` | `f5ba2fa63e77` |
+| `src/docu/delivery/cleanup.py` | `001b4d5dcb36` |
+| `src/docu/delivery/cli.py` | `bf7d563e25ac` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |
 | `src/docu/delivery/mcp_server.py` | `ab622e99436c` |
@@ -1371,16 +1373,16 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/generate/__init__.py` | `91d9129019a3` |
 | `src/docu/generate/diagrams.py` | `f008c57b7365` |
 | `src/docu/generate/facts.py` | `50ee7dba477a` |
-| `src/docu/generate/markdown.py` | `c10ee8530038` |
-| `src/docu/generate/narrative.py` | `d7df3d4837a1` |
+| `src/docu/generate/markdown.py` | `f40d5f196926` |
+| `src/docu/generate/narrative.py` | `9fe30ddb7c44` |
 | `src/docu/generate/ops.py` | `cee221559089` |
 | `src/docu/generate/pipeline.py` | `ddc803ebd9cb` |
-| `src/docu/generate/prose.py` | `1cd8939b3141` |
+| `src/docu/generate/prose.py` | `8e6d6eb2e444` |
 | `src/docu/index/__init__.py` | `06566a17f409` |
 | `src/docu/index/chunker.py` | `7a6418ba69aa` |
 | `src/docu/index/freshness.py` | `076f96a3fb8b` |
 | `src/docu/index/ignore.py` | `1c15a32806bd` |
-| `src/docu/index/manifest.py` | `f3ea859b5225` |
+| `src/docu/index/manifest.py` | `9e2be2253110` |
 | `src/docu/index/packages.py` | `f0dc77febb01` |
 | `src/docu/index/pdfdocs.py` | `39bc1fa44d36` |
 | `src/docu/index/webdocs.py` | `e9185b94784e` |

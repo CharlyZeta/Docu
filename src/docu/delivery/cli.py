@@ -351,7 +351,7 @@ def _dispatch(args: argparse.Namespace) -> int:
 
     if args.command == "ci":
         if args.ci_command == "check":
-            return _run_status(args, quiet_ok=True)
+            return _run_status(args, quiet_ok=True, require_manifest=True)
         return _run_ci_regen(args)
 
     if args.command == "drift":
@@ -1123,7 +1123,9 @@ def _run_generate(args: argparse.Namespace) -> int:
     return int(ExitCode.OK)
 
 
-def _run_status(args: argparse.Namespace, quiet_ok: bool) -> int:
+def _run_status(
+    args: argparse.Namespace, quiet_ok: bool, require_manifest: bool = False
+) -> int:
     """Valida frescura. No genera nada: es la comprobación rápida de cada PR."""
     import json as jsonlib
 
@@ -1143,36 +1145,64 @@ def _run_status(args: argparse.Namespace, quiet_ok: bool) -> int:
     from docu.generate.pipeline import manifest_file
 
     resolved_manifest = manifest_file(root, options.manifest)
+    missing = [level for level, state in states.items() if state is DocState.MISSING]
     payload = {
         "project": manifest.project if manifest else None,
         "manifest": str(resolved_manifest),
-        "generated": manifest is not None,
+        # `generated` significa «existe documentación en disco», no «hay un manifest».
+        "generated": manifest is not None and not missing,
+        "missing": missing,
         "profile": str(options.profile.path) if options.profile and options.profile.path else None,
         "states": {level: state.value for level, state in states.items()},
-        "hashes": hashes,
+        "hashes": hashes if manifest is not None else {},
     }
 
     if getattr(args, "json", False):
         print(jsonlib.dumps(payload, ensure_ascii=False, indent=2))
-        all_fresh = manifest is not None and all(state is DocState.FRESH for state in states.values())
+        if manifest is None:
+            return int(ExitCode.NO_CHANGES)
+        all_fresh = all(state is DocState.FRESH for state in states.values())
         return int(ExitCode.OK if all_fresh else ExitCode.NEEDS_REVIEW)
 
-    origin = "manifest encontrado" if manifest else "sin manifest: nada generado todavía"
-    print(f"proyecto: {manifest.project if manifest else Path(args.root).name} ({origin})")
-    for level, state in states.items():
-        marker = {"fresh": "✔", "stale": "✖", "expired": "⏰"}.get(state.value, "?")
-        print(f"  {marker} {level}: {state.value}  ({hashes.get(level, "—")[:19]}…)")
+    if manifest is None:
+        # Sin manifest no hay estados que mostrar: decir «stale» y pedir «--incremental» era
+        # contradecirse, porque el incremental necesita justamente el manifest que falta.
+        # En CI sí es un fallo: no hay documentación versionada que validar.
+        if require_manifest:
+            print(
+                "no hay manifest de documentación: generá con docu gen y versioná .docu/manifest.json",
+                file=sys.stderr,
+            )
+            return int(ExitCode.NEEDS_REVIEW)
+        print(
+            f"proyecto: {Path(args.root).name} (sin documentación generada todavía)\n"
+            "  no hay manifest: ejecutá `docu gen` para generar desde cero"
+        )
+        return int(ExitCode.NO_CHANGES)
 
-    all_fresh = manifest is not None and all(state is DocState.FRESH for state in states.values())
+    origin = "manifest encontrado"
+    print(f"proyecto: {manifest.project} ({origin})")
+    for level, state in states.items():
+        marker = {"fresh": "✔", "stale": "✖", "expired": "⏰", "missing": "∅"}.get(state.value, "?")
+        print(f"  {marker} {level}: {state.value}  ({hashes.get(level, '—')[:19]}…)")
+
+    all_fresh = all(state is DocState.FRESH for state in states.values())
     if all_fresh:
         if not quiet_ok:
             print("todo fresco: no hay nada que regenerar")
         return int(ExitCode.OK)
     if not quiet_ok:
-        print(
-            "hay páginas desactualizadas: ejecuta `docu gen --incremental` o `docu ci regen`",
-            file=sys.stderr,
-        )
+        if missing:
+            print(
+                "faltan documentos que el manifest declara (borrados o movidos): "
+                "ejecutá `docu gen` para reconstruirlos",
+                file=sys.stderr,
+            )
+        else:
+            print(
+                "hay páginas desactualizadas: ejecuta `docu gen --incremental` o `docu ci regen`",
+                file=sys.stderr,
+            )
         if getattr(args, "why", False):
             _print_status_why(root, options, manifest)
     return int(ExitCode.NEEDS_REVIEW)

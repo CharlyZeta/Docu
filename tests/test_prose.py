@@ -88,7 +88,7 @@ class ValidationTests(unittest.TestCase):
         )
         self.assertFalse(response.accepted)
         self.assertIn("cifras sin evidencia", response.errors[0])
-        self.assertIn("98,7", response.errors[0])
+        self.assertIn("98.7", response.errors[0])
 
     def test_number_present_in_cited_fact_is_allowed(self) -> None:
         response, _index = validate(
@@ -98,6 +98,23 @@ class ValidationTests(unittest.TestCase):
                 }
             },
             FACTS,
+        )
+        self.assertTrue(response.accepted, msg=response.errors)
+
+    def test_version_prefix_is_supported(self) -> None:
+        """F-21: «React 19» debe aceptarse si el hecho dice ^19.0.1."""
+        facts = [Fact("dependency", "react", "^19.0.1", "package.json#L30-L30")]
+        response, _index = validate(
+            {"sections": {"intro": [sentence("Se construye con React 19 y Vite.", "dependency:react")]}},
+            facts,
+        )
+        self.assertTrue(response.accepted, msg=response.errors)
+
+    def test_number_with_trailing_comma_is_supported(self) -> None:
+        facts = [Fact("dependency", "vite", "^6.2.3", "package.json#L31-L31")]
+        response, _index = validate(
+            {"sections": {"intro": [sentence("Usa Vite 6, un bundler rápido.", "dependency:vite")]}},
+            facts,
         )
         self.assertTrue(response.accepted, msg=response.errors)
 
@@ -159,6 +176,20 @@ class JudgeTests(unittest.TestCase):
         self.assertTrue(load_verdict({"score": "muy bueno"}).errors)
         self.assertTrue(load_verdict({"score": 9}).errors)
         self.assertTrue(load_verdict({}).errors)
+
+
+class PurposeTests(unittest.TestCase):
+    def test_purpose_facts_come_first(self) -> None:
+        """F-23: sin hechos de propósito la intro sólo puede enumerar tecnología."""
+        request = build_request("demo", FACTS)
+        kinds = [fact["kind"] for fact in request["facts"]]  # type: ignore[index]
+        self.assertEqual(kinds[0], "intent")
+        self.assertEqual(request["has_purpose_facts"], True)  # type: ignore[index]
+
+    def test_request_warns_without_purpose(self) -> None:
+        request = build_request("demo", [FACTS[0]])
+        self.assertFalse(request["has_purpose_facts"])  # type: ignore[index]
+        self.assertIn("propósito", str(request.get("warning")))
 
 
 class RenderAndStoreTests(unittest.TestCase):

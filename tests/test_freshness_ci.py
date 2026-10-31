@@ -210,8 +210,29 @@ class PipelineFreshnessTests(unittest.TestCase):
         generate(self.root, self.out, project="demo")
         (self.out / "l1-manual-tecnico.md").unlink()
         _manifest, states, _hashes = inspect(self.root)
-        self.assertIs(states["l1"], DocState.STALE)
+        # MISSING ≠ STALE: el archivo no existe y el mensaje debe pedir regenerar, no incrementar.
+        self.assertIs(states["l1"], DocState.MISSING)
         self.assertIs(states["l4"], DocState.FRESH)
+
+    def test_status_json_reports_missing_documents(self) -> None:
+        """F-20: generated debe ser false si el manifest declara documentos que no están."""
+        import json as jsonlib
+
+        generate(self.root, self.out, project="demo")
+        for path in self.out.glob("*.md"):
+            path.unlink()
+        code, output = run_cli("status", "--root", str(self.root), "--json")
+        payload = jsonlib.loads(output)
+        self.assertFalse(payload["generated"])
+        self.assertEqual(sorted(payload["missing"]), ["l1", "l4"])
+        self.assertEqual(code, int(ExitCode.NEEDS_REVIEW))
+
+    def test_status_without_manifest_has_no_states(self) -> None:
+        """F-24: sin manifest no se muestran hashes ni se sugiere --incremental."""
+        code, output = run_cli("status", "--root", str(self.root))
+        self.assertEqual(code, int(ExitCode.NO_CHANGES))
+        self.assertNotIn("sha256", output)
+        self.assertNotIn("--incremental", output)
 
     def test_manifest_is_not_written_when_gate_aborts(self) -> None:
         from unittest import mock
@@ -237,10 +258,13 @@ class CliTests(unittest.TestCase):
     def tearDown(self) -> None:
         self._tmp.cleanup()
 
-    def test_status_without_manifest_asks_for_review(self) -> None:
+    def test_status_without_manifest_is_no_changes(self) -> None:
+        """Sin manifest no hay estados: se informa una sola cosa y se sugiere generar."""
         code, output = run_cli("status", "--root", str(self.root))
-        self.assertEqual(code, int(ExitCode.NEEDS_REVIEW))
-        self.assertIn("sin manifest", output)
+        self.assertEqual(code, int(ExitCode.NO_CHANGES))
+        self.assertIn("sin documentación generada", output)
+        self.assertIn("docu gen", output)
+        self.assertNotIn("stale", output)
 
     def test_status_after_generation_is_ok(self) -> None:
         run_cli("gen", "--root", str(self.root), "--out", self.out, "--project", "demo")
