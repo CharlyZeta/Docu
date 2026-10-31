@@ -40,9 +40,11 @@ HEADING_RE = re.compile(r"(?m)^\s{0,3}#{1,6}\s")
 
 #: Hechos que se ofrecen al redactor, **en orden de prioridad**: primero lo que dice qué es el
 #: producto (intención, decisiones, metadatos), después su superficie y sólo al final los detalles.
-NARRATIVE_KINDS = ("intent", "decision", "route", "module", "package", "dependency", "type", "field")
+NARRATIVE_KINDS = (
+    "intent", "decision", "doc_section", "route", "module", "package", "dependency", "type", "field"
+)
 #: Sin estos, una introducción sólo puede enumerar tecnología.
-PURPOSE_KINDS = ("intent", "decision")
+PURPOSE_KINDS = ("intent", "decision", "doc_section")
 
 
 @dataclass(slots=True)

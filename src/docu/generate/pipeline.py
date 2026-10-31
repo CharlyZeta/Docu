@@ -522,6 +522,7 @@ def collect_all_facts(
     Una sola puerta para que `gen`, `prose` y la auditoría hablen del **mismo** universo. Antes, la
     prosa delegada ofrecía hechos de código pero no de intención, y el agente citaba ids inexistentes.
     """
+    from docu.generate.docs_evidence import discover as discover_docs
     from docu.generate.narrative import collect as collect_narrative
 
     facts, sources = collect_facts(
@@ -535,6 +536,9 @@ def collect_all_facts(
         root_path, discovered, kind_counts, project or root_path.name, _read
     )
     facts.extend(narrative.facts)
+    # La documentación que el proyecto ya escribió se cita como documentación, no como código:
+    # así el onboarding deja de declarar huecos que el README responde.
+    facts.extend(section.to_fact() for section in discover_docs(root_path))
     return facts, sources, discovered, narrative
 
 

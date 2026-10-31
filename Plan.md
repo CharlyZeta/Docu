@@ -531,3 +531,25 @@ corregidos en el mismo día:
 
 **Lección:** dos de los siete (F-20 y F-24) eran estados que el producto no sabía nombrar. La regla que
 faltaba: *cada estado tiene que tener un nombre, un mensaje y un código de salida*.
+
+### 13.12 F-06: la documentación existente del repositorio como evidencia citada
+
+El hueco más caro de la prueba externa: el `l4` declaraba «Prerrequisitos» y «Puesta en marcha» como
+vacíos **teniendo un README que los explicaba con versiones de Node y comandos**.
+
+Ahora `generate/docs_evidence.py` lee `README.md`, `LEEME.md`, `AGENTS.md`, `CONTRIBUTING.md`,
+`INSTALL.md` y `docs/**/*.md` (nunca `docs/generated`), extrae secciones de nivel 1–3 con su primer
+párrafo y su rango de líneas, y las publica como hechos `doc_section`.
+
+- **L4**: si una sección del repositorio responde a «Prerrequisitos» o «Puesta en marcha», se cita con
+  su línea en lugar de declarar el hueco, con el aviso «el repositorio ya documenta esto».
+- **L1**: tabla «Documentación existente del repositorio» (15 secciones) para que el manual no
+  duplique ni contradiga lo ya escrito.
+- **Prosa**: `doc_section` entra en los hechos ofrecidos y cuenta como hecho de propósito, así la
+  introducción puede decir qué hace el producto con las palabras del propio equipo.
+- La coincidencia es **por título**, no por cuerpo: buscar en el cuerpo citaba un reporte de cobertura
+  como si fuera la puesta en marcha.
+- Si no hay coincidencia, el hueco sigue declarado. No se inventa un prerrequisito.
+
+**Medido en SalesHub:** «Prerrequisitos» pasa de hueco a `Prerrequisitos: Node.js v20 · npm v10`
+citando `README.md#L244-L249`, y la petición de prosa gana 60 secciones documentadas. 11 tests nuevos.

@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:2939a` · archivos analizados: 63 · afirmaciones: 1162 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:f2a9b` · archivos analizados: 64 · afirmaciones: 1198 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -8,7 +8,7 @@ Generado por `docu 0.1.0` · fuente `sha256:2939a` · archivos analizados: 63 ·
 
 > Introducción compuesta con hechos citados: cada frase sale de un conteo o de la propia documentación del proyecto. No es prosa libre.
 
-**docu** se compone de 16 dependencias declaradas, 15 paquetes, 96 tipos y 415 campos.
+**docu** se compone de 16 dependencias declaradas, 15 paquetes, 97 tipos y 420 campos.
 
 Su propia documentación declara: «Agente autonomo de documentacion tecnica: agnostico, verificable e incremental.» [`pyproject.toml#L8-L8`].
 
@@ -20,7 +20,7 @@ El repositorio deja constancia de 12 decisiones («Saltar el bloque completo par
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **96** · métodos: **536**
+- Tipos: **97** · métodos: **545**
 
 ## 3. Intención y decisiones
 
@@ -80,9 +80,29 @@ El repositorio deja constancia de 12 decisiones («Saltar el bloque completo par
 | `auditoría tiene razón en marcarla y el lector no encuentra n` | auditoría tiene razón en marcarla y el lector no encuentra nada al abrirla. | `src/docu/generate/ops.py#L211-L211` |
 | `los recupera. Sin esto, un proyecto con `tests/` en la raíz ` | los recupera. Sin esto, un proyecto con `tests/` en la raíz documenta sus propias aserciones. | `src/docu/generate/pipeline.py#L69-L69` |
 | `para que un PDF nuevo o modificado invalide la frescura, igu` | para que un PDF nuevo o modificado invalide la frescura, igual que un archivo de código. | `src/docu/generate/pipeline.py#L251-L251` |
-| `Sin estos, una introducción sólo puede enumerar tecnología.` | Sin estos, una introducción sólo puede enumerar tecnología. | `src/docu/generate/prose.py#L44-L44` |
+| `Sin estos, una introducción sólo puede enumerar tecnología.` | Sin estos, una introducción sólo puede enumerar tecnología. | `src/docu/generate/prose.py#L46-L46` |
 | `Unidades por carpeta sólo en profundidad razonable: `vendor/` | Unidades por carpeta sólo en profundidad razonable: `vendor/includes/assets/js` no es una | `src/docu/index/packages.py#L145-L145` |
 | `primer archivo completo. Decirlo evita que la cita parezca m` | primer archivo completo. Decirlo evita que la cita parezca más fuerte de lo que es. | `src/docu/index/packages.py#L154-L154` |
+
+**Documentación existente del repositorio.** Secciones que el equipo ya escribió; se citan para que este manual no las duplique ni las contradiga.
+
+| Sección | Cita |
+|---|---|
+| `README.md › docu` | `README.md#L1-L16` |
+| `README.md › El problema, en dos frases` | `README.md#L16-L22` |
+| `README.md › Qué obtenés` | `README.md#L22-L37` |
+| `README.md › Cómo funciona` | `README.md#L37-L52` |
+| `README.md › Empezar en tres comandos` | `README.md#L52-L63` |
+| `README.md › Actualizar la instalación` | `README.md#L63-L76` |
+| `README.md › Lo que lo hace distinto` | `README.md#L76-L86` |
+| `README.md › Los cuatro niveles` | `README.md#L86-L99` |
+| `README.md › Diagramas y web` | `README.md#L99-L108` |
+| `README.md › Servidor MCP` | `README.md#L108-L121` |
+| `README.md › Higiene del corpus` | `README.md#L121-L127` |
+| `README.md › Códigos de salida` | `README.md#L127-L142` |
+| `README.md › Volver a cero` | `README.md#L142-L156` |
+| `README.md › Probar sin tocar tu proyecto` | `README.md#L156-L166` |
+| `README.md › Límites declarados` | `README.md#L166-L175` |
 
 ## 4. Arquitectura: módulos y paquetes
 
@@ -97,7 +117,7 @@ El repositorio deja constancia de 12 decisiones («Saltar el bloque completo par
 | `docu.conformance` | python | 3 | `src/docu/conformance/__init__.py#L1-L5` |
 | `docu.core` | python | 6 | `src/docu/core/__init__.py#L1-L5` |
 | `docu.delivery` | python | 7 | `src/docu/delivery/__init__.py#L1-L5` |
-| `docu.generate` | python | 8 | `src/docu/generate/__init__.py#L1-L5` |
+| `docu.generate` | python | 9 | `src/docu/generate/__init__.py#L1-L5` |
 | `docu.index` | python | 8 | `src/docu/index/__init__.py#L1-L5` |
 | `docu.learn` | python | 5 | `src/docu/learn/__init__.py#L1-L5` |
 | `docu.publish` | python | 2 | `src/docu/publish/__init__.py#L1-L5` |
@@ -121,7 +141,7 @@ flowchart LR
     docu_conformance["docu.conformance<br/>3 archivos"]
     docu_core["docu.core<br/>6 archivos"]
     docu_delivery["docu.delivery<br/>7 archivos"]
-    docu_generate["docu.generate<br/>8 archivos"]
+    docu_generate["docu.generate<br/>9 archivos"]
     docu_index["docu.index<br/>8 archivos"]
     docu_learn["docu.learn<br/>5 archivos"]
     docu_publish["docu.publish<br/>2 archivos"]
@@ -166,12 +186,17 @@ flowchart LR
     eval --> docu_retrieve
 ```
 
-### Clases del paquete · 7 clases de docu.generate
+### Clases del paquete · 8 clases de docu.generate
 
 ```mermaid
 classDiagram
     class Diagram <<class>> {
         filename()
+    }
+    class DocSection <<class>> {
+        citation()
+        matches()
+        to_fact()
     }
     class Fact <<class>> {
         verified()
@@ -279,11 +304,11 @@ classDiagram
     }
 ```
 
-### modelo-de-datos · 24 de 78 entidades · 12 relaciones declaradas por tipo · 54 omitidas por recorte
+### modelo-de-datos · 24 de 79 entidades · 12 relaciones declaradas por tipo · 55 omitidas por recorte
 
 ```mermaid
 erDiagram
-    %% recorte: 24 de 78 entidades (las de más relaciones)
+    %% recorte: 24 de 79 entidades (las de más relaciones)
     ArchitectureModel {
         tuple_DeclaredComponent components
         tuple_Route routes
@@ -659,12 +684,13 @@ erDiagram
 | class | `ToolError` | — | `src/docu/delivery/mcp_server.py#L205-L206` |
 | class | `McpServer` | `@dataclass` | `src/docu/delivery/mcp_server.py#L210-L625` |
 | class | `Diagram` | `@dataclass` | `src/docu/generate/diagrams.py#L40-L50` |
+| class | `DocSection` | `@dataclass` | `src/docu/generate/docs_evidence.py#L49-L73` |
 | class | `Fact` | `@dataclass` | `src/docu/generate/facts.py#L29-L44` |
 | class | `Narrative` | `@dataclass` | `src/docu/generate/narrative.py#L48-L57` |
 | class | `GeneratedDoc` | `@dataclass` | `src/docu/generate/pipeline.py#L89-L92` |
 | class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L96-L121` |
-| class | `ProseResponse` | `@dataclass` | `src/docu/generate/prose.py#L49-L59` |
-| class | `Verdict` | `@dataclass` | `src/docu/generate/prose.py#L63-L74` |
+| class | `ProseResponse` | `@dataclass` | `src/docu/generate/prose.py#L51-L61` |
+| class | `Verdict` | `@dataclass` | `src/docu/generate/prose.py#L65-L76` |
 | class | `SymbolChunker` | `@dataclass` | `src/docu/index/chunker.py#L46-L220` |
 | class | `InputComponents` | `@dataclass` | `src/docu/index/freshness.py#L26-L34` |
 | class | `IgnoreRule` | `@dataclass` | `src/docu/index/ignore.py#L18-L24` |
@@ -976,6 +1002,11 @@ erDiagram
 | `Diagram` | `kind` | `str` | — | `src/docu/generate/diagrams.py#L44-L44` |
 | `Diagram` | `mermaid` | `str` | — | `src/docu/generate/diagrams.py#L45-L45` |
 | `Diagram` | `note` | `str` | — | `src/docu/generate/diagrams.py#L46-L46` |
+| `DocSection` | `path` | `str` | — | `src/docu/generate/docs_evidence.py#L52-L52` |
+| `DocSection` | `title` | `str` | — | `src/docu/generate/docs_evidence.py#L53-L53` |
+| `DocSection` | `body` | `str` | — | `src/docu/generate/docs_evidence.py#L54-L54` |
+| `DocSection` | `line_start` | `int` | — | `src/docu/generate/docs_evidence.py#L55-L55` |
+| `DocSection` | `line_end` | `int` | — | `src/docu/generate/docs_evidence.py#L56-L56` |
 | `Fact` | `kind` | `str` | — | `src/docu/generate/facts.py#L32-L32` |
 | `Fact` | `subject` | `str` | — | `src/docu/generate/facts.py#L33-L33` |
 | `Fact` | `detail` | `str` | — | `src/docu/generate/facts.py#L34-L34` |
@@ -1001,15 +1032,15 @@ erDiagram
 | `GenerationResult` | `unsupported_languages` | `Mapping[str, int]` | — | `src/docu/generate/pipeline.py#L108-L108` |
 | `GenerationResult` | `diagrams` | `tuple[str, ...]` | — | `src/docu/generate/pipeline.py#L109-L109` |
 | `GenerationResult` | `dry_run` | `bool` | — | `src/docu/generate/pipeline.py#L110-L110` |
-| `ProseResponse` | `reviewer` | `str` | — | `src/docu/generate/prose.py#L52-L52` |
-| `ProseResponse` | `sections` | `dict[str, list[dict[str, object]]]` | — | `src/docu/generate/prose.py#L53-L53` |
-| `ProseResponse` | `errors` | `list[str]` | — | `src/docu/generate/prose.py#L54-L54` |
-| `ProseResponse` | `warnings` | `list[str]` | — | `src/docu/generate/prose.py#L55-L55` |
-| `Verdict` | `judge` | `str` | — | `src/docu/generate/prose.py#L66-L66` |
-| `Verdict` | `score` | `float` | — | `src/docu/generate/prose.py#L67-L67` |
-| `Verdict` | `criteria` | `dict[str, float]` | — | `src/docu/generate/prose.py#L68-L68` |
-| `Verdict` | `issues` | `list[str]` | — | `src/docu/generate/prose.py#L69-L69` |
-| `Verdict` | `errors` | `list[str]` | — | `src/docu/generate/prose.py#L70-L70` |
+| `ProseResponse` | `reviewer` | `str` | — | `src/docu/generate/prose.py#L54-L54` |
+| `ProseResponse` | `sections` | `dict[str, list[dict[str, object]]]` | — | `src/docu/generate/prose.py#L55-L55` |
+| `ProseResponse` | `errors` | `list[str]` | — | `src/docu/generate/prose.py#L56-L56` |
+| `ProseResponse` | `warnings` | `list[str]` | — | `src/docu/generate/prose.py#L57-L57` |
+| `Verdict` | `judge` | `str` | — | `src/docu/generate/prose.py#L68-L68` |
+| `Verdict` | `score` | `float` | — | `src/docu/generate/prose.py#L69-L69` |
+| `Verdict` | `criteria` | `dict[str, float]` | — | `src/docu/generate/prose.py#L70-L70` |
+| `Verdict` | `issues` | `list[str]` | — | `src/docu/generate/prose.py#L71-L71` |
+| `Verdict` | `errors` | `list[str]` | — | `src/docu/generate/prose.py#L72-L72` |
 | `SymbolChunker` | `name` | `str` | — | `src/docu/index/chunker.py#L49-L49` |
 | `SymbolChunker` | `max_tokens` | `int` | — | `src/docu/index/chunker.py#L50-L50` |
 | `SymbolChunker` | `overlap_tokens` | `int` | — | `src/docu/index/chunker.py#L51-L51` |
@@ -1312,7 +1343,7 @@ erDiagram
 | `LangAdapter.calls` | `def calls(self, path: str, source: str) -> Sequence[tuple[str, str]]` | `src/docu/core/ports.py#L47-L52` |
 | `Chunker.chunk` | `def chunk(self, artifact: Artifact, symbols: Sequence[Symbol], source: str) -> Sequence[Ch` | `src/docu/core/ports.py#L61-L62` |
 
-_(336 métodos adicionales omitidos del índice)_.
+_(345 métodos adicionales omitidos del índice)_.
 
 ## 12. Documentos y fuentes de referencia
 
@@ -1372,12 +1403,13 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/delivery/proposal.py` | `d3f93708a83b` |
 | `src/docu/generate/__init__.py` | `91d9129019a3` |
 | `src/docu/generate/diagrams.py` | `f008c57b7365` |
+| `src/docu/generate/docs_evidence.py` | `595a0df2c3fe` |
 | `src/docu/generate/facts.py` | `50ee7dba477a` |
-| `src/docu/generate/markdown.py` | `f40d5f196926` |
+| `src/docu/generate/markdown.py` | `ff0e36c384b8` |
 | `src/docu/generate/narrative.py` | `9fe30ddb7c44` |
 | `src/docu/generate/ops.py` | `cee221559089` |
-| `src/docu/generate/pipeline.py` | `ddc803ebd9cb` |
-| `src/docu/generate/prose.py` | `8e6d6eb2e444` |
+| `src/docu/generate/pipeline.py` | `1a107239fa01` |
+| `src/docu/generate/prose.py` | `e960ae53b9e4` |
 | `src/docu/index/__init__.py` | `06566a17f409` |
 | `src/docu/index/chunker.py` | `7a6418ba69aa` |
 | `src/docu/index/freshness.py` | `076f96a3fb8b` |

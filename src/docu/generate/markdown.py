@@ -9,6 +9,12 @@ from __future__ import annotations
 
 from typing import Mapping, Sequence
 
+from docu.generate.docs_evidence import (
+    PREREQUISITE_HINTS,
+    SETUP_HINTS,
+    DocSection,
+    find as find_docs,
+)
 from docu.generate.facts import Fact
 
 NO_EVIDENCE = (
@@ -48,6 +54,42 @@ def _dedupe(facts: Sequence[Fact]) -> list[Fact]:
         seen.add(key)
         out.append(fact)
     return out
+
+
+def _doc_sections(facts: Sequence[Fact]) -> list[DocSection]:
+    """Secciones de documentación existente, reconstruidas desde los hechos citados."""
+    sections: list[DocSection] = []
+    for fact in _by_kind(facts, "doc_section"):
+        path, _, span = fact.citation.partition("#L")
+        start_text, _, end_text = span.partition("-L")
+        try:
+            start = int(start_text)
+            end = int(end_text or start_text)
+        except ValueError:
+            continue
+        sections.append(
+            DocSection(path, fact.attributes.get("title", ""), fact.detail, start, end)
+        )
+    return sections
+
+
+def _doc_hint_lines(facts: Sequence[Fact], hints: Sequence[str]) -> list[str]:
+    """Párrafos del repositorio que ya responden a esta sección.
+
+    Se citan como **documentación existente**, no como afirmación del generador: el lector sabe que
+    esa prosa la escribió el equipo y puede ir a la línea exacta.
+    """
+    matched = find_docs(_doc_sections(facts), hints)
+    if not matched:
+        return []
+    lines = [
+        "> El repositorio **ya documenta** esto. Se cita para no duplicarlo ni contradecirlo.",
+        "",
+    ]
+    for section in matched:
+        body = f" — {section.body[:300]}" if section.body else ""
+        lines += [f"**{section.title}**{body} [`{section.citation}`]", ""]
+    return lines
 
 
 def _counts(facts: Sequence[Fact]) -> dict[str, int]:
@@ -207,6 +249,19 @@ def render_l1(
             "",
             "> El proyecto no declara su intención en docstrings, README ni ADRs, ni deja comentarios "
             "que expliquen un porqué. Esta sección no la inventa.",
+            "",
+        ]
+
+    sections = _dedupe(_by_kind(facts, "doc_section"))[:15]
+    if sections:
+        lines += [
+            "**Documentación existente del repositorio.** Secciones que el equipo ya escribió; se "
+            "citan para que este manual no las duplique ni las contradiga.",
+            "",
+            _table(
+                ["Sección", "Cita"],
+                [[f"`{fact.subject}`", _cite(fact.citation)] for fact in sections],
+            ),
             "",
         ]
 
@@ -464,13 +519,19 @@ def render_l4(
     # de cada modulo son ruido para quien va a instalar el proyecto.
     root_parents = [fact for fact in _dedupe(_by_kind(facts, "parent")) if fact.citation.startswith("pom.xml")]
     prereq = _dedupe(_by_kind(facts, "property")) + root_parents
-    lines += [
-        _table(
-            ["Requisito", "Versión", "Cita"],
-            [[f"`{fact.subject}`", fact.detail, _cite(fact.citation)] for fact in prereq],
-        ),
-        "",
-    ]
+    documented = _doc_hint_lines(facts, PREREQUISITE_HINTS)
+    if documented:
+        lines += documented
+    elif prereq:
+        lines += [
+            _table(
+                ["Requisito", "Versión", "Cita"],
+                [[f"`{fact.subject}`", fact.detail, _cite(fact.citation)] for fact in prereq],
+            ),
+            "",
+        ]
+    else:
+        lines += [NO_EVIDENCE, ""]
 
     lines += ["## Puesta en marcha", ""]
     plugins = [fact for fact in _by_kind(facts, "plugin") if "spring-boot" in fact.subject]
@@ -480,7 +541,13 @@ def render_l4(
     # El comando de build se sostiene en el parent del POM raiz, no en una convencion.
     if root_parents:
         rows.append(["Compilar", "`mvn -DskipTests package`", _cite(root_parents[0].citation)])
-    lines += [_table(["Objetivo", "Comando", "Cita"], rows), ""]
+    documented = _doc_hint_lines(facts, SETUP_HINTS)
+    if documented:
+        lines += documented
+    elif rows:
+        lines += [_table(["Objetivo", "Comando", "Cita"], rows), ""]
+    else:
+        lines += [NO_EVIDENCE, ""]
 
     lines += ["## Endpoints principales", ""]
     lines += [
