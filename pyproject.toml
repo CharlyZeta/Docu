@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "docu"
 version = "0.1.0"
-description = "Agente autonomo de documentacion tecnica: agnostico, verificable e incremental."
+description = "Verifiable technical documentation generated from source code: every claim cites the file and line that supports it."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }

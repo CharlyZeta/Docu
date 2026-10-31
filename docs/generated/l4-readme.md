@@ -1,6 +1,6 @@
 # docu — README de onboarding (Nivel 4)
 
-Generado por `docu 0.1.0` · fuente `sha256:42e27` · archivos analizados: 65 · afirmaciones: 1208 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:628e7` · archivos analizados: 65 · afirmaciones: 1208 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -30,13 +30,11 @@ Proyecto **docu** con 0 módulos, 15 paquetes, 97 tipos y 0 rutas HTTP documenta
 
 > El repositorio **ya documenta** esto. Se cita para no duplicarlo ni contradecirlo.
 
-**Actualizar la instalación** — Instalado como herramienta, `docu` es una **copia congelada** del día de la instalación: los comandos nuevos no aparecen solos. [`README.md#L74-L87`]
+**Updating an install** — Installed as a tool, `docu` is a **frozen copy** from the day you installed it: new commands do not appear on their own. [`README.md#L71-L84`]
 
 ## Puesta en marcha
 
-> El repositorio **ya documenta** esto. Se cita para no duplicarlo ni contradecirlo.
-
-**Empezar en tres comandos** — docu init --root . --apply    # detecta el stack y escribe el perfil docu gen --root .             # genera los niveles con sus citas docu audit --root .           # cinco comprobaciones, nota ponderada [`README.md#L63-L74`]
+> **Sin evidencia disponible.** Esta sección no se documenta: el agente no rellena huecos con prosa plausible.
 
 ## Endpoints principales
 

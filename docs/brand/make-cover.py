@@ -1,8 +1,10 @@
 """Portada del README a partir de un frame del video y del sistema de diseño de `docu`.
 
-`Docu.mp4` es una animación de 10 s: fuentes → documento verificado → artefactos. Un `.mp4` del repo
-no se reproduce en una cabecera de README (GitHub sólo sirve videos subidos por el editor web), así
-que la portada se compone con un frame real del video más la identidad del proyecto.
+`docs/brand/docu-demo.mp4` es una animación de 10 s: fuentes → documento verificado → artefactos. Un
+`.mp4` del repositorio no se reproduce en una cabecera de README (GitHub sólo sirve videos subidos con
+su editor web), así que la portada se compone con un frame real del video más la identidad del
+proyecto. El video queda como material de origen y **no se anuncia en el README**: no se promete lo que
+no se puede ver.
 
 Se ejecuta a mano cuando cambia el video o la paleta:
 

@@ -1,8 +1,7 @@
-"""El README no puede mentir: si menciona un comando, una herramienta o un número, es cierto.
+"""Los README no pueden mentir: si mencionan un comando, una herramienta o un número, es cierto.
 
-Esta guardia existe porque un README desactualizado es peor que ninguno: describe un producto que ya
-no existe. Cada commit que cambie capacidades debería actualizarlo, y el CI lo verifica en lugar de
-confiar en la disciplina de quien escribe.
+Existen dos versiones (inglés y español) y la guardia cubre **las dos**: un README desactualizado es
+peor que ninguno, y una traducción que se queda atrás lo es todavía más, porque nadie la revisa.
 """
 
 from __future__ import annotations
@@ -12,97 +11,142 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-README = ROOT / "README.md"
+README_EN = ROOT / "README.md"
+README_ES = ROOT / "README.es.md"
+READMES = {"inglés": README_EN, "español": README_ES}
 
 
 def readme_text() -> str:
-    return README.read_text(encoding="utf-8")
+    return README_EN.read_text(encoding="utf-8")
+
+
+def texts() -> dict[str, str]:
+    return {nombre: ruta.read_text(encoding="utf-8") for nombre, ruta in READMES.items()}
 
 
 class CommandTests(unittest.TestCase):
     def setUp(self) -> None:
         from docu.delivery.cli import _build_parser
 
-        self.parser = _build_parser()
-        parser = self.parser
+        parser = _build_parser()
         actions = [action for action in parser._actions if action.dest == "command"]
         self.subcommands = set(actions[0].choices or {}) if actions else set()
 
     def test_every_documented_command_exists(self) -> None:
-        """`docu <cmd>` en el README debe ser un subcomando real."""
-        mentioned = set(re.findall(r"(?m)^\s*docu\s+([a-z_-]+)", readme_text()))
-        mentioned |= set(re.findall(r"`docu ([a-z_-]+)", readme_text()))
-        # Los flags (--version, --help) no son subcomandos.
-        unknown = {
-            name
-            for name in mentioned
-            if name not in self.subcommands and not name.startswith("-")
-        }
-        self.assertFalse(
-            unknown,
-            msg=f"el README menciona comandos inexistentes: {sorted(unknown)}. "
-            f"Disponibles: {sorted(self.subcommands)}",
-        )
+        """`docu <cmd>` en cualquiera de las dos versiones debe ser un subcomando real."""
+        for idioma, texto in texts().items():
+            with self.subTest(idioma=idioma):
+                mentioned = set(re.findall(r"(?m)^\s*docu\s+([a-z_-]+)", texto))
+                mentioned |= set(re.findall(r"`docu ([a-z_-]+)", texto))
+                # Los flags (`--version`, `--help`) no son subcomandos.
+                unknown = {
+                    name
+                    for name in mentioned
+                    if name not in self.subcommands and not name.startswith("-")
+                }
+                self.assertFalse(
+                    unknown,
+                    msg=f"el README en {idioma} menciona comandos inexistentes: {sorted(unknown)}. "
+                    f"Disponibles: {sorted(self.subcommands)}",
+                )
 
 
 class McpToolTests(unittest.TestCase):
     def test_documented_tools_match_the_server(self) -> None:
         from docu.delivery.mcp_server import READ_ONLY_TOOLS
 
-        text = readme_text()
-        documented = set(re.findall(r"`([a-z_]+)`", text))
-        for tool in READ_ONLY_TOOLS:
-            self.assertIn(tool, documented, msg=f"falta documentar la herramienta {tool}")
-        # Toda herramienta con forma de tool MCP que aparezca en el README debe existir.
-        suspicious = {
-            name
-            for name in documented
-            if name.startswith(("get_", "list_", "search_", "verify_")) and name not in READ_ONLY_TOOLS
-        }
-        self.assertFalse(suspicious, msg=f"el README documenta herramientas inexistentes: {suspicious}")
+        for idioma, texto in texts().items():
+            with self.subTest(idioma=idioma):
+                documented = set(re.findall(r"`([a-z_]+)`", texto))
+                for tool in READ_ONLY_TOOLS:
+                    self.assertIn(tool, documented, msg=f"falta {tool} en el README en {idioma}")
+                suspicious = {
+                    name
+                    for name in documented
+                    if name.startswith(("get_", "list_", "search_", "verify_"))
+                    and name not in READ_ONLY_TOOLS
+                }
+                self.assertFalse(
+                    suspicious, msg=f"herramientas inexistentes en {idioma}: {suspicious}"
+                )
 
 
 class ExitCodeTests(unittest.TestCase):
+    HEADINGS = ("## Exit codes", "## Códigos de salida")
+
     def test_documented_codes_exist(self) -> None:
         from docu.delivery.exit_codes import ExitCode
 
         known = {int(code) for code in ExitCode}
-        text = readme_text()
-        block = text.split("## Códigos de salida", 1)[1].split("##", 1)[0]
-        documented = {int(number) for number in re.findall(r"(?m)^\|\s*(\d+)\s*\|", block)}
-        self.assertTrue(documented, msg="la tabla de códigos de salida desapareció")
-        self.assertFalse(
-            documented - known, msg=f"el README documenta códigos inexistentes: {documented - known}"
-        )
+        for idioma, texto in texts().items():
+            with self.subTest(idioma=idioma):
+                heading = next((name for name in self.HEADINGS if name in texto), None)
+                self.assertIsNotNone(heading, msg=f"falta la tabla de códigos en {idioma}")
+                block = texto.split(heading, 1)[1].split("##", 1)[0]
+                documented = {
+                    int(number) for number in re.findall(r"(?m)^\|\s*(\d+)\s*\|", block)
+                }
+                self.assertTrue(documented, msg=f"la tabla de códigos desapareció en {idioma}")
+                self.assertFalse(
+                    documented - known,
+                    msg=f"el README en {idioma} documenta códigos inexistentes: {documented - known}",
+                )
 
 
 class AssetTests(unittest.TestCase):
-    """La cabecera del README: toda imagen local tiene que existir y pesar lo razonable."""
-
-    def setUp(self) -> None:
-        self.raiz = Path(__file__).resolve().parent.parent
-        self.texto = (self.raiz / "README.md").read_text(encoding="utf-8")
+    """La cabecera: toda imagen local tiene que existir y pesar lo razonable."""
 
     def test_local_images_exist(self) -> None:
-        import re
-
-        for ruta in re.findall(r"<img[^>]+src=\"([^\"]+)\"", self.texto):
-            if ruta.startswith(("http://", "https://")):
-                continue
-            self.assertTrue((self.raiz / ruta).is_file(), f"la imagen {ruta} no existe")
+        for idioma, texto in texts().items():
+            for ruta in re.findall(r"<img[^>]+src=\"([^\"]+)\"", texto):
+                if ruta.startswith(("http://", "https://")):
+                    continue
+                with self.subTest(idioma=idioma, ruta=ruta):
+                    self.assertTrue((ROOT / ruta).is_file(), f"la imagen {ruta} no existe")
 
     def test_cover_is_present_and_not_heavy(self) -> None:
-        portada = self.raiz / "docs" / "brand" / "portada.png"
+        portada = ROOT / "docs" / "brand" / "portada.png"
         self.assertTrue(portada.is_file())
-        self.assertIn("docs/brand/portada.png", self.texto)
+        for idioma, texto in texts().items():
+            self.assertIn("docs/brand/portada.png", texto, msg=f"falta la portada en {idioma}")
         self.assertLess(portada.stat().st_size, 1_500_000, "la portada pesa demasiado para un README")
 
-    def test_cover_has_alt_text(self) -> None:
-        self.assertIn("alt=\"docu:", self.texto)
+    def test_cover_has_alt_text_in_both_languages(self) -> None:
+        for idioma, texto in texts().items():
+            self.assertIn('alt="docu:', texto, msg=f"falta el texto alternativo en {idioma}")
 
-    def test_video_is_linked_with_its_limit_explained(self) -> None:
-        self.assertIn("Docu.mp4", self.texto)
-        self.assertIn("editor web de GitHub", self.texto)
+    def test_no_video_references(self) -> None:
+        """El video no se puede reproducir desde el repo: no se anuncia lo que no se ve."""
+        for idioma, texto in texts().items():
+            with self.subTest(idioma=idioma):
+                self.assertNotIn(".mp4", texto)
+                self.assertNotIn("<video", texto)
+
+
+class LanguageTests(unittest.TestCase):
+    def test_both_readmes_link_to_each_other(self) -> None:
+        ingles = readme_text()
+        self.assertTrue(
+            "README.es.md" in ingles and ("[Español]" in ingles or 'href="README.es.md"' in ingles),
+            msg="el README en inglés no enlaza la versión en español",
+        )
+        espanol = README_ES.read_text(encoding="utf-8")
+        self.assertTrue(
+            "README.md" in espanol and ("[English]" in espanol or 'href="README.md"' in espanol),
+            msg="el README en español no enlaza la versión en inglés",
+        )
+
+    def test_both_readmes_carry_the_same_badges(self) -> None:
+        """Una traducción que arrastra números viejos es peor que no tener traducción."""
+        contadores = {
+            idioma: re.search(r"tests-(\d+)", texto).group(1)  # type: ignore[union-attr]
+            for idioma, texto in texts().items()
+        }
+        self.assertEqual(len(set(contadores.values())), 1, msg=f"badges distintos: {contadores}")
+
+    def test_english_readme_is_the_default(self) -> None:
+        self.assertIn("# docu", readme_text())
+        self.assertIn("Technical documentation you can verify", readme_text())
 
 
 class VersionTests(unittest.TestCase):
@@ -133,34 +177,29 @@ class VersionTests(unittest.TestCase):
 
 class NumberTests(unittest.TestCase):
     def test_test_count_matches_reality(self) -> None:
-        """El badge de tests no puede quedarse atrás.
-
-        Se cuenta con el mismo loader que usa el runner: el número del badge tiene que ser el que
-        imprime `python -m unittest`.
-        """
+        """El badge de tests no puede quedarse atrás, en ninguna de las dos versiones."""
         loader = unittest.TestLoader()
         suite = loader.discover(str(ROOT / "tests"), top_level_dir=str(ROOT))
         actual = suite.countTestCases()
-        match = re.search(r"tests-(\d+)", readme_text())
-        self.assertIsNotNone(match, msg="falta el badge de tests en el README")
-        claimed = int(match.group(1))
-        self.assertEqual(
-            claimed,
-            actual,
-            msg=f"el README dice {claimed} tests y hay {actual}: actualizá el badge",
-        )
+        for idioma, texto in texts().items():
+            with self.subTest(idioma=idioma):
+                match = re.search(r"tests-(\d+)", texto)
+                self.assertIsNotNone(match, msg=f"falta el badge de tests en {idioma}")
+                claimed = int(match.group(1))  # type: ignore[union-attr]
+                self.assertEqual(
+                    claimed,
+                    actual,
+                    msg=f"el README en {idioma} dice {claimed} tests y hay {actual}",
+                )
 
     def test_badges_point_to_the_real_repository(self) -> None:
-        from docu.delivery import cli as cli_module
-
-        self.assertIn("github.com/CharlyZeta/Docu", readme_text())
-        text = cli_module.__doc__ or ""
-        self.assertNotIn("TODO", text)
+        for idioma, texto in texts().items():
+            self.assertIn("github.com/CharlyZeta/Docu", texto, msg=f"falta el repo en {idioma}")
 
     def test_no_stale_placeholders(self) -> None:
-        text = readme_text()
-        for placeholder in ("TODO", "FIXME", "XXX", "pendiente de completar"):
-            self.assertNotIn(placeholder, text, msg=f"placeholder en el README: {placeholder}")
+        for idioma, texto in texts().items():
+            for placeholder in ("TODO", "FIXME", "XXX", "pendiente de completar"):
+                self.assertNotIn(placeholder, texto, msg=f"placeholder en {idioma}: {placeholder}")
 
 
 if __name__ == "__main__":

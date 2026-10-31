@@ -75,12 +75,14 @@ def _locate(source: str, paragraph: str) -> tuple[int, int]:
     """Línea inicial y final del párrafo en el archivo original.
 
     El párrafo va normalizado (espacios colapsados), así que buscarlo literal falla: se busca por sus
-    primeras palabras tolerando saltos de línea.
+    primeras palabras tolerando saltos de línea **y marcas de Markdown**. Sin esto, un párrafo en
+    negrita (`**Documentación verificable.**`) caía al fallback y la cita apuntaba a la línea 1, donde
+    no estaba el texto.
     """
     words = paragraph.split()[:6]
     if not words:
         return 1, 1
-    pattern = re.compile(r"\s+".join(re.escape(word) for word in words))
+    pattern = re.compile(r"[\s*_`]+".join(re.escape(word) for word in words))
     match = pattern.search(source)
     if match is None:
         return 1, 1

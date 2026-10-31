@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:42e27` · archivos analizados: 65 · afirmaciones: 1208 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:628e7` · archivos analizados: 65 · afirmaciones: 1208 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -10,7 +10,7 @@ Generado por `docu 0.1.0` · fuente `sha256:42e27` · archivos analizados: 65 ·
 
 **docu** se compone de 16 dependencias declaradas, 15 paquetes, 97 tipos y 422 campos.
 
-Su propia documentación declara: «Agente autonomo de documentacion tecnica: agnostico, verificable e incremental.» [`pyproject.toml#L8-L8`].
+Su propia documentación declara: «Verifiable technical documentation generated from source code: every claim cites the file and line that supports it.» [`pyproject.toml#L8-L8`].
 
 El repositorio deja constancia de 13 decisiones («Se oscurece apenas el arte para que el…»; «Saltar el bloque completo para que la…»; «El inicializador se separa con `=(?!>)`…» y 10 más); están listadas con su cita en la sección *Intención y decisiones*.
 
@@ -28,10 +28,10 @@ El repositorio deja constancia de 13 decisiones («Se oscurece apenas el arte pa
 
 | Declaración | Intención | Cita |
 |---|---|---|
-| `pyproject.toml (description)` | Agente autonomo de documentacion tecnica: agnostico, verificable e incremental. | `pyproject.toml#L8-L8` |
-| `docu` | Documentación técnica que se puede verificar. Cada afirmación del documento cita el archivo y la línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra. | `README.md#L15-L16` |
-| `docs/brand/make-cover.py (módulo)` | Portada del README a partir de un frame del video y del sistema de diseño de `docu`. | `docs/brand/make-cover.py#L1-L11` |
-| `_espaciado` | Texto con espaciado entre letras: el logotipo respira, el texto normal no. | `docs/brand/make-cover.py#L45-L50` |
+| `pyproject.toml (description)` | Verifiable technical documentation generated from source code: every claim cites the file and line that supports it. | `pyproject.toml#L8-L8` |
+| `docu` | Technical documentation you can verify. Every claim in the generated document links to the file and line that supports it. If a citation cannot be opened and confirmed, the claim does not ship. | `README.md#L19-L20` |
+| `docs/brand/make-cover.py (módulo)` | Portada del README a partir de un frame del video y del sistema de diseño de `docu`. | `docs/brand/make-cover.py#L1-L13` |
+| `_espaciado` | Texto con espaciado entre letras: el logotipo respira, el texto normal no. | `docs/brand/make-cover.py#L47-L52` |
 | `eval/__init__.py (módulo)` | Arnés de evaluación: golden sets y línea base de recuperación (F0). | `eval/__init__.py#L1-L1` |
 | `eval/harness.py (módulo)` | Arnés de evaluación de F0 (Plan.md §5). | `eval/harness.py#L1-L14` |
 | `_fold` | Quita diacríticos: `configuración` y `configuracion` deben ser el mismo término. | `eval/harness.py#L84-L90` |
@@ -73,7 +73,7 @@ El repositorio deja constancia de 13 decisiones («Se oscurece apenas el arte pa
 
 | Decisión | Estado y contexto | Cita |
 |---|---|---|
-| `Se oscurece apenas el arte para que el logotipo tenga contra` | Se oscurece apenas el arte para que el logotipo tenga contraste sin tapar la ilustración. | `docs/brand/make-cover.py#L57-L57` |
+| `Se oscurece apenas el arte para que el logotipo tenga contra` | Se oscurece apenas el arte para que el logotipo tenga contraste sin tapar la ilustración. | `docs/brand/make-cover.py#L59-L59` |
 | `Saltar el bloque completo para que la proxima anotacion no h` | Saltar el bloque completo para que la proxima anotacion no herede estas lineas. | `src/docu/adapters/langs/java.py#L506-L506` |
 | `El inicializador se separa con `=(?!>)` para no cortar los t` | El inicializador se separa con `=(?!>)` para no cortar los tipos función (`() => void`). | `src/docu/adapters/langs/typescript.py#L74-L74` |
 | `son el valor. Sin esto, un workflow real con `run: |` rompe ` | son el valor. Sin esto, un workflow real con `run: |` rompe toda la ingesta. | `src/docu/core/yamlmini.py#L96-L96` |
@@ -91,21 +91,21 @@ El repositorio deja constancia de 13 decisiones («Se oscurece apenas el arte pa
 
 | Sección | Cita |
 |---|---|
-| `README.md › docu` | `README.md#L1-L27` |
-| `README.md › El problema, en dos frases` | `README.md#L27-L33` |
-| `README.md › Qué obtenés` | `README.md#L33-L48` |
-| `README.md › Cómo funciona` | `README.md#L48-L63` |
-| `README.md › Empezar en tres comandos` | `README.md#L63-L74` |
-| `README.md › Actualizar la instalación` | `README.md#L74-L87` |
-| `README.md › Lo que lo hace distinto` | `README.md#L87-L97` |
-| `README.md › Los cuatro niveles` | `README.md#L97-L110` |
-| `README.md › Diagramas y web` | `README.md#L110-L119` |
-| `README.md › Servidor MCP` | `README.md#L119-L132` |
-| `README.md › Higiene del corpus` | `README.md#L132-L138` |
-| `README.md › Códigos de salida` | `README.md#L138-L153` |
-| `README.md › Volver a cero` | `README.md#L153-L167` |
-| `README.md › Probar sin tocar tu proyecto` | `README.md#L167-L177` |
-| `README.md › Límites declarados` | `README.md#L177-L186` |
+| `README.md › docu` | `README.md#L1-L24` |
+| `README.md › The problem, in two sentences` | `README.md#L24-L30` |
+| `README.md › What you get` | `README.md#L30-L45` |
+| `README.md › How it works` | `README.md#L45-L60` |
+| `README.md › Start in three commands` | `README.md#L60-L71` |
+| `README.md › Updating an install` | `README.md#L71-L84` |
+| `README.md › What makes it different` | `README.md#L84-L94` |
+| `README.md › The four levels` | `README.md#L94-L107` |
+| `README.md › Diagrams and website` | `README.md#L107-L117` |
+| `README.md › MCP server` | `README.md#L117-L130` |
+| `README.md › Corpus hygiene` | `README.md#L130-L136` |
+| `README.md › Exit codes` | `README.md#L136-L156` |
+| `README.md › Back to zero` | `README.md#L156-L171` |
+| `README.md › Try it without touching your project` | `README.md#L171-L181` |
+| `README.md › Declared limits` | `README.md#L181-L190` |
 
 ## 4. Arquitectura: módulos y paquetes
 
@@ -1147,10 +1147,10 @@ erDiagram
 
 | Símbolo | Firma | Cita |
 |---|---|---|
-| `_fuente` | `def _fuente(rutas: tuple[str, ...], tamano: int) -> ImageFont.FreeTypeFont` | `docs/brand/make-cover.py#L37-L41` |
-| `_espaciado` | `def _espaciado(dibujo: ImageDraw.ImageDraw, xy: tuple[int, int], texto: str, fuente, extra` | `docs/brand/make-cover.py#L44-L50` |
-| `componer` | `def componer(frame: Path, destino: Path) -> Path` | `docs/brand/make-cover.py#L53-L95` |
-| `main` | `def main(argv: list[str]) -> int` | `docs/brand/make-cover.py#L98-L102` |
+| `_fuente` | `def _fuente(rutas: tuple[str, ...], tamano: int) -> ImageFont.FreeTypeFont` | `docs/brand/make-cover.py#L39-L43` |
+| `_espaciado` | `def _espaciado(dibujo: ImageDraw.ImageDraw, xy: tuple[int, int], texto: str, fuente, extra` | `docs/brand/make-cover.py#L46-L52` |
+| `componer` | `def componer(frame: Path, destino: Path) -> Path` | `docs/brand/make-cover.py#L55-L97` |
+| `main` | `def main(argv: list[str]) -> int` | `docs/brand/make-cover.py#L100-L104` |
 | `_fold` | `def _fold(text: str) -> str` | `eval/harness.py#L83-L90` |
 | `tokenize` | `def tokenize(text: str) -> list[str]` | `eval/harness.py#L93-L111` |
 | `_matches` | `def _matches(path: str, patterns: Sequence[str]) -> bool` | `eval/harness.py#L134-L136` |
@@ -1371,11 +1371,11 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | Archivo | sha256 |
 |---|---|
 | `.github/workflows/docu.yml` | `1a164973b830` |
-| `docs/brand/make-cover.py` | `e26de1be6179` |
+| `docs/brand/make-cover.py` | `bbe4d72bcbfa` |
 | `docu.profile.yaml` | `536bf0c2d80d` |
 | `eval/__init__.py` | `65861c4d8840` |
 | `eval/harness.py` | `6137ad8155a0` |
-| `pyproject.toml` | `a4e309a1c90a` |
+| `pyproject.toml` | `81bbabf16beb` |
 | `src/docu/__init__.py` | `ec3694c43263` |
 | `src/docu/adapters/__init__.py` | `a2c1108f5fd9` |
 | `src/docu/adapters/embedders/__init__.py` | `8864f7d0c67f` |
@@ -1412,7 +1412,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/generate/docs_evidence.py` | `4cd7ffa479f1` |
 | `src/docu/generate/facts.py` | `50ee7dba477a` |
 | `src/docu/generate/markdown.py` | `ff0e36c384b8` |
-| `src/docu/generate/narrative.py` | `9fe30ddb7c44` |
+| `src/docu/generate/narrative.py` | `36db8af62437` |
 | `src/docu/generate/ops.py` | `cee221559089` |
 | `src/docu/generate/pipeline.py` | `1a107239fa01` |
 | `src/docu/generate/prose.py` | `e960ae53b9e4` |

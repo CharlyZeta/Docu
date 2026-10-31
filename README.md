@@ -1,237 +1,241 @@
 # docu
 
 <p align="center">
-  <img src="docs/brand/portada.png" alt="docu: fuentes del repositorio, documento con afirmaciones verificadas y artefactos generados" width="100%">
+  <img src="docs/brand/portada.png" alt="docu: repository sources, a document with verified claims, and the generated artifacts" width="100%">
+</p>
+
+<p align="center">
+  <b>English</b> · <a href="README.es.md">Español</a>
 </p>
 
 [![CI](https://github.com/CharlyZeta/Docu/actions/workflows/docu.yml/badge.svg)](https://github.com/CharlyZeta/Docu/actions/workflows/docu.yml)
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776ab?logo=python&logoColor=white)
-![Licencia](https://img.shields.io/badge/licencia-MIT-green)
-![Dependencias](https://img.shields.io/badge/dependencias-0-blue)
-![Sin LLM](https://img.shields.io/badge/LLM-no%20requerido-purple)
-![Auditoría](https://img.shields.io/badge/auditor%C3%ADa-determinista-brightgreen)
-![Tests](https://img.shields.io/badge/tests-615-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Dependencies](https://img.shields.io/badge/dependencies-0-blue)
+![No LLM](https://img.shields.io/badge/LLM-not%20required-purple)
+![Audit](https://img.shields.io/badge/audit-deterministic-brightgreen)
+![Tests](https://img.shields.io/badge/tests-618-brightgreen)
 
-**Documentación técnica que se puede verificar.** Cada afirmación del documento cita el archivo y la
-línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.
-
-[▶ Ver la animación de 10 s](Docu.mp4) · si querés que se reproduzca dentro del README, subilo una vez
-con el editor web de GitHub (arrastrá el archivo) y reemplazá el enlace por la URL que devuelve:
-GitHub sólo reproduce videos subidos así, no los del repositorio.
-
-**Documentación técnica que se puede verificar.** Cada afirmación del documento cita el archivo y la
-línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.
+**Technical documentation you can verify.** Every claim in the generated document links to the file
+and line that supports it. If a citation cannot be opened and confirmed, the claim does not ship.
 
 ---
 
-## El problema, en dos frases
+## The problem, in two sentences
 
-La documentación de un proyecto se desactualiza más rápido de lo que se escribe, y cuando alguien
-nuevo la lee no sabe si sigue siendo cierta. `docu` la genera desde el código, cita cada dato y avisa
-cuando quedó vieja.
+A project's documentation goes stale faster than it gets written, and a newcomer cannot tell whether
+what they are reading is still true. `docu` generates it from the code, cites every statement, and tells
+you when it has gone out of date.
 
-## Qué obtenés
+## What you get
 
-- **Un manual que no miente**: 100 % de las filas con cita a `archivo#línea`. Lo que no tiene evidencia
-  aparece declarado como *hueco*, no rellenado con texto plausible.
-- **Cuatro documentos distintos**, no cuatro copias: manual técnico, operación, guía sin jerga y
+- **A manual that cannot lie silently**: 100 % of rows carry a `file#line` citation. Whatever has no
+  evidence is declared as a *gap* instead of being filled with plausible text.
+- **Four different documents**, not four copies: technical manual, operations, a no-jargon guide, and
   onboarding.
-- **Diagramas** de arquitectura, clases, API y modelo de datos, generados del mismo código.
-- **Una web** donde cada fila se puede abrir hasta el fragmento real del archivo.
-- **Un servidor MCP** para que tu agente consulte el código y la documentación con citas.
-- **Mantenimiento**: cuando cambia el código, la documentación se marca vieja y el CI puede abrir un PR
-  con la actualización.
-- **Prosa delegada (opcional)**: si querés una introducción redactada, docu le pasa los hechos a *tu*
-  agente y **valida** lo que devuelve: cada frase tiene que citar hechos existentes y ninguna puede
-  aportar cifras nuevas. Sin claves, sin coste y sin que el modelo decida qué es verdad.
+- **Diagrams** for architecture, classes, API flow and data model, all generated from the same code.
+- **A website** where any row can be drilled down to the real snippet of the file.
+- **An MCP server** so your agent can query the code and the documentation with citations.
+- **Maintenance**: when the code changes, the documentation is flagged as stale and CI can open a pull
+  request with the update.
+- **Delegated prose (optional)**: if you want a written introduction, `docu` hands the cited facts to
+  *your* agent and **validates** what comes back — every sentence must reference existing facts and
+  none may introduce new figures. No keys, no cost, and the model never decides what is true.
 
-## Cómo funciona
+## How it works
 
 ```
-   repositorio            hechos con cita           documentos            consulta
+   repository            cited facts             documents            query
  ┌──────────────┐      ┌──────────────────┐     ┌───────────────┐    ┌──────────────┐
- │ Java · Python│  ──► │ ruta#L10-L42     │ ──► │ L1 · L2 · L3  │───►│ archivos .md │
- │ TypeScript   │      │ sin cita → hueco │     │ L4 · diagramas│    │ web · MCP    │
+ │ Java · Python│  ──► │ path#L10-L42     │ ──► │ L1 · L2 · L3  │───►│ .md files    │
+ │ TypeScript   │      │ no citation→gap  │     │ L4 · diagrams │    │ web · MCP    │
  │ + PDF/web    │      └──────────────────┘     └───────────────┘    └──────────────┘
  └──────────────┘            ▲                        ▲
-                      auditoría determinista     compuerta de calidad
+                    deterministic audit        quality gate
 ```
 
-**No usa ningún modelo de lenguaje.** Es determinista: mismo código, mismo documento, byte a byte.
-Cuesta 0 USD y funciona sin conexión.
+**It uses no language model.** It is deterministic: same code in, same document out, byte for byte. It
+costs 0 USD and works offline.
 
-## Empezar en tres comandos
+## Start in three commands
 
 ```bash
-docu init --root . --apply    # detecta el stack y escribe el perfil
-docu gen --root .             # genera los niveles con sus citas
-docu audit --root .           # cinco comprobaciones, nota ponderada
+docu init --root . --apply    # detect the stack and write the profile
+docu gen --root .             # generate the levels, with citations
+docu audit --root .           # five checks, one weighted score
 ```
 
-Instalación: `uv tool install git+https://github.com/CharlyZeta/Docu` (o `pipx`, o `pip install -e .`).
-Sólo requiere Python 3.11+; el núcleo no tiene dependencias.
+Install: `uv tool install git+https://github.com/CharlyZeta/Docu` (or `pipx`, or `pip install -e .`).
+It only requires Python 3.11+; the core has no dependencies.
 
-### Actualizar la instalación
+### Updating an install
 
-Instalado como herramienta, `docu` es una **copia congelada** del día de la instalación: los comandos
-nuevos no aparecen solos.
+Installed as a tool, `docu` is a **frozen copy** from the day you installed it: new commands do not
+appear on their own.
 
 ```bash
-uv tool install --force git+https://github.com/CharlyZeta/Docu   # o: pipx reinstall docu
-docu --version    # versión, cantidad de comandos y desde qué ruta se ejecuta
+uv tool install --force git+https://github.com/CharlyZeta/Docu   # or: pipx reinstall docu
+docu --version    # version, command count, and the path it runs from
 ```
 
-Si un comando «no existe», `docu --version` lo confirma: menos comandos que el repositorio = binario
-viejo. Para desarrollo, `pip install -e .` refleja los cambios sin reinstalar.
+If a command "does not exist", `docu --version` confirms it: fewer commands than the repository means a
+stale binary. For development, `pip install -e .` reflects changes without reinstalling.
 
-## Lo que lo hace distinto
+## What makes it different
 
-| | Un LLM escribiendo docs | **docu** |
+| | An LLM writing docs | **docu** |
 |---|---|---|
-| De dónde sale el texto | del modelo | del repositorio |
-| ¿Se puede comprobar? | hay que confiar | abrís la línea citada |
-| ¿Se inventa lo que falta? | sí, con seguridad | declara el hueco |
-| Coste y repetibilidad | variable | 0 USD, idéntico siempre |
-| ¿Sabe cuándo quedó viejo? | no | hash de seis entradas |
+| Where the text comes from | the model | the repository |
+| Can it be checked? | you have to trust it | you open the cited line |
+| Does it invent what is missing? | yes, confidently | it declares the gap |
+| Cost and repeatability | variable | 0 USD, always identical |
+| Does it know when it went stale? | no | hash of six inputs |
 
-## Los cuatro niveles
+## The four levels
 
-| Nivel | Documento | Para quién |
+| Level | Document | For whom |
 |---|---|---|
-| L1 | manual técnico | ingeniería: arquitectura, diagramas, API, configuración, modelo de datos |
-| L2 | operación y despliegue | quien monta el sistema: entorno, puertos, artefactos, CI |
-| L3 | guía de uso | negocio: qué se puede hacer, sin jerga (hay un test que prohíbe el vocabulario técnico) |
-| L4 | onboarding | quien llega nuevo |
+| L1 | technical manual | engineering: architecture, diagrams, API, configuration, data model |
+| L2 | operations and deployment | whoever runs the system: environment, ports, artifacts, CI |
+| L3 | usage guide | business readers: what can be done, no jargon (a test forbids technical vocabulary) |
+| L4 | onboarding | whoever is new |
 
-El manual de este mismo repositorio es el ejemplo más honesto:
-[`docs/generated/l1-manual-tecnico.md`](docs/generated/l1-manual-tecnico.md). Ahí están las cifras
-reales, con su cita, en lugar de un número en un README.
+The manual for this very repository is the most honest example:
+[`docs/generated/l1-manual-tecnico.md`](docs/generated/l1-manual-tecnico.md). The real numbers are
+there, each with its citation, instead of a number in a README.
 
-## Diagramas y web
+## Diagrams and website
 
-Los diagramas (arquitectura de paquetes, clases, flujo de API y ERD) se generan desde evidencia y se
-embeben en el L1. El ERD se recorta a las entidades con más relaciones **y lo declara**: un diagrama
-que omite en silencio miente igual que una tabla vieja.
+Diagrams (package architecture, classes, API flow and ERD) are generated from evidence and embedded in
+L1. The ERD is trimmed to the entities with the most relations **and says so**: a diagram that silently
+omits things lies like a stale table.
 
-`docu site` publica lo mismo en tres escalones —resumen, detalle y **prueba** (la cita y el fragmento
-real del archivo)— sin CDN y sin JavaScript obligatorio: funciona abriendo `index.html` desde el disco.
+`docu site` publishes the same content in three steps — summary, detail, and **proof** (the citation and
+the real snippet of the file) — with no CDN and no mandatory JavaScript: it works by opening
+`index.html` from disk.
 
-## Servidor MCP
+## MCP server
 
-Agentes compatibles (Claude Code, Cursor, etc.) consultan la misma documentación, en **sólo lectura**:
+Compatible agents (Claude Code, Cursor, etc.) query the same documentation, **read-only**:
 
 ```json
 {"mcpServers": {"docu": {"command": "docu",
   "args": ["serve", "--mcp", "--root", ".", "--out", "docs/generated"]}}}
 ```
 
-Herramientas: `list_projects`, `search_code`, `search_docs`, `get_module`, `get_symbol_doc`,
+Tools: `list_projects`, `search_code`, `search_docs`, `get_module`, `get_symbol_doc`,
 `list_gaps`, `list_unsupported`, `get_architecture`, `get_freshness`, `verify_citation`, `get_diagram`.
-Todas las respuestas incluyen citas, y `verify_citation` devuelve las líneas citadas para comprobarlas.
+Every response carries citations, and `verify_citation` returns the cited lines so you can check them.
 
-## Higiene del corpus
+## Corpus hygiene
 
-Se respeta el `.gitignore` del proyecto (negación, directorios, anclaje y `**`) más un piso de
-exclusiones (`node_modules`, `target`, `dist`, `coverage`, `build`, `out`, `__pycache__`…). Lo que el
-proyecto declara que no es fuente, no se documenta ni se cuenta.
+The project's `.gitignore` is honoured (negation, directories, anchoring and `**`) plus a floor of
+exclusions (`node_modules`, `target`, `dist`, `coverage`, `build`, `out`, `__pycache__`…). Whatever the
+project declares as not-source is neither documented nor counted.
 
-## Códigos de salida
+## Exit codes
 
-| Código | Significado |
+| Code | Meaning |
 |---|---|
 | 0 | ok |
-| 10 | sin cambios (`gen --incremental`, `pdf` sin PDFs) |
-| 20 | revisión: compuerta en `REVIEW`, páginas stale o hallazgos de auditoría |
-| 30 | presupuesto agotado |
-| 40 | fuente no citable (nada documentable, ningún PDF usable) |
-| 50 | no implementado |
-| 60 | perfil inválido |
-| 70 | error interno |
+| 10 | no changes (`gen --incremental`, `pdf` with no PDFs) |
+| 20 | review: gate in `REVIEW`, stale or missing pages, audit findings |
+| 30 | budget exhausted |
+| 40 | uncitable source (nothing documentable, no usable PDF) |
+| 50 | not implemented |
+| 60 | invalid profile |
+| 70 | internal error |
 
-`docu status --why` nombra los archivos que invalidaron la frescura.
+Page states are `fresh`, `stale` (a source changed), `expired` (TTL passed) and **`missing`** (the
+manifest declares it but the file is gone). `missing` is not freshness: `docu status` says so, suggests
+`docu gen` and returns `"generated": false`. With no manifest there is no state to show: exit 10 and a
+single line asking you to generate.
 
-## Volver a cero
+`docu status --why` names the files that invalidated freshness.
 
-`ash
-docu clean                 # lista lo que borraría (simulación)
-docu clean --force         # borra documentos, diagramas, web, PDFs y el estado
-docu clean --docs-only     # deja el manifest: la próxima generación es incremental
-docu clean --ledger        # borra también el historial de aprendizaje
-`
-
-Sólo borra lo que generó docu: los documentos con su nombre (l1-manual-tecnico.md, l2-operacion.md,
-l3-guia-de-uso.md, l4-readme.md), sus carpetas de artefactos (diagrams/, web/, pdf/, site/)
-y su estado (.docu/manifest.json, web.json, prose.json). **No toca** la documentación escrita a
-mano —aunque comparta carpeta—, el perfil ni el ledger (salvo --ledger).
-
-## Probar sin tocar tu proyecto
+## Back to zero
 
 ```bash
-docu gen --root /ruta/al/proyecto --out /fuera/del/repo --dry-run   # no escribe nada
-docu gen --root /ruta/al/proyecto --out /fuera/del/repo \
-         --manifest /fuera/del/repo/.docu/manifest.json             # ni manifest ni ledger dentro
+docu clean                 # list what it would delete (simulation)
+docu clean --force         # delete documents, diagrams, web, PDFs and state
+docu clean --docs-only     # keep the manifest: the next run is incremental
+docu clean --ledger        # delete the learning history too
 ```
 
-Recetario completo para pedírselo a un agente: [`PROBAR-CON-OTRO-AGENTE.md`](PROBAR-CON-OTRO-AGENTE.md).
+It only deletes what `docu` generated: the documents it names (`l1-manual-tecnico.md`,
+`l2-operacion.md`, `l3-guia-de-uso.md`, `l4-readme.md`), their artifact folders (`diagrams/`, `web/`,
+`pdf/`, `site/`) and its state (`.docu/manifest.json`, `web.json`, `prose.json`). It **does not touch**
+hand-written documentation — even when it shares the folder — the profile, or the ledger (unless
+`--ledger`).
 
-## Límites declarados
+## Try it without touching your project
 
-- **No redacta prosa**: el documento son tablas de hechos.
-- **No lee PDFs escaneados, cifrados ni codificaciones sin `ToUnicode`**; cuando no puede, lo dice.
-- **No ejecuta JavaScript**: una SPA servida vacía se declara «sin texto útil».
-- **No inventa claves foráneas**: el ERD relaciona por tipo de campo declarado.
-- **No cubre IaC** (Terraform/CloudFormation) ni diagramas de secuencia.
-- **Tres lenguajes**: Java, Python y TypeScript/JS; el resto se declara como no soportado.
+```bash
+docu gen --root /path/to/project --out /outside/the/repo --dry-run   # writes nothing
+docu gen --root /path/to/project --out /outside/the/repo \
+         --manifest /outside/the/repo/.docu/manifest.json            # no manifest or ledger inside
+```
 
-## Lenguajes soportados
+A full recipe to hand to an agent: [`PROBAR-CON-OTRO-AGENTE.md`](PROBAR-CON-OTRO-AGENTE.md) (in Spanish).
 
-| Lenguaje | Extrae |
+## Declared limits
+
+- **It does not write prose**: the document is made of fact tables.
+- **It does not read scanned, encrypted or `ToUnicode`-less PDFs**; when it cannot, it says so.
+- **It does not execute JavaScript**: a SPA served empty is declared "no useful text".
+- **It does not invent foreign keys**: the ERD relates by declared field type.
+- **It does not cover IaC** (Terraform/CloudFormation) or sequence diagrams.
+- **Three languages**: Java, Python and TypeScript/JS; anything else is declared unsupported.
+
+## Supported languages
+
+| Language | Extracted |
 |---|---|
-| Java | tipos, miembros, campos, anotaciones, imports, rutas Spring |
-| Python | clases, funciones, atributos anotados, decoradores, rutas FastAPI/Flask |
-| TypeScript/JS | clases, interfaces, enums, propiedades, decoradores NestJS, rutas, `.mjs`/`.cjs` |
+| Java | types, members, fields, annotations, imports, Spring routes |
+| Python | classes, functions, annotated attributes, decorators, FastAPI/Flask routes |
+| TypeScript/JS | classes, interfaces, enums, properties, NestJS decorators, routes, `.mjs`/`.cjs` |
 
-La [suite de conformidad](tests/test_conformance.py) exige las mismas 12 construcciones en los tres
-lenguajes sin tocar `core/`.
+The [conformance suite](tests/test_conformance.py) requires the same 12 constructs across the three
+languages without touching `core/`.
 
-## Regla de este repositorio
+## Rule of this repository
 
-**El README se actualiza en el mismo commit que cambia capacidades, comandos o números.** No es una
-promesa: [`tests/test_readme.py`](tests/test_readme.py) falla si el README menciona un comando que no
-existe, una herramienta MCP que el servidor no expone, un código de salida inventado o un número de
-tests que no coincide.
+**The README is updated in the same commit that changes capabilities, commands or numbers.** It is not
+a promise: [`tests/test_readme.py`](tests/test_readme.py) fails if either README mentions a command that
+does not exist, an MCP tool the server does not expose, an invented exit code, or a test count that does
+not match. Both language versions are checked.
 
-## Estructura
+## Layout
 
 ```
-src/docu/core/        contratos, puertos, política, perfil   (stdlib puro, hoja del grafo)
-src/docu/index/       chunker, frescura, paquetes, .gitignore, PDFs y snapshots web
-src/docu/retrieve/    glosario de dominio, híbrido y enrutado
-src/docu/generate/    hechos, diagramas, cuatro niveles, operación
-src/docu/audit/       auditoría determinista
-src/docu/publish/     web con divulgación progresiva y SVG propio
-src/docu/conformance/ arquitectura prescriptiva vs. real
-src/docu/learn/       ledger, patrones, promoción, federación
-src/docu/delivery/    CLI, CI, propuesta de perfil, servidor MCP
-src/docu/adapters/    lenguajes, embedders, fuentes (PDF, web)
-eval/                 golden set, arnés de evaluación, informes
-tests/                conformidad, núcleo y guardia del README
+src/docu/core/        contracts, ports, policy, profile   (pure stdlib, leaf of the graph)
+src/docu/index/       chunker, freshness, packages, .gitignore, PDFs and web snapshots
+src/docu/retrieve/    domain glossary, hybrid search and routing
+src/docu/generate/    facts, diagrams, four levels, operations
+src/docu/audit/       deterministic audit
+src/docu/publish/     website with progressive disclosure and hand-written SVG
+src/docu/conformance/ prescribed vs. real architecture
+src/docu/learn/       ledger, patterns, promotion, federation
+src/docu/delivery/    CLI, CI, profile proposal, MCP server
+src/docu/adapters/    languages, embedders, sources (PDF, web)
+eval/                 golden set, evaluation harness, reports
+tests/                conformance, core, and the README guard
 ```
 
-## Documentación del proyecto
+## Project docs
 
-- [`Plan.md`](Plan.md) — fases F0–F7, entregas posteriores, próximos features y feedback externo.
-- [`Guia-v2.md`](Guia-v2.md) — arquitectura corregida (14 correcciones sobre la guía original).
-- [`EVALUACION.md`](EVALUACION.md) — nota ponderada contra la idea inicial y qué la mueve.
-- [`eval/README.md`](eval/README.md) — mediciones de recuperación.
+- [`Plan.md`](Plan.md) — phases F0–F7, later deliveries, next features and external feedback.
+- [`Guia-v2.md`](Guia-v2.md) — corrected architecture (14 corrections over the original guide).
+- [`EVALUACION.md`](EVALUACION.md) — weighted score against the initial idea and what moves it.
+- [`eval/README.md`](eval/README.md) — retrieval measurements.
 
-## Próximos features
+## Next features
 
-Usar la documentación existente del repo como evidencia citada · indexar PDFs y snapshots web en el
-buscador · prosa con LLM (opcional) · IaC · diagramas de secuencia · paginación de índices grandes.
-Detalle y coste en [`Plan.md`](Plan.md) §14.
+Use the repository's existing documentation as cited evidence · index PDFs and web snapshots in the
+search · prose with an LLM (optional) · IaC · sequence diagrams · pagination for large indexes. Detail
+and cost in [`Plan.md`](Plan.md) §14.
 
-## Licencia
+## License
 
-MIT. La federación entre instalaciones es opt-in y nunca envía código ni texto: sólo huellas de
-patrones y métricas.
+MIT. Federation between installs is opt-in and never sends code or text: only pattern fingerprints and
+metrics.

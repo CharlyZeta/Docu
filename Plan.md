@@ -579,9 +579,9 @@ build anterior.
 - F-21: la prosa que antes se rechazaba («React 19», «Vite 6,») ahora se **acepta** (6 frases).
 - F-22: la prosa aparece en `l1` **y** en `l4`, con el sello del redactor.
 
-### 13.14 Portada del README a partir del video
+### 13.14 Portada del README y dos idiomas
 
-`Docu.mp4` (10 s, 1280×720, H.264) es una animación isométrica: fuentes → documento con
+`docs/brand/docu-demo.mp4` (10 s, 1280×720, H.264) es una animación isométrica: fuentes → documento con
 afirmaciones verificadas → artefactos. **Un `.mp4` del repositorio no se reproduce en una cabecera de
 README**: GitHub sólo sirve videos subidos con el editor web (`user-attachments`), y un `<video src>`
 relativo se sanea. Opciones y decisión:
@@ -596,6 +596,11 @@ relativo se sanea. Opciones y decisión:
 del shell de Windows, sin ffmpeg), el logotipo, la promesa y el sello de licencia. El frame queda en
 `docs/brand/frame-video.png` como evidencia de origen.
 
-La cabecera enlaza además `Docu.mp4` con la explicación de que, para verlo dentro del README, hay que
-subirlo una vez con el editor web. Cuatro tests nuevos verifican que la imagen existe, pesa menos de
-1,5 MB y tiene texto alternativo.
+**El video no se anuncia en el README.** Si no se puede ver ahí, no se promete: un enlace con
+instrucciones para subirlo era deuda, no función. El archivo queda como material de origen, fuera de la
+raíz, por si algún día se sube a `user-attachments`.
+
+**Dos idiomas.** `README.md` en inglés (el que ve GitHub y npm) y `README.es.md` en español, con un
+conmutador centrado en la cabecera. La guardia `tests/test_readme.py` cubre **las dos**: comandos, tools
+MCP, códigos de salida, imágenes de la cabecera, el badge de tests (idéntico en ambos) y que ninguna
+anuncie un `.mp4`. Una traducción que se queda atrás es peor que no tener traducción.
