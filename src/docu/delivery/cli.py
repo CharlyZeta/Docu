@@ -513,14 +513,25 @@ def _run_audit(args: argparse.Namespace) -> int:
     import json as jsonlib
 
     from docu.audit.verify import audit
+    from docu.generate.pipeline import collect_all_facts_only
 
     root = Path(args.root).resolve()
     options = _resolve(args, root)
+    # Mismo universo que el documento: si el manual cita intención, decisiones y secciones del
+    # repositorio, la auditoría también las ve (F-26: dos totales distintos en la misma corrida).
+    facts = collect_all_facts_only(
+        root,
+        include=options.include,
+        exclude=options.exclude,
+        include_tests=getattr(args, "include_tests", False),
+        project=options.project,
+    )
     report = audit(
         root,
         docs_dir=args.out or options.out_dir,
         levels=options.levels,
         profile_path=str(options.profile.path) if options.profile and options.profile.path else None,
+        facts=facts,
     )
 
     if args.report:

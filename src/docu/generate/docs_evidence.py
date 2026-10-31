@@ -87,8 +87,10 @@ def parse_sections(path: str, source: str) -> list[DocSection]:
         start = match.end()
         end = headings[index + 1].start() if index + 1 < len(headings) else len(source)
         body = _first_paragraph(source[start:end])
+        total_lines = len(source.splitlines())
         line_start = source.count("\n", 0, match.start()) + 1
-        line_end = source.count("\n", 0, end) + 1
+        # Una sección que llega al final del archivo no puede citar una línea que no existe.
+        line_end = min(source.count("\n", 0, end) + 1, total_lines)
         sections.append(DocSection(path, title, body, line_start, line_end))
         if len(sections) >= MAX_SECTIONS:
             break

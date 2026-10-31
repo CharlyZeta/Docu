@@ -205,5 +205,73 @@ class AuditIntegrationTests(unittest.TestCase):
         self.assertTrue(check.passed, msg=str(check.to_dict()))
 
 
+class ReconciliationTests(unittest.TestCase):
+    """F-26: el documento y la auditoría tienen que hablar del mismo universo."""
+
+    def test_report_reconciles_total_audited_and_excluded(self) -> None:
+        from docu.audit.verify import AuditReport, Check
+
+        report = AuditReport(project="demo", checks={"citations": Check("citations", 10, 0)})
+        report.facts_total = 12
+        report.excluded = {"doc_section": 2}
+        line = report._reconciliation()
+        self.assertIn("12", line)
+        self.assertIn("10", line)
+        self.assertIn("doc_section 2", line)
+
+    def test_audit_uses_the_facts_it_is_given(self) -> None:
+        from docu.audit.verify import audit
+        from docu.generate.facts import Fact
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "a.py").write_text("class A:\n    pass\n", encoding="utf-8")
+            facts = [Fact("type", "A", "class", "a.py#L1-L1")]
+            report = audit(root, facts=facts)
+            self.assertEqual(report.facts_total, 1)
+            self.assertEqual(report.checks["citations"].total, 1)
+
+    def test_doc_section_citation_is_supported_by_its_range(self) -> None:
+        from docu.audit.verify import check_citations
+        from docu.generate.docs_evidence import parse_sections
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Demo\n\n## Prerrequisitos\n\nNode.js v20 o superior para arrancar el proyecto.\n",
+                encoding="utf-8",
+            )
+            section = next(s for s in parse_sections("README.md", (root / "README.md").read_text(encoding="utf-8")) if s.title == "Prerrequisitos")
+            check = check_citations([section.to_fact()], root)
+            self.assertTrue(check.passed, msg=check.details)
+
+    def test_document_and_audit_agree_on_the_total(self) -> None:
+        from docu.audit.verify import audit
+        from docu.delivery.cli import main
+        from docu.generate.pipeline import collect_all_facts_only
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "src").mkdir()
+            (root / "src" / "a.py").write_text(
+                '"""Módulo de ejemplo que declara su intención."""\n\n\nclass A:\n    x: int = 1\n',
+                encoding="utf-8",
+            )
+            (root / "README.md").write_text(
+                "# Demo\n\n## Prerrequisitos\n\nNode.js v20 o superior para arrancar el proyecto.\n",
+                encoding="utf-8",
+            )
+            out = root / "docs" / "generated"
+            self.assertEqual(main(["gen", "--root", str(root), "--out", str(out), "--level", "l1"]), 0)
+            header = next(
+                line for line in (out / "l1-manual-tecnico.md").read_text(encoding="utf-8").splitlines()
+                if "afirmaciones:" in line
+            )
+            declared = int(header.split("afirmaciones:")[1].split("·")[0].strip())
+            facts = collect_all_facts_only(root)
+            report = audit(root, docs_dir=out, levels=("l1",), facts=facts)
+            self.assertEqual(declared, report.facts_total)
+
+
 if __name__ == "__main__":
     unittest.main()

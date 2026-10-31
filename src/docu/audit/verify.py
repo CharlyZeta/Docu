@@ -73,6 +73,9 @@ class Check:
 class AuditReport:
     project: str
     checks: dict[str, Check] = field(default_factory=dict)
+    #: Total de afirmaciones del documento y desglose de las que esta auditoría no mira.
+    facts_total: int = 0
+    excluded: dict[str, int] = field(default_factory=dict)
 
     @property
     def score(self) -> float:
@@ -94,14 +97,31 @@ class AuditReport:
             "score": self.score,
             "passed": self.passed,
             "weights": WEIGHTS,
+            "facts_total": self.facts_total,
+            "excluded": self.excluded,
             "checks": {name: check.to_dict() for name, check in self.checks.items()},
         }
+
+    def _reconciliation(self) -> str:
+        """Una sola cifra para el mismo universo: total, auditadas y excluidas con su motivo."""
+        audited = max((check.total for check in self.checks.values()), default=0)
+        if not self.facts_total:
+            return f"Afirmaciones auditadas: **{audited}**"
+        excluded = sum(self.excluded.values())
+        detail = " · ".join(f"{kind} {count}" for kind, count in sorted(self.excluded.items()))
+        suffix = f" ({detail})" if detail else ""
+        return (
+            f"Afirmaciones: **{self.facts_total}** · auditadas: **{audited}** · "
+            f"excluidas: **{excluded}**{suffix}"
+        )
 
     def to_markdown(self) -> str:
         lines = [
             f"# Auditoría de documentación · {self.project}",
             "",
             f"Nota: **{self.score:.2f}/100** · {'sin hallazgos' if self.passed else 'con hallazgos'}",
+            "",
+            self._reconciliation(),
             "",
             "| Comprobación | Peso | Resultado | Fallos | Detalle |",
             "|---|---|---|---|---|",
@@ -163,8 +183,13 @@ def check_citations(facts: Sequence[Fact], root: Path) -> Check:
             failed += 1
             details.append(f"{fact.subject}: rango {start}-{end} fuera de {path} ({len(lines)} líneas)")
             continue
-        span = "\n".join(lines[start - 1 : end]).lower()
-        if not all(probe.lower() in span for probe in _probes(fact)):
+        span = _normalize_needle("\n".join(lines[start - 1 : end]))
+        supported = (
+            _prose_supported(fact, span)
+            if fact.kind in ("intent", "decision", "doc_section")
+            else all(probe.lower() in span for probe in _probes(fact))
+        )
+        if not supported:
             failed += 1
             details.append(f"{fact.subject}: el sujeto no aparece en {fact.citation}")
     return Check("citations", len(facts), failed, tuple(details[:20]), "archivo, rango y sujeto")
@@ -172,6 +197,12 @@ def check_citations(facts: Sequence[Fact], root: Path) -> Check:
 
 def _probes(fact: Fact) -> list[str]:
     """Qué debe aparecer en el rango citado para considerar la afirmación sostenida."""
+    # Prosa y metadatos: el sujeto es una **etiqueta** (`README.md › Prerrequisitos`,
+    # `package.json (description)`), no un símbolo del código. La evidencia es el texto citado.
+    if fact.kind in ("intent", "decision", "doc_section"):
+        return [_normalize_needle(fact.detail[:80])] if fact.detail.strip() else []
+    if fact.kind in ("field", "sql_table", "http_route"):
+        return [fact.subject.rsplit(".", 1)[-1]]
     subject = fact.subject
     if fact.kind == "route":
         verb, _, path = subject.partition(" ")
@@ -185,6 +216,31 @@ def _probes(fact: Fact) -> list[str]:
     if fact.kind in ("package", "module", "parent", "plugin"):
         return []  # la evidencia es el archivo declarante, ya verificado arriba
     return [subject.rsplit(".", 1)[-1]]
+
+
+def _prose_supported(fact: Fact, span: str) -> bool:
+    """¿El rango citado sostiene la prosa citada?
+
+    El extractor de documentación une líneas (salta tablas y viñetas), así que el texto del hecho no
+    siempre es contiguo en el archivo. Se exige que **al menos el 70 % de sus palabras** aparezcan en
+    el rango: más honesto que fingir una comparación exacta que el propio extractor rompe.
+    """
+    # Se comparan **palabras**, no tokens con puntuación: la cita puede empezar con comillas o
+    # terminar con punto y la afirmación sigue sosteniéndose.
+    words = [word for word in re.findall(r"[a-z0-9_]+", _normalize_needle(fact.detail)) if len(word) > 3]
+    if not words:
+        return True
+    span_words = set(re.findall(r"[a-z0-9_]+", span))
+    hits = sum(1 for word in words if word in span_words)
+    return hits / len(words) >= 0.7
+
+
+def _normalize_needle(text: str) -> str:
+    """Normaliza el texto citado para compararlo: sin viñetas, sin énfasis y con un solo espacio."""
+    # Los guiones bajos NO se quitan: `pull_request` es un identificador, no énfasis.
+    cleaned = re.sub(r"[*`]", "", text)
+    cleaned = re.sub(r"^\s*[-*+]\s*", "", cleaned, flags=re.MULTILINE)
+    return re.sub(r"\s+", " ", cleaned).strip().lower()
 
 
 def check_duplicates(facts: Sequence[Fact]) -> Check:
@@ -290,6 +346,7 @@ def audit(
     levels: Sequence[str] = ("l1", "l4"),
     profile_path: Path | str | None = None,
     include_tests: bool = False,
+    facts: Sequence[Fact] | None = None,
 ) -> AuditReport:
     """Ejecuta las cinco comprobaciones. Sin modelos, sin red, sin coste."""
     root_path = Path(root).resolve()
@@ -298,9 +355,34 @@ def audit(
     )
     exclude = profile.effective_exclude if profile else ()
     include = profile.include if profile else ()
-    facts, _sources = collect_facts(
-        root_path, include_tests=include_tests, include=include, exclude=exclude
-    )
+    # El universo auditable debe ser el **mismo** que el documentado: si el manual incluye
+    # intención, decisiones y secciones del repositorio, la auditoría tiene que verlas. Antes cada
+    # uno contaba su propio total (hallazgo F-26: 1306 en el documento contra 1236 en la auditoría).
+    if facts is None:
+        from docu.generate.docs_evidence import discover as discover_docs
+        from docu.generate.narrative import collect as collect_narrative
+        from docu.generate.pipeline import _discover, _read
+
+        code_facts, _sources = collect_facts(
+            root_path, include_tests=include_tests, include=include, exclude=exclude
+        )
+        counts: dict[str, int] = {}
+        for fact in code_facts:
+            counts[fact.kind] = counts.get(fact.kind, 0) + 1
+        narrative = collect_narrative(
+            root_path,
+            _discover(root_path, include_tests=include_tests, include=include, exclude=exclude),
+            counts,
+            root_path.name,
+            _read,
+        )
+        facts = [
+            *code_facts,
+            *narrative.facts,
+            *(section.to_fact() for section in discover_docs(root_path)),
+        ]
+    else:
+        facts = list(facts)
 
     target = Path(docs_dir) if docs_dir else root_path / "docs" / "generated"
     documents: dict[str, str] = {}
@@ -321,6 +403,7 @@ def audit(
         or root_path.name
     )
     report = AuditReport(project=project_name)
+    report.facts_total = len(facts)
     report.checks["citations"] = check_citations(facts, root_path)
     report.checks["duplicates"] = check_duplicates(facts)
     report.checks["consistency"] = check_consistency(documents)

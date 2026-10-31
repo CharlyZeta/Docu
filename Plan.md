@@ -553,3 +553,28 @@ párrafo y su rango de líneas, y las publica como hechos `doc_section`.
 
 **Medido en SalesHub:** «Prerrequisitos» pasa de hueco a `Prerrequisitos: Node.js v20 · npm v10`
 citando `README.md#L244-L249`, y la petición de prosa gana 60 secciones documentadas. 11 tests nuevos.
+
+### 13.13 F-26: un solo universo para el documento y la auditoría
+
+El documento declaraba **1306** afirmaciones y `audit` revisaba **1236**. Setenta de diferencia entre
+las dos métricas que el producto usa para demostrar rigor.
+
+Causa: `audit` recolectaba sólo hechos de código, mientras el documento ya incluía intención,
+decisiones y secciones de la documentación del repositorio. Cada uno contaba su propio total.
+
+- `audit()` acepta ahora una lista de hechos; el CLI le pasa el **mismo** universo que usa `gen`.
+- El reporte informa `Afirmaciones: N · auditadas: M · excluidas: K (tipo: n, …)`, así que un número
+  distinto tiene nombre y motivo en la misma línea.
+- La comprobación de citas aprende a validar prosa: para `intent`, `decision` y `doc_section` compara
+  **palabras** del texto citado (70 % o más presentes en el rango), porque el extractor une líneas y
+  una comparación carácter a carácter rechazaría citas correctas.
+
+**Medido en SalesHub:** documento 1366 · auditoría 1366 · excluidas 0 · 100.00/100.
+
+**La anomalía del manifest no se reproduce**: tras `clean --force` el manifest no existe, `status`
+responde «sin documentación generada» dos veces seguidas y no lo recrea. Queda como observación del
+build anterior.
+
+**Otras dos verificaciones del mismo feedback, sobre datos reales:**
+- F-21: la prosa que antes se rechazaba («React 19», «Vite 6,») ahora se **acepta** (6 frases).
+- F-22: la prosa aparece en `l1` **y** en `l4`, con el sello del redactor.

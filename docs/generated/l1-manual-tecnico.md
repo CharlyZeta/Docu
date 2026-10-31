@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:f2a9b` · archivos analizados: 64 · afirmaciones: 1198 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:9cced` · archivos analizados: 64 · afirmaciones: 1203 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -8,7 +8,7 @@ Generado por `docu 0.1.0` · fuente `sha256:f2a9b` · archivos analizados: 64 ·
 
 > Introducción compuesta con hechos citados: cada frase sale de un conteo o de la propia documentación del proyecto. No es prosa libre.
 
-**docu** se compone de 16 dependencias declaradas, 15 paquetes, 97 tipos y 420 campos.
+**docu** se compone de 16 dependencias declaradas, 15 paquetes, 97 tipos y 422 campos.
 
 Su propia documentación declara: «Agente autonomo de documentacion tecnica: agnostico, verificable e incremental.» [`pyproject.toml#L8-L8`].
 
@@ -20,7 +20,7 @@ El repositorio deja constancia de 12 decisiones («Saltar el bloque completo par
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **97** · métodos: **545**
+- Tipos: **97** · métodos: **548**
 
 ## 3. Intención y decisiones
 
@@ -74,7 +74,7 @@ El repositorio deja constancia de 12 decisiones («Saltar el bloque completo par
 | `Saltar el bloque completo para que la proxima anotacion no h` | Saltar el bloque completo para que la proxima anotacion no herede estas lineas. | `src/docu/adapters/langs/java.py#L506-L506` |
 | `El inicializador se separa con `=(?!>)` para no cortar los t` | El inicializador se separa con `=(?!>)` para no cortar los tipos función (`() => void`). | `src/docu/adapters/langs/typescript.py#L74-L74` |
 | `son el valor. Sin esto, un workflow real con `run: |` rompe ` | son el valor. Sin esto, un workflow real con `run: |` rompe toda la ingesta. | `src/docu/core/yamlmini.py#L96-L96` |
-| `contradecirse, porque el incremental necesita justamente el ` | contradecirse, porque el incremental necesita justamente el manifest que falta. | `src/docu/delivery/cli.py#L1169-L1169` |
+| `contradecirse, porque el incremental necesita justamente el ` | contradecirse, porque el incremental necesita justamente el manifest que falta. | `src/docu/delivery/cli.py#L1180-L1180` |
 | `Se publican ambos para que la diferencia no sea silenciosa.` | Se publican ambos para que la diferencia no sea silenciosa. | `src/docu/delivery/mcp_server.py#L356-L356` |
 | ``vite` puede estar en dependencies y en devDependencies: bus` | `vite` puede estar en dependencies y en devDependencies: buscar desde la seccion evita | `src/docu/generate/facts.py#L302-L302` |
 | `auditoría tiene razón en marcarla y el lector no encuentra n` | auditoría tiene razón en marcarla y el lector no encuentra nada al abrirla. | `src/docu/generate/ops.py#L211-L211` |
@@ -635,7 +635,7 @@ erDiagram
 | class | `Snapshot` | `@dataclass` | `src/docu/adapters/sources/web.py#L44-L63` |
 | class | `_TextExtractor` | — | `src/docu/adapters/sources/web.py#L66-L102` |
 | class | `Check` | `@dataclass` | `src/docu/audit/verify.py#L41-L69` |
-| class | `AuditReport` | `@dataclass` | `src/docu/audit/verify.py#L73-L124` |
+| class | `AuditReport` | `@dataclass` | `src/docu/audit/verify.py#L73-L144` |
 | class | `Discrepancy` | `@dataclass` | `src/docu/conformance/drift.py#L38-L62` |
 | class | `DriftReport` | `@dataclass` | `src/docu/conformance/drift.py#L66-L118` |
 | class | `RouteFact` | `@dataclass` | `src/docu/conformance/drift.py#L125-L130` |
@@ -814,6 +814,8 @@ erDiagram
 | `Check` | `note` | `str` | — | `src/docu/audit/verify.py#L48-L48` |
 | `AuditReport` | `project` | `str` | — | `src/docu/audit/verify.py#L74-L74` |
 | `AuditReport` | `checks` | `dict[str, Check]` | — | `src/docu/audit/verify.py#L75-L75` |
+| `AuditReport` | `facts_total` | `int` | — | `src/docu/audit/verify.py#L77-L77` |
+| `AuditReport` | `excluded` | `dict[str, int]` | — | `src/docu/audit/verify.py#L78-L78` |
 | `Discrepancy` | `kind` | `str` | — | `src/docu/conformance/drift.py#L39-L39` |
 | `Discrepancy` | `subject` | `str` | — | `src/docu/conformance/drift.py#L40-L40` |
 | `Discrepancy` | `detail` | `str` | — | `src/docu/conformance/drift.py#L41-L41` |
@@ -1275,19 +1277,22 @@ erDiagram
 | `Check.passed` | `def passed(self) -> bool` | `src/docu/audit/verify.py#L51-L52` |
 | `Check.score` | `def score(self) -> float` | `src/docu/audit/verify.py#L55-L58` |
 | `Check.to_dict` | `def to_dict(self) -> dict[str, object]` | `src/docu/audit/verify.py#L60-L69` |
-| `AuditReport.score` | `def score(self) -> float` | `src/docu/audit/verify.py#L78-L84` |
-| `AuditReport.passed` | `def passed(self) -> bool` | `src/docu/audit/verify.py#L87-L88` |
-| `AuditReport.to_dict` | `def to_dict(self) -> dict[str, object]` | `src/docu/audit/verify.py#L90-L98` |
-| `AuditReport.to_markdown` | `def to_markdown(self) -> str` | `src/docu/audit/verify.py#L100-L124` |
-| `check_citations` | `def check_citations(facts: Sequence[Fact], root: Path) -> Check` | `src/docu/audit/verify.py#L130-L170` |
-| `_probes` | `def _probes(fact: Fact) -> list[str]` | `src/docu/audit/verify.py#L173-L187` |
-| `check_duplicates` | `def check_duplicates(facts: Sequence[Fact]) -> Check` | `src/docu/audit/verify.py#L190-L205` |
-| `_document_paths` | `def _document_paths(text: str) -> set[str]` | `src/docu/audit/verify.py#L208-L210` |
-| `check_consistency` | `def check_consistency(docs: Mapping[str, str]) -> Check` | `src/docu/audit/verify.py#L213-L229` |
-| `check_coverage` | `def check_coverage(facts: Sequence[Fact], root: Path) -> Check` | `src/docu/audit/verify.py#L232-L242` |
-| `_evidence_kinds` | `def _evidence_kinds(kind: str) -> tuple[str, ...]` | `src/docu/audit/verify.py#L245-L248` |
-| `check_freshness` | `def check_freshness(root: Path, levels: Sequence[str], manifest_path: Path | str | None=..` | `src/docu/audit/verify.py#L251-L281` |
-| `audit` | `def audit(root: Path | str, docs_dir: Path | str | None=..., levels: Sequence[str]=..., pr` | `src/docu/audit/verify.py#L287-L335` |
+| `AuditReport.score` | `def score(self) -> float` | `src/docu/audit/verify.py#L81-L87` |
+| `AuditReport.passed` | `def passed(self) -> bool` | `src/docu/audit/verify.py#L90-L91` |
+| `AuditReport.to_dict` | `def to_dict(self) -> dict[str, object]` | `src/docu/audit/verify.py#L93-L103` |
+| `AuditReport._reconciliation` | `def _reconciliation(self) -> str` | `src/docu/audit/verify.py#L105-L116` |
+| `AuditReport.to_markdown` | `def to_markdown(self) -> str` | `src/docu/audit/verify.py#L118-L144` |
+| `check_citations` | `def check_citations(facts: Sequence[Fact], root: Path) -> Check` | `src/docu/audit/verify.py#L150-L195` |
+| `_probes` | `def _probes(fact: Fact) -> list[str]` | `src/docu/audit/verify.py#L198-L218` |
+| `_prose_supported` | `def _prose_supported(fact: Fact, span: str) -> bool` | `src/docu/audit/verify.py#L221-L235` |
+| `_normalize_needle` | `def _normalize_needle(text: str) -> str` | `src/docu/audit/verify.py#L238-L243` |
+| `check_duplicates` | `def check_duplicates(facts: Sequence[Fact]) -> Check` | `src/docu/audit/verify.py#L246-L261` |
+| `_document_paths` | `def _document_paths(text: str) -> set[str]` | `src/docu/audit/verify.py#L264-L266` |
+| `check_consistency` | `def check_consistency(docs: Mapping[str, str]) -> Check` | `src/docu/audit/verify.py#L269-L285` |
+| `check_coverage` | `def check_coverage(facts: Sequence[Fact], root: Path) -> Check` | `src/docu/audit/verify.py#L288-L298` |
+| `_evidence_kinds` | `def _evidence_kinds(kind: str) -> tuple[str, ...]` | `src/docu/audit/verify.py#L301-L304` |
+| `check_freshness` | `def check_freshness(root: Path, levels: Sequence[str], manifest_path: Path | str | None=..` | `src/docu/audit/verify.py#L307-L337` |
+| `audit` | `def audit(root: Path | str, docs_dir: Path | str | None=..., levels: Sequence[str]=..., pr` | `src/docu/audit/verify.py#L343-L418` |
 | `Discrepancy.severity` | `def severity(self) -> str` | `src/docu/conformance/drift.py#L46-L47` |
 | `Discrepancy.action` | `def action(self) -> str` | `src/docu/conformance/drift.py#L50-L51` |
 | `Discrepancy.to_dict` | `def to_dict(self) -> dict[str, object]` | `src/docu/conformance/drift.py#L53-L62` |
@@ -1339,11 +1344,8 @@ erDiagram
 | `SourceAdapter.discover` | `def discover(self, root: str, include: Sequence[str], exclude: Sequence[str]) -> Iterable[` | `src/docu/core/ports.py#L24-L25` |
 | `SourceAdapter.read` | `def read(self, artifact: Artifact) -> str | bytes` | `src/docu/core/ports.py#L27-L28` |
 | `LangAdapter.symbols` | `def symbols(self, path: str, source: str) -> Sequence[Symbol]` | `src/docu/core/ports.py#L41-L42` |
-| `LangAdapter.imports` | `def imports(self, path: str, source: str) -> Sequence[str]` | `src/docu/core/ports.py#L44-L45` |
-| `LangAdapter.calls` | `def calls(self, path: str, source: str) -> Sequence[tuple[str, str]]` | `src/docu/core/ports.py#L47-L52` |
-| `Chunker.chunk` | `def chunk(self, artifact: Artifact, symbols: Sequence[Symbol], source: str) -> Sequence[Ch` | `src/docu/core/ports.py#L61-L62` |
 
-_(345 métodos adicionales omitidos del índice)_.
+_(348 métodos adicionales omitidos del índice)_.
 
 ## 12. Documentos y fuentes de referencia
 
@@ -1384,7 +1386,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/adapters/sources/pdf.py` | `e2bf7513c8a5` |
 | `src/docu/adapters/sources/web.py` | `838eb154a9dc` |
 | `src/docu/audit/__init__.py` | `db19f5507fab` |
-| `src/docu/audit/verify.py` | `41376bbd1912` |
+| `src/docu/audit/verify.py` | `2d7eae0673d4` |
 | `src/docu/conformance/__init__.py` | `0362d002bd6b` |
 | `src/docu/conformance/drift.py` | `8cba54b3c1fd` |
 | `src/docu/conformance/model.py` | `1353357e8785` |
@@ -1396,14 +1398,14 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
 | `src/docu/delivery/cleanup.py` | `001b4d5dcb36` |
-| `src/docu/delivery/cli.py` | `bf7d563e25ac` |
+| `src/docu/delivery/cli.py` | `37304df5e19c` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |
 | `src/docu/delivery/mcp_server.py` | `ab622e99436c` |
 | `src/docu/delivery/proposal.py` | `d3f93708a83b` |
 | `src/docu/generate/__init__.py` | `91d9129019a3` |
 | `src/docu/generate/diagrams.py` | `f008c57b7365` |
-| `src/docu/generate/docs_evidence.py` | `595a0df2c3fe` |
+| `src/docu/generate/docs_evidence.py` | `4cd7ffa479f1` |
 | `src/docu/generate/facts.py` | `50ee7dba477a` |
 | `src/docu/generate/markdown.py` | `ff0e36c384b8` |
 | `src/docu/generate/narrative.py` | `9fe30ddb7c44` |
