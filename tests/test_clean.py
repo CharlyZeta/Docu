@@ -73,6 +73,25 @@ class PlanTests(unittest.TestCase):
             self.assertEqual(only_state.documents, [])
             self.assertTrue(only_state.state)
 
+    def test_hand_written_docs_inside_the_out_dir_survive(self) -> None:
+        """Si alguien generó dentro de docs/, su README y sus notas no se tocan."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            docs = root / "docs"
+            docs.mkdir()
+            for name, text in (
+                ("README.md", "a mano"),
+                ("notas.md", "equipo"),
+                ("l1-manual-tecnico.md", "generado"),
+                ("l3-guia-de-uso.md", "generado"),
+            ):
+                (docs / name).write_text(text, encoding="utf-8")
+            result = plan(root, docs)
+            self.assertEqual(
+                sorted(path.name for path in result.documents),
+                ["l1-manual-tecnico.md", "l3-guia-de-uso.md"],
+            )
+
     def test_nothing_to_clean(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

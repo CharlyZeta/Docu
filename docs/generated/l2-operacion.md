@@ -1,6 +1,6 @@
 # docu — Operación y despliegue (Nivel 2)
 
-Generado por `docu 0.1.0` · fuente `sha256:2ce1f` · archivos analizados: 63 · afirmaciones: 1155 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:bc6e6` · archivos analizados: 63 · afirmaciones: 1155 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 

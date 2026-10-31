@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:2ce1f` · archivos analizados: 63 · afirmaciones: 1155 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:bc6e6` · archivos analizados: 63 · afirmaciones: 1155 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -644,7 +644,7 @@ erDiagram
 | class | `Profile` | `@dataclass` | `src/docu/core/profile.py#L51-L107` |
 | class | `Change` | `@dataclass` | `src/docu/core/profile.py#L318-L332` |
 | class | `YamlError` | — | `src/docu/core/yamlmini.py#L14-L15` |
-| class | `CleanPlan` | `@dataclass` | `src/docu/delivery/cleanup.py#L30-L55` |
+| class | `CleanPlan` | `@dataclass` | `src/docu/delivery/cleanup.py#L34-L59` |
 | class | `CliError` | — | `src/docu/delivery/cli.py#L231-L236` |
 | class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L240-L251` |
 | class | `ExitCode` | — | `src/docu/delivery/exit_codes.py#L8-L16` |
@@ -938,11 +938,11 @@ erDiagram
 | `Change` | `after` | `object` | — | `src/docu/core/profile.py#L323-L323` |
 | `Change` | `reason` | `str` | — | `src/docu/core/profile.py#L324-L324` |
 | `Change` | `applied` | `bool` | — | `src/docu/core/profile.py#L325-L325` |
-| `CleanPlan` | `documents` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L33-L33` |
-| `CleanPlan` | `artifacts` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L34-L34` |
-| `CleanPlan` | `state` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L35-L35` |
-| `CleanPlan` | `ledger` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L36-L36` |
-| `CleanPlan` | `warnings` | `list[str]` | — | `src/docu/delivery/cleanup.py#L37-L37` |
+| `CleanPlan` | `documents` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L37-L37` |
+| `CleanPlan` | `artifacts` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L38-L38` |
+| `CleanPlan` | `state` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L39-L39` |
+| `CleanPlan` | `ledger` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L40-L40` |
+| `CleanPlan` | `warnings` | `list[str]` | — | `src/docu/delivery/cleanup.py#L41-L41` |
 | `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L243-L243` |
 | `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L244-L244` |
 | `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L245-L245` |
@@ -1358,7 +1358,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/core/profile.py` | `0a80beb4ea0e` |
 | `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
-| `src/docu/delivery/cleanup.py` | `9658c6388712` |
+| `src/docu/delivery/cleanup.py` | `553e144f9f89` |
 | `src/docu/delivery/cli.py` | `bfd9b9fb8acc` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |

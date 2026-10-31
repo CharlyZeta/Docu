@@ -13,6 +13,7 @@ Reglas de seguridad, porque un comando de borrado mal hecho es peor que no tener
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable, Sequence
@@ -20,6 +21,9 @@ from typing import Iterable, Sequence
 from docu.core.contracts import sha256_of
 
 DOC_SUFFIXES = (".md",)
+#: Sólo se borran documentos con el nombre que genera docu (l1-manual-tecnico.md, …).
+#: Si alguien generó dentro de docs/, su README.md o su guia.md no se tocan.
+GENERATED_DOC_RE = re.compile(r"^l\d+-.+\.md$")
 ARTIFACT_DIRS = ("diagrams", "web", "pdf", "site")
 STATE_FILES = ("manifest.json", "web.json", "prose.json")
 LEDGER_FILE = "ledger.jsonl"
@@ -81,6 +85,8 @@ def plan(
 
     if documents:
         for path in sorted(docs.glob("*.md")) if docs.is_dir() else []:
+            if not GENERATED_DOC_RE.match(path.name):
+                continue  # documentación escrita a mano: no es de docu
             result.documents.append(path)
         for name in ARTIFACT_DIRS:
             for path in _iter_files(docs / name):

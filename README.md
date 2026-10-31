@@ -6,7 +6,7 @@
 ![Dependencias](https://img.shields.io/badge/dependencias-0-blue)
 ![Sin LLM](https://img.shields.io/badge/LLM-no%20requerido-purple)
 ![Auditoría](https://img.shields.io/badge/auditor%C3%ADa-determinista-brightgreen)
-![Tests](https://img.shields.io/badge/tests-587-brightgreen)
+![Tests](https://img.shields.io/badge/tests-588-brightgreen)
 
 **Documentación técnica que se puede verificar.** Cada afirmación del documento cita el archivo y la
 línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.
@@ -135,9 +135,10 @@ docu clean --docs-only     # deja el manifest: la próxima generación es increm
 docu clean --ledger        # borra también el historial de aprendizaje
 `
 
-Sólo borra lo que generó docu: los .md de la raíz del directorio de salida, sus carpetas de
-artefactos (diagrams/, web/, pdf/, site/) y su estado (.docu/manifest.json, web.json,
-prose.json). **No toca** la documentación escrita a mano, el perfil ni el ledger (salvo --ledger).
+Sólo borra lo que generó docu: los documentos con su nombre (l1-manual-tecnico.md, l2-operacion.md,
+l3-guia-de-uso.md, l4-readme.md), sus carpetas de artefactos (diagrams/, web/, pdf/, site/)
+y su estado (.docu/manifest.json, web.json, prose.json). **No toca** la documentación escrita a
+mano —aunque comparta carpeta—, el perfil ni el ledger (salvo --ledger).
 
 ## Probar sin tocar tu proyecto
 
