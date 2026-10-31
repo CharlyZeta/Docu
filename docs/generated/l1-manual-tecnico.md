@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:55e3e` · archivos analizados: 61 · afirmaciones: 1111 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:5e5e1` · archivos analizados: 62 · afirmaciones: 1141 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -8,7 +8,7 @@ Generado por `docu 0.1.0` · fuente `sha256:55e3e` · archivos analizados: 61 ·
 
 > Introducción compuesta con hechos citados: cada frase sale de un conteo o de la propia documentación del proyecto. No es prosa libre.
 
-**docu** se compone de 16 dependencias declaradas, 15 paquetes, 92 tipos y 401 campos.
+**docu** se compone de 16 dependencias declaradas, 15 paquetes, 94 tipos y 410 campos.
 
 Su propia documentación declara: «Documentación técnica que se puede verificar. Cada afirmación del documento cita el archivo y la línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.» [`README.md#L11-L12`].
 
@@ -20,7 +20,7 @@ El repositorio deja constancia de 10 decisiones («Saltar el bloque completo par
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **92** · métodos: **505**
+- Tipos: **94** · métodos: **524**
 
 ## 3. Intención y decisiones
 
@@ -95,7 +95,7 @@ El repositorio deja constancia de 10 decisiones («Saltar el bloque completo par
 | `docu.conformance` | python | 3 | `src/docu/conformance/__init__.py#L1-L5` |
 | `docu.core` | python | 6 | `src/docu/core/__init__.py#L1-L5` |
 | `docu.delivery` | python | 6 | `src/docu/delivery/__init__.py#L1-L5` |
-| `docu.generate` | python | 7 | `src/docu/generate/__init__.py#L1-L5` |
+| `docu.generate` | python | 8 | `src/docu/generate/__init__.py#L1-L5` |
 | `docu.index` | python | 8 | `src/docu/index/__init__.py#L1-L5` |
 | `docu.learn` | python | 5 | `src/docu/learn/__init__.py#L1-L5` |
 | `docu.publish` | python | 2 | `src/docu/publish/__init__.py#L1-L5` |
@@ -119,7 +119,7 @@ flowchart LR
     docu_conformance["docu.conformance<br/>3 archivos"]
     docu_core["docu.core<br/>6 archivos"]
     docu_delivery["docu.delivery<br/>6 archivos"]
-    docu_generate["docu.generate<br/>7 archivos"]
+    docu_generate["docu.generate<br/>8 archivos"]
     docu_index["docu.index<br/>8 archivos"]
     docu_learn["docu.learn<br/>5 archivos"]
     docu_publish["docu.publish<br/>2 archivos"]
@@ -164,6 +164,34 @@ flowchart LR
     eval --> docu_retrieve
 ```
 
+### Clases del paquete · 7 clases de docu.generate
+
+```mermaid
+classDiagram
+    class Diagram <<class>> {
+        filename()
+    }
+    class Fact <<class>> {
+        verified()
+        location()
+    }
+    class GeneratedDoc <<class>> {
+    }
+    class GenerationResult <<class>> {
+        wrote_files()
+        pending()
+    }
+    class Narrative <<class>> {
+        facts()
+    }
+    class ProseResponse <<class>> {
+        accepted()
+    }
+    class Verdict <<class>> {
+        accepted()
+    }
+```
+
 ### Clases del paquete · 8 clases de docu.index
 
 ```mermaid
@@ -206,28 +234,6 @@ classDiagram
     }
 ```
 
-### Clases del paquete · 5 clases de docu.generate
-
-```mermaid
-classDiagram
-    class Diagram <<class>> {
-        filename()
-    }
-    class Fact <<class>> {
-        verified()
-        location()
-    }
-    class GeneratedDoc <<class>> {
-    }
-    class GenerationResult <<class>> {
-        wrote_files()
-        pending()
-    }
-    class Narrative <<class>> {
-        facts()
-    }
-```
-
 ### Clases del paquete · 5 clases de docu.adapters.langs
 
 ```mermaid
@@ -264,11 +270,11 @@ classDiagram
     }
 ```
 
-### modelo-de-datos · 24 de 75 entidades · 12 relaciones declaradas por tipo · 51 omitidas por recorte
+### modelo-de-datos · 24 de 77 entidades · 12 relaciones declaradas por tipo · 53 omitidas por recorte
 
 ```mermaid
 erDiagram
-    %% recorte: 24 de 75 entidades (las de más relaciones)
+    %% recorte: 24 de 77 entidades (las de más relaciones)
     ArchitectureModel {
         tuple_DeclaredComponent components
         tuple_Route routes
@@ -634,8 +640,8 @@ erDiagram
 | class | `Profile` | `@dataclass` | `src/docu/core/profile.py#L51-L107` |
 | class | `Change` | `@dataclass` | `src/docu/core/profile.py#L318-L332` |
 | class | `YamlError` | — | `src/docu/core/yamlmini.py#L14-L15` |
-| class | `CliError` | — | `src/docu/delivery/cli.py#L208-L213` |
-| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L217-L228` |
+| class | `CliError` | — | `src/docu/delivery/cli.py#L220-L225` |
+| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L229-L240` |
 | class | `ExitCode` | — | `src/docu/delivery/exit_codes.py#L8-L16` |
 | class | `_Handler` | — | `src/docu/delivery/http_server.py#L26-L89` |
 | class | `ProjectRef` | `@dataclass` | `src/docu/delivery/mcp_server.py#L163-L187` |
@@ -646,6 +652,8 @@ erDiagram
 | class | `Narrative` | `@dataclass` | `src/docu/generate/narrative.py#L47-L56` |
 | class | `GeneratedDoc` | `@dataclass` | `src/docu/generate/pipeline.py#L89-L92` |
 | class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L96-L121` |
+| class | `ProseResponse` | `@dataclass` | `src/docu/generate/prose.py#L46-L56` |
+| class | `Verdict` | `@dataclass` | `src/docu/generate/prose.py#L60-L71` |
 | class | `SymbolChunker` | `@dataclass` | `src/docu/index/chunker.py#L46-L220` |
 | class | `InputComponents` | `@dataclass` | `src/docu/index/freshness.py#L26-L34` |
 | class | `IgnoreRule` | `@dataclass` | `src/docu/index/ignore.py#L18-L24` |
@@ -925,15 +933,15 @@ erDiagram
 | `Change` | `after` | `object` | — | `src/docu/core/profile.py#L323-L323` |
 | `Change` | `reason` | `str` | — | `src/docu/core/profile.py#L324-L324` |
 | `Change` | `applied` | `bool` | — | `src/docu/core/profile.py#L325-L325` |
-| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L220-L220` |
-| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L221-L221` |
-| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L222-L222` |
-| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L223-L223` |
-| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L224-L224` |
-| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L225-L225` |
-| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L226-L226` |
-| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L227-L227` |
-| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L228-L228` |
+| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L232-L232` |
+| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L233-L233` |
+| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L234-L234` |
+| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L235-L235` |
+| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L236-L236` |
+| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L237-L237` |
+| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L238-L238` |
+| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L239-L239` |
+| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L240-L240` |
 | `_Handler` | `server_version` | `sin tipo declarado` | — | `src/docu/delivery/http_server.py#L27-L27` |
 | `_Handler` | `mcp` | `McpServer` | — | `src/docu/delivery/http_server.py#L28-L28` |
 | `ProjectRef` | `name` | `str` | — | `src/docu/delivery/mcp_server.py#L166-L166` |
@@ -977,6 +985,15 @@ erDiagram
 | `GenerationResult` | `unsupported_languages` | `Mapping[str, int]` | — | `src/docu/generate/pipeline.py#L108-L108` |
 | `GenerationResult` | `diagrams` | `tuple[str, ...]` | — | `src/docu/generate/pipeline.py#L109-L109` |
 | `GenerationResult` | `dry_run` | `bool` | — | `src/docu/generate/pipeline.py#L110-L110` |
+| `ProseResponse` | `reviewer` | `str` | — | `src/docu/generate/prose.py#L49-L49` |
+| `ProseResponse` | `sections` | `dict[str, list[dict[str, object]]]` | — | `src/docu/generate/prose.py#L50-L50` |
+| `ProseResponse` | `errors` | `list[str]` | — | `src/docu/generate/prose.py#L51-L51` |
+| `ProseResponse` | `warnings` | `list[str]` | — | `src/docu/generate/prose.py#L52-L52` |
+| `Verdict` | `judge` | `str` | — | `src/docu/generate/prose.py#L63-L63` |
+| `Verdict` | `score` | `float` | — | `src/docu/generate/prose.py#L64-L64` |
+| `Verdict` | `criteria` | `dict[str, float]` | — | `src/docu/generate/prose.py#L65-L65` |
+| `Verdict` | `issues` | `list[str]` | — | `src/docu/generate/prose.py#L66-L66` |
+| `Verdict` | `errors` | `list[str]` | — | `src/docu/generate/prose.py#L67-L67` |
 | `SymbolChunker` | `name` | `str` | — | `src/docu/index/chunker.py#L49-L49` |
 | `SymbolChunker` | `max_tokens` | `int` | — | `src/docu/index/chunker.py#L50-L50` |
 | `SymbolChunker` | `overlap_tokens` | `int` | — | `src/docu/index/chunker.py#L51-L51` |
@@ -1279,7 +1296,7 @@ erDiagram
 | `LangAdapter.calls` | `def calls(self, path: str, source: str) -> Sequence[tuple[str, str]]` | `src/docu/core/ports.py#L47-L52` |
 | `Chunker.chunk` | `def chunk(self, artifact: Artifact, symbols: Sequence[Symbol], source: str) -> Sequence[Ch` | `src/docu/core/ports.py#L61-L62` |
 
-_(305 métodos adicionales omitidos del índice)_.
+_(324 métodos adicionales omitidos del índice)_.
 
 ## 12. Documentos y fuentes de referencia
 
@@ -1331,7 +1348,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/core/profile.py` | `0a80beb4ea0e` |
 | `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
-| `src/docu/delivery/cli.py` | `a2f1ccfc6e8e` |
+| `src/docu/delivery/cli.py` | `6a6eb044187e` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |
 | `src/docu/delivery/mcp_server.py` | `ab622e99436c` |
@@ -1339,10 +1356,11 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/generate/__init__.py` | `91d9129019a3` |
 | `src/docu/generate/diagrams.py` | `f008c57b7365` |
 | `src/docu/generate/facts.py` | `50ee7dba477a` |
-| `src/docu/generate/markdown.py` | `0fe6e2ac8f16` |
+| `src/docu/generate/markdown.py` | `c10ee8530038` |
 | `src/docu/generate/narrative.py` | `d7df3d4837a1` |
 | `src/docu/generate/ops.py` | `cee221559089` |
-| `src/docu/generate/pipeline.py` | `66c5710fefd8` |
+| `src/docu/generate/pipeline.py` | `ddc803ebd9cb` |
+| `src/docu/generate/prose.py` | `1cd8939b3141` |
 | `src/docu/index/__init__.py` | `06566a17f409` |
 | `src/docu/index/chunker.py` | `7a6418ba69aa` |
 | `src/docu/index/freshness.py` | `076f96a3fb8b` |

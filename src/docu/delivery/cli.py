@@ -180,6 +180,18 @@ def _build_parser() -> argparse.ArgumentParser:
     p_pdf.add_argument("--out", default=None, help="directorio del texto extraído (por defecto <docs>/pdf)")
     p_pdf.add_argument("--json", action="store_true")
 
+    p_prose = sub.add_parser(
+        "prose", help="delega la redacción al agente y valida su respuesta"
+    )
+    p_prose.add_argument("--root", default=".")
+    p_prose.add_argument("--profile", default=argparse.SUPPRESS)
+    p_prose.add_argument("--emit", action="store_true", help="escribe la petición para el agente")
+    p_prose.add_argument("--apply", default=None, metavar="ARCHIVO", help="valida y guarda la respuesta")
+    p_prose.add_argument("--reviewer", default=None, help="nombre del agente que redactó")
+    p_prose.add_argument("--judge-emit", action="store_true", help="escribe la rúbrica para un segundo agente")
+    p_prose.add_argument("--judge", default=None, metavar="ARCHIVO", help="ingiere el veredicto del juez")
+    p_prose.add_argument("--out", default=None, help="dónde escribir las peticiones (por defecto .docu)")
+
     p_serve = sub.add_parser("serve", help="servidor MCP de solo lectura")
     p_serve.add_argument("--mcp", action="store_true", help="transporte MCP (stdio por defecto)")
     p_serve.add_argument("--port", type=int, default=None, help="puerto para transporte HTTP")
@@ -311,6 +323,9 @@ def _dispatch(args: argparse.Namespace) -> int:
 
     if args.command == "web":
         return _run_web(args)
+
+    if args.command == "prose":
+        return _run_prose(args)
 
     if args.command == "serve":
         return _run_serve(args)
@@ -641,6 +656,114 @@ def _run_pdf(args: argparse.Namespace) -> int:
     if not any(document.usable for document in documents):
         print("error: ningún PDF tiene texto extraíble", file=sys.stderr)
         return int(ExitCode.UNCITABLE_SOURCE)
+    return int(ExitCode.OK)
+
+
+def _run_prose(args: argparse.Namespace) -> int:
+    """Delega la redacción al agente del entorno y valida lo que devuelve.
+
+    `docu` no llama a ningún modelo: emite la petición con los hechos citados y acepta la respuesta
+    sólo si cada frase cita hechos existentes y no aporta cifras nuevas. El juez es opcional y también
+    se delega a un segundo agente; su nota es asesora.
+    """
+    import json as jsonlib
+
+    from docu.generate import prose as prose_module
+    from docu.generate.pipeline import collect_all_facts_only
+
+    root = Path(args.root).resolve()
+    options = _resolve(args, root)
+    facts = collect_all_facts_only(
+        root, include=options.include, exclude=options.exclude, project=options.project
+    )
+    if not any(fact.kind in prose_module.NARRATIVE_KINDS for fact in facts):
+        print("error: no hay hechos que ofrecer al redactor", file=sys.stderr)
+        return int(ExitCode.UNCITABLE_SOURCE)
+
+    directory = Path(args.out) if args.out else root / prose_module.PROSE_DIR
+    project = options.project
+
+    if args.apply:
+        source = Path(args.apply)
+        if not source.is_file():
+            print(f"error: no existe {source}", file=sys.stderr)
+            return int(ExitCode.CONFIG_ERROR)
+        try:
+            payload = jsonlib.loads(source.read_text(encoding="utf-8"))
+        except jsonlib.JSONDecodeError as error:
+            print(f"error: JSON inválido: {error}", file=sys.stderr)
+            return int(ExitCode.CONFIG_ERROR)
+        if args.reviewer:
+            payload["reviewer"] = args.reviewer
+        response, _index = prose_module.validate(payload, facts)
+        for warning in response.warnings:
+            print(f"  aviso: {warning}", file=sys.stderr)
+        if not response.accepted:
+            for error in response.errors:
+                print(f"  rechazado: {error}", file=sys.stderr)
+            print("la prosa no se guardó: corregí las citas y volvé a aplicarla", file=sys.stderr)
+            return int(ExitCode.NEEDS_REVIEW)
+        existing = prose_module.load(root)
+        target = prose_module.save(root, response, existing[1] if existing else None)
+        sentences = sum(len(items) for items in response.sections.values())
+        print(f"prosa aceptada: {sentences} frases · guardada en {target}")
+        print(f"  redactor: {response.reviewer or '—'} · ninguna cifra nueva")
+        return int(ExitCode.OK)
+
+    if args.judge_emit:
+        stored = prose_module.load(root)
+        if stored is None:
+            print("error: no hay prosa aceptada; aplicá una respuesta primero", file=sys.stderr)
+            return int(ExitCode.CONFIG_ERROR)
+        response, _verdict = stored
+        _validated, index = prose_module.validate(
+            {"reviewer": response.reviewer, "sections": response.sections}, facts
+        )
+        request = prose_module.build_judge_request(project, response, facts, index)
+        path = prose_module.write_judge_request(directory, request)
+        print(f"rúbrica para el juez: {path}")
+        print(f"  umbral: {prose_module.MIN_JUDGE_SCORE}/5 · devolvé `judge-verdict.json`")
+        return int(ExitCode.OK)
+
+    if args.judge:
+        source = Path(args.judge)
+        if not source.is_file():
+            print(f"error: no existe {source}", file=sys.stderr)
+            return int(ExitCode.CONFIG_ERROR)
+        try:
+            payload = jsonlib.loads(source.read_text(encoding="utf-8"))
+        except jsonlib.JSONDecodeError as error:
+            print(f"error: JSON inválido: {error}", file=sys.stderr)
+            return int(ExitCode.CONFIG_ERROR)
+        verdict = prose_module.load_verdict(payload)
+        if verdict.errors:
+            for error in verdict.errors:
+                print(f"  veredicto inválido: {error}", file=sys.stderr)
+            return int(ExitCode.CONFIG_ERROR)
+        stored = prose_module.load(root)
+        if stored is None:
+            print("error: no hay prosa que juzgar", file=sys.stderr)
+            return int(ExitCode.CONFIG_ERROR)
+        prose_module.save(root, stored[0], verdict)
+        criteria = ", ".join(f"{name} {value:.1f}" for name, value in verdict.criteria.items())
+        print(f"veredicto: {verdict.score:.1f}/5 · juez: {verdict.judge or '—'} · {criteria}")
+        for issue in verdict.issues[:5]:
+            print(f"    - {issue}")
+        if not verdict.accepted:
+            print(
+                f"por debajo del umbral ({prose_module.MIN_JUDGE_SCORE}/5): la prosa se mantiene y "
+                "la compuerta pedirá revisión",
+                file=sys.stderr,
+            )
+            return int(ExitCode.NEEDS_REVIEW)
+        return int(ExitCode.OK)
+
+    request = prose_module.build_request(project, facts)
+    json_path, md_path = prose_module.write_request(directory, request)
+    print(f"petición de redacción: {json_path}")
+    print(f"versión para pegar en un agente: {md_path}")
+    print(f"  hechos ofrecidos: {len(request['facts'])} · devolvé `prose-response.json`")
+    print("  aplicá con: docu prose --apply prose-response.json --reviewer <agente>")
     return int(ExitCode.OK)
 
 

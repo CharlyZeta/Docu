@@ -146,6 +146,20 @@ def render_l1(
     else:
         lines += [NO_EVIDENCE, ""]
 
+    prose = str(meta.get("prose") or "").strip()
+    if prose:
+        lines += [prose, ""]
+        details = [f"redactor: `{meta.get('prose_reviewer') or 'agente'}`"]
+        if meta.get("prose_judge"):
+            details.append(f"juez: `{meta['prose_judge']}` ({meta.get('prose_score', '—')}/5)")
+        lines += [f"_({'; '.join(details)} · validada por docu: ninguna cifra nueva)_", ""]
+    elif meta.get("prose_error"):
+        lines += [
+            f"> La prosa delegada **no se incluyó**: {meta['prose_error']}. "
+            "Se regenera con `docu prose --apply`.",
+            "",
+        ]
+
     lines += ["## 2. Resumen", ""]
     lines += [
         f"- Módulos de build: **{counts.get('module', 0)}** · paquetes: **{counts.get('package', 0)}**",

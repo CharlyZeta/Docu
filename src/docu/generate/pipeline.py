@@ -510,6 +510,48 @@ def inspect(
     return manifest, states, hashes
 
 
+def collect_all_facts(
+    root_path: Path,
+    include_tests: bool = False,
+    include: Sequence[str] = (),
+    exclude: Sequence[str] = (),
+    project: str | None = None,
+) -> tuple[list[Fact], dict[str, str], dict[str, Path], "object"]:
+    """Hechos completos: código, configuración, fuentes externas, intención y decisiones.
+
+    Una sola puerta para que `gen`, `prose` y la auditoría hablen del **mismo** universo. Antes, la
+    prosa delegada ofrecía hechos de código pero no de intención, y el agente citaba ids inexistentes.
+    """
+    from docu.generate.narrative import collect as collect_narrative
+
+    facts, sources = collect_facts(
+        root_path, include_tests=include_tests, include=include, exclude=exclude
+    )
+    discovered = _discover(root_path, include_tests=include_tests, include=include, exclude=exclude)
+    kind_counts: dict[str, int] = {}
+    for fact in facts:
+        kind_counts[fact.kind] = kind_counts.get(fact.kind, 0) + 1
+    narrative = collect_narrative(
+        root_path, discovered, kind_counts, project or root_path.name, _read
+    )
+    facts.extend(narrative.facts)
+    return facts, sources, discovered, narrative
+
+
+def collect_all_facts_only(
+    root_path: Path,
+    include_tests: bool = False,
+    include: Sequence[str] = (),
+    exclude: Sequence[str] = (),
+    project: str | None = None,
+) -> list[Fact]:
+    """Variante para comandos que sólo necesitan la lista (prosa delegada, auditoría)."""
+    facts, _sources, _discovered, _narrative = collect_all_facts(
+        root_path, include_tests=include_tests, include=include, exclude=exclude, project=project
+    )
+    return facts
+
+
 def generate(
     root: Path | str,
     out_dir: Path | str,
@@ -538,20 +580,37 @@ def generate(
     name = project or root_path.name
     manifest_target = manifest_file(root_path, manifest_path)
 
-    facts, sources = collect_facts(root_path, include_tests=include_tests, include=include, exclude=exclude)
-    discovered = _discover(root_path, include_tests=include_tests, include=include, exclude=exclude)
+    facts, sources, discovered, narrative = collect_all_facts(
+        root_path,
+        include_tests=include_tests,
+        include=include,
+        exclude=exclude,
+        project=name,
+    )
     packages = detect_packages(discovered)
     diagrams = build_all(discovered, packages, facts, _read)
 
-    # Intención y decisiones: se extraen de lo que el proyecto ya declaró (docstrings, ADRs,
-    # comentarios con porqué). Son hechos con cita, así que entran al documento como cualquier otro.
-    from docu.generate.narrative import collect as collect_narrative
+    # Prosa delegada: si el agente del desarrollador dejó una respuesta validada, entra al documento
+    # con su procedencia. Se revalida contra los hechos actuales: la prosa de ayer puede citar un
+    # símbolo que hoy ya no existe.
+    from docu.generate import prose as prose_module
 
-    kind_counts: dict[str, int] = {}
-    for fact in facts:
-        kind_counts[fact.kind] = kind_counts.get(fact.kind, 0) + 1
-    narrative = collect_narrative(root_path, discovered, kind_counts, name, _read)
-    facts.extend(narrative.facts)
+    prose_markdown = ""
+    prose_meta: dict[str, str] = {}
+    stored = prose_module.load(root_path)
+    if stored is not None:
+        response, verdict = stored
+        validated, index = prose_module.validate(
+            {"reviewer": response.reviewer, "sections": response.sections}, facts
+        )
+        if validated.accepted:
+            prose_markdown = prose_module.render(validated, index)
+            prose_meta["prose_reviewer"] = validated.reviewer
+            if verdict is not None:
+                prose_meta["prose_judge"] = verdict.judge
+                prose_meta["prose_score"] = f"{verdict.score:.1f}"
+        else:
+            prose_meta["prose_error"] = "; ".join(validated.errors[:2])
 
     missing = unsupported(facts)
     digest = sha256_of("|".join(f"{path}:{sha}" for path, sha in sorted(sources.items())))[:12]
@@ -595,6 +654,8 @@ def generate(
         "applicable": ", ".join(kind for kind, needed in applicable.items() if needed),
         "not_applicable": ", ".join(kind for kind, needed in applicable.items() if not needed),
         "intro": narrative.intro,
+        "prose": prose_markdown,
+        **prose_meta,
         "unsupported_languages": ", ".join(
             f"{name} ({count})" for name, count in _language_names(languages).items()
         ),

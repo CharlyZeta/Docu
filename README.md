@@ -6,7 +6,7 @@
 ![Dependencias](https://img.shields.io/badge/dependencias-0-blue)
 ![Sin LLM](https://img.shields.io/badge/LLM-no%20requerido-purple)
 ![Auditoría](https://img.shields.io/badge/auditor%C3%ADa-determinista-brightgreen)
-![Tests](https://img.shields.io/badge/tests-556-brightgreen)
+![Tests](https://img.shields.io/badge/tests-575-brightgreen)
 
 **Documentación técnica que se puede verificar.** Cada afirmación del documento cita el archivo y la
 línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.
@@ -30,6 +30,9 @@ cuando quedó vieja.
 - **Un servidor MCP** para que tu agente consulte el código y la documentación con citas.
 - **Mantenimiento**: cuando cambia el código, la documentación se marca vieja y el CI puede abrir un PR
   con la actualización.
+- **Prosa delegada (opcional)**: si querés una introducción redactada, docu le pasa los hechos a *tu*
+  agente y **valida** lo que devuelve: cada frase tiene que citar hechos existentes y ninguna puede
+  aportar cifras nuevas. Sin claves, sin coste y sin que el modelo decida qué es verdad.
 
 ## Cómo funciona
 

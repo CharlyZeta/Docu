@@ -481,3 +481,23 @@ declara como hueco.
 
 **Lección de método:** las cuatro pruebas ciegas destaparon 12 defectos que ningún test interno
 encontraba, y el más grave (F-02) afectaba a **cualquier** proyecto sin perfil.
+
+### 13.9 Prosa delegada al agente del entorno (sin modelo propio)
+`docu prose` **no llama a ningún modelo**: emite un contrato con los hechos citados y valida lo que
+devuelve el agente que el desarrollador ya tiene.
+
+1. `docu prose --emit` → `prose-request.json` + `prose-request.md` (120 hechos, reglas y esquema).
+2. El agente redacta `prose-response.json` declarando los `fact_ids` de cada frase.
+3. `docu prose --apply` valida: hechos existentes, **ninguna cifra que no esté en los hechos**, sin
+   encabezados, máximo 8 frases. Si falla, exit 20 y no se guarda.
+4. `docu gen` revalida contra los hechos actuales y embebe la prosa con su procedencia
+   (*redactor*, y *juez* si lo hubo). Si la prosa de ayer cita un símbolo que ya no existe, se excluye
+   y el documento lo dice.
+5. `docu prose --judge-emit` / `--judge` → rúbrica de cinco criterios para un **segundo** agente; su
+   nota es asesora: por debajo de 3.5/5 el documento lo muestra y la compuerta pide revisión.
+
+Por qué esta forma: no hay claves ni coste marginal, se usa el contexto que el agente ya tiene, y la
+verdad sigue siendo determinista. El modelo redacta; `docu` decide qué es publicable.
+
+**Medido:** ciclo completo verificado (aceptar, rechazar por cifra inventada, rechazar por hecho
+inexistente, juez por encima y por debajo del umbral). 19 tests nuevos.
