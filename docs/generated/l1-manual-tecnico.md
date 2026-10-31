@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:5e5e1` · archivos analizados: 62 · afirmaciones: 1141 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:2ce1f` · archivos analizados: 63 · afirmaciones: 1155 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -8,7 +8,7 @@ Generado por `docu 0.1.0` · fuente `sha256:5e5e1` · archivos analizados: 62 ·
 
 > Introducción compuesta con hechos citados: cada frase sale de un conteo o de la propia documentación del proyecto. No es prosa libre.
 
-**docu** se compone de 16 dependencias declaradas, 15 paquetes, 94 tipos y 410 campos.
+**docu** se compone de 16 dependencias declaradas, 15 paquetes, 95 tipos y 415 campos.
 
 Su propia documentación declara: «Documentación técnica que se puede verificar. Cada afirmación del documento cita el archivo y la línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.» [`README.md#L11-L12`].
 
@@ -20,7 +20,7 @@ El repositorio deja constancia de 10 decisiones («Saltar el bloque completo par
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **94** · métodos: **524**
+- Tipos: **95** · métodos: **532**
 
 ## 3. Intención y decisiones
 
@@ -94,7 +94,7 @@ El repositorio deja constancia de 10 decisiones («Saltar el bloque completo par
 | `docu.audit` | python | 2 | `src/docu/audit/__init__.py#L1-L5` |
 | `docu.conformance` | python | 3 | `src/docu/conformance/__init__.py#L1-L5` |
 | `docu.core` | python | 6 | `src/docu/core/__init__.py#L1-L5` |
-| `docu.delivery` | python | 6 | `src/docu/delivery/__init__.py#L1-L5` |
+| `docu.delivery` | python | 7 | `src/docu/delivery/__init__.py#L1-L5` |
 | `docu.generate` | python | 8 | `src/docu/generate/__init__.py#L1-L5` |
 | `docu.index` | python | 8 | `src/docu/index/__init__.py#L1-L5` |
 | `docu.learn` | python | 5 | `src/docu/learn/__init__.py#L1-L5` |
@@ -118,7 +118,7 @@ flowchart LR
     docu_audit["docu.audit<br/>2 archivos"]
     docu_conformance["docu.conformance<br/>3 archivos"]
     docu_core["docu.core<br/>6 archivos"]
-    docu_delivery["docu.delivery<br/>6 archivos"]
+    docu_delivery["docu.delivery<br/>7 archivos"]
     docu_generate["docu.generate<br/>8 archivos"]
     docu_index["docu.index<br/>8 archivos"]
     docu_learn["docu.learn<br/>5 archivos"]
@@ -234,47 +234,51 @@ classDiagram
     }
 ```
 
-### Clases del paquete · 5 clases de docu.adapters.langs
+### Clases del paquete · 8 clases de docu.delivery
 
 ```mermaid
 classDiagram
-    class JavaLangAdapter <<class>> {
-        symbols()
-        _members()
-        imports()
-        calls()
+    class CleanPlan <<class>> {
+        empty()
+        total()
+        to_dict()
     }
-    class Lines <<class>> {
+    class CliError <<class>> {
         __init__()
-        line_of()
     }
-    class PythonLangAdapter <<class>> {
-        symbols()
-        _module_member()
-        _class_field()
-        _decorators()
-        _routes()
-        imports()
-        calls()
+    class ExitCode <<class>> {
     }
-    class TypeScriptLangAdapter <<class>> {
-        symbols()
-        _members()
-        _express_routes()
-        imports()
-        calls()
+    class McpServer <<class>> {
+        __post_init__()
+        projects()
+        resolve()
+        _index_for()
+        index()
+        _glossary()
+        _require_docs()
+        call_tool()
     }
-    class _Lines <<class>> {
-        __init__()
-        line_of()
+    class ProjectRef <<class>> {
+        has_docs()
+        project_name()
+    }
+    class ResolvedOptions <<class>> {
+    }
+    class ToolError <<class>> {
+    }
+    class _Handler <<class>> {
+        do_GET()
+        do_POST()
+        _json()
+        log_message()
     }
 ```
 
-### modelo-de-datos · 24 de 77 entidades · 12 relaciones declaradas por tipo · 53 omitidas por recorte
+### modelo-de-datos · 24 de 78 entidades · 12 relaciones declaradas por tipo · 54 omitidas por recorte
 
 ```mermaid
 erDiagram
-    %% recorte: 24 de 77 entidades (las de más relaciones)
+    %% recorte: 24 de 78 entidades (las de más relaciones)
     ArchitectureModel {
         tuple_DeclaredComponent components
         tuple_Route routes
@@ -640,8 +644,9 @@ erDiagram
 | class | `Profile` | `@dataclass` | `src/docu/core/profile.py#L51-L107` |
 | class | `Change` | `@dataclass` | `src/docu/core/profile.py#L318-L332` |
 | class | `YamlError` | — | `src/docu/core/yamlmini.py#L14-L15` |
-| class | `CliError` | — | `src/docu/delivery/cli.py#L220-L225` |
-| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L229-L240` |
+| class | `CleanPlan` | `@dataclass` | `src/docu/delivery/cleanup.py#L30-L55` |
+| class | `CliError` | — | `src/docu/delivery/cli.py#L231-L236` |
+| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L240-L251` |
 | class | `ExitCode` | — | `src/docu/delivery/exit_codes.py#L8-L16` |
 | class | `_Handler` | — | `src/docu/delivery/http_server.py#L26-L89` |
 | class | `ProjectRef` | `@dataclass` | `src/docu/delivery/mcp_server.py#L163-L187` |
@@ -933,15 +938,20 @@ erDiagram
 | `Change` | `after` | `object` | — | `src/docu/core/profile.py#L323-L323` |
 | `Change` | `reason` | `str` | — | `src/docu/core/profile.py#L324-L324` |
 | `Change` | `applied` | `bool` | — | `src/docu/core/profile.py#L325-L325` |
-| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L232-L232` |
-| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L233-L233` |
-| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L234-L234` |
-| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L235-L235` |
-| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L236-L236` |
-| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L237-L237` |
-| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L238-L238` |
-| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L239-L239` |
-| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L240-L240` |
+| `CleanPlan` | `documents` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L33-L33` |
+| `CleanPlan` | `artifacts` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L34-L34` |
+| `CleanPlan` | `state` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L35-L35` |
+| `CleanPlan` | `ledger` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L36-L36` |
+| `CleanPlan` | `warnings` | `list[str]` | — | `src/docu/delivery/cleanup.py#L37-L37` |
+| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L243-L243` |
+| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L244-L244` |
+| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L245-L245` |
+| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L246-L246` |
+| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L247-L247` |
+| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L248-L248` |
+| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L249-L249` |
+| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L250-L250` |
+| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L251-L251` |
 | `_Handler` | `server_version` | `sin tipo declarado` | — | `src/docu/delivery/http_server.py#L27-L27` |
 | `_Handler` | `mcp` | `McpServer` | — | `src/docu/delivery/http_server.py#L28-L28` |
 | `ProjectRef` | `name` | `str` | — | `src/docu/delivery/mcp_server.py#L166-L166` |
@@ -1296,7 +1306,7 @@ erDiagram
 | `LangAdapter.calls` | `def calls(self, path: str, source: str) -> Sequence[tuple[str, str]]` | `src/docu/core/ports.py#L47-L52` |
 | `Chunker.chunk` | `def chunk(self, artifact: Artifact, symbols: Sequence[Symbol], source: str) -> Sequence[Ch` | `src/docu/core/ports.py#L61-L62` |
 
-_(324 métodos adicionales omitidos del índice)_.
+_(332 métodos adicionales omitidos del índice)_.
 
 ## 12. Documentos y fuentes de referencia
 
@@ -1348,7 +1358,8 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/core/profile.py` | `0a80beb4ea0e` |
 | `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
-| `src/docu/delivery/cli.py` | `6a6eb044187e` |
+| `src/docu/delivery/cleanup.py` | `9658c6388712` |
+| `src/docu/delivery/cli.py` | `bfd9b9fb8acc` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |
 | `src/docu/delivery/mcp_server.py` | `ab622e99436c` |

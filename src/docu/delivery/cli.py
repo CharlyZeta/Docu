@@ -33,6 +33,8 @@ Qué devuelve cada comando:
   site    0 web escrita · 40 nada documentable
   pdf     0 texto extraído · 10 no hay PDFs · 40 ningún PDF usable
   web     0 capturado · 10 sin URLs declaradas · 40 ninguna fuente capturada
+  prose   0 prosa aceptada · 20 respuesta rechazada o juez bajo el umbral
+  clean   0 simulado o borrado · 10 no había nada que borrar
   ci      0 verde · 20 frescura rota o compuerta en revisión
 """
 
@@ -180,6 +182,15 @@ def _build_parser() -> argparse.ArgumentParser:
     p_pdf.add_argument("--out", default=None, help="directorio del texto extraído (por defecto <docs>/pdf)")
     p_pdf.add_argument("--json", action="store_true")
 
+    p_clean = sub.add_parser("clean", help="elimina la documentación generada y el estado (volver a cero)")
+    p_clean.add_argument("--root", default=".")
+    p_clean.add_argument("--profile", default=argparse.SUPPRESS)
+    p_clean.add_argument("--out", default=None, help="directorio de la documentación generada")
+    p_clean.add_argument("--force", action="store_true", help="borra de verdad (sin esto sólo simula)")
+    p_clean.add_argument("--docs-only", action="store_true", help="sólo documentos y artefactos")
+    p_clean.add_argument("--state-only", action="store_true", help="sólo manifest, prosa y snapshots")
+    p_clean.add_argument("--ledger", action="store_true", help="borra también el historial de aprendizaje")
+
     p_prose = sub.add_parser(
         "prose", help="delega la redacción al agente y valida su respuesta"
     )
@@ -326,6 +337,9 @@ def _dispatch(args: argparse.Namespace) -> int:
 
     if args.command == "prose":
         return _run_prose(args)
+
+    if args.command == "clean":
+        return _run_clean(args)
 
     if args.command == "serve":
         return _run_serve(args)
@@ -657,6 +671,61 @@ def _run_pdf(args: argparse.Namespace) -> int:
         print("error: ningún PDF tiene texto extraíble", file=sys.stderr)
         return int(ExitCode.UNCITABLE_SOURCE)
     return int(ExitCode.OK)
+
+
+def _run_clean(args: argparse.Namespace) -> int:
+    """Vuelve a cero: documentos, artefactos y estado. Simula salvo `--force`.
+
+    Nunca borra recursivamente el directorio de salida: sólo los `.md` de su raíz y sus carpetas de
+    artefactos. Si alguien apuntó `--out` a una carpeta con documentación escrita a mano, no se toca.
+    """
+    import json as jsonlib
+
+    from docu.delivery.cleanup import apply as apply_plan
+    from docu.delivery.cleanup import plan as build_plan
+
+    root = Path(args.root).resolve()
+    options = _resolve(args, root)
+    docs_dir = Path(args.out) if args.out else options.out_dir
+    documents = not getattr(args, "state_only", False)
+    state = not getattr(args, "docs_only", False)
+
+    result = build_plan(
+        root,
+        docs_dir=docs_dir,
+        documents=documents,
+        state=state,
+        ledger=bool(getattr(args, "ledger", False)),
+    )
+    if result.empty:
+        print(f"{options.project}: no hay nada generado que borrar en {docs_dir}")
+        return int(ExitCode.NO_CHANGES)
+
+    for warning in result.warnings:
+        print(f"  aviso: {warning}", file=sys.stderr)
+    for label, paths in (
+        ("documento", result.documents),
+        ("artefacto", result.artifacts),
+        ("estado", result.state),
+        ("ledger", result.ledger),
+    ):
+        for path in paths:
+            print(f"  {label}: {path}")
+
+    if not args.force:
+        print(
+            f"simulación: se borrarían {result.total} archivos. "
+            "Repetí con --force para borrarlos."
+        )
+        return int(ExitCode.OK)
+
+    removed, errors = apply_plan(result)
+    for error in errors:
+        print(f"  error: {error}", file=sys.stderr)
+    print(f"borrados {removed} archivos · la próxima corrida de `docu gen` parte de cero")
+    if getattr(args, "json", False):
+        print(jsonlib.dumps(result.to_dict(), ensure_ascii=False, indent=2))
+    return int(ExitCode.OK if not errors else ExitCode.INTERNAL_ERROR)
 
 
 def _run_prose(args: argparse.Namespace) -> int:

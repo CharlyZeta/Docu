@@ -501,3 +501,15 @@ verdad sigue siendo determinista. El modelo redacta; `docu` decide qué es publi
 
 **Medido:** ciclo completo verificado (aceptar, rechazar por cifra inventada, rechazar por hecho
 inexistente, juez por encima y por debajo del umbral). 19 tests nuevos.
+
+### 13.10 `docu clean`: volver a cero sin borrar de más
+Un comando de borrado mal hecho es peor que no tenerlo, así que:
+
+- **Simula por defecto**: `docu clean` lista lo que borraría; hay que repetir con `--force`.
+- **Sólo artefactos conocidos**: los `.md` de la raíz del directorio de salida y sus carpetas
+  `diagrams/`, `web/`, `pdf/`, `site/`. Nunca un borrado recursivo del directorio.
+- **No toca** la documentación escrita a mano, el perfil ni el ledger (salvo `--ledger`).
+- `--docs-only` / `--state-only` para borrar una mitad y dejar la otra; exit 10 si no había nada.
+
+Cierra el ciclo de vida completo: `init` → `gen` → `audit` → `status` → `clean` → `gen` desde cero.
+12 tests.

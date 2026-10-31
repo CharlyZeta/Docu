@@ -6,7 +6,7 @@
 ![Dependencias](https://img.shields.io/badge/dependencias-0-blue)
 ![Sin LLM](https://img.shields.io/badge/LLM-no%20requerido-purple)
 ![Auditoría](https://img.shields.io/badge/auditor%C3%ADa-determinista-brightgreen)
-![Tests](https://img.shields.io/badge/tests-575-brightgreen)
+![Tests](https://img.shields.io/badge/tests-587-brightgreen)
 
 **Documentación técnica que se puede verificar.** Cada afirmación del documento cita el archivo y la
 línea del código que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.
@@ -125,6 +125,19 @@ proyecto declara que no es fuente, no se documenta ni se cuenta.
 | 70 | error interno |
 
 `docu status --why` nombra los archivos que invalidaron la frescura.
+
+## Volver a cero
+
+`ash
+docu clean                 # lista lo que borraría (simulación)
+docu clean --force         # borra documentos, diagramas, web, PDFs y el estado
+docu clean --docs-only     # deja el manifest: la próxima generación es incremental
+docu clean --ledger        # borra también el historial de aprendizaje
+`
+
+Sólo borra lo que generó docu: los .md de la raíz del directorio de salida, sus carpetas de
+artefactos (diagrams/, web/, pdf/, site/) y su estado (.docu/manifest.json, web.json,
+prose.json). **No toca** la documentación escrita a mano, el perfil ni el ledger (salvo --ledger).
 
 ## Probar sin tocar tu proyecto
 
