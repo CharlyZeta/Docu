@@ -1,0 +1,61 @@
+name: pages
+
+# Publica la web de `docu site` en GitHub Pages. La web no se versiona: se genera en cada push, así
+# que siempre muestra la documentación del commit que la produjo. Si la auditoría baja del umbral, no
+# se publica: una web vieja o peor que el código es exactamente lo que el producto critica.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: generar la documentación y la web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar docu
+        run: pip install -e .
+
+      - name: Generar la documentación
+        run: docu gen --root . --out docs/generated
+
+      - name: Auditar antes de publicar
+        # Compuerta: si la nota baja de 90 no se publica nada.
+        run: docu audit --root . --out docs/generated --min-score 90
+
+      - name: Generar la web
+        run: docu site --root . --docs docs/generated --out _site
+
+      - name: Desactivar Jekyll
+        # Sin esto, Pages ignora los archivos que empiezan con guion bajo y reescribe el resultado.
+        run: touch _site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    name: publicar
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

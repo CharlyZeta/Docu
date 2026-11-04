@@ -24,3 +24,6 @@ eval/reports/*.md
 
 # Documentacion generada en local (se regenera con `docu gen`)
 out/
+
+# web publicada (se genera en CI)
+_site/
