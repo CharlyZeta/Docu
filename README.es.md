@@ -15,9 +15,13 @@
 ![Sin LLM](https://img.shields.io/badge/LLM-no%20requerido-purple)
 ![Auditoría](https://img.shields.io/badge/auditor%C3%ADa-determinista-brightgreen)
 ![Tests](https://img.shields.io/badge/tests-618-brightgreen)
+[![Docs](https://img.shields.io/badge/docs-live-brightgreen)](https://charlyzeta.github.io/Docu/)
 
 **Documentación técnica que se puede verificar.** Cada afirmación del documento enlaza el archivo y la
 línea que la sostiene. Si una cita no se puede abrir y confirmar, la afirmación no entra.
+
+**[Ejemplo vivo →](https://charlyzeta.github.io/Docu/)** — estas mismas páginas, generadas por docu
+desde este repositorio y publicadas en cada push por su propio CI.
 
 ---
 
