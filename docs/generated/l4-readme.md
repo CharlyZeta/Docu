@@ -1,6 +1,6 @@
 # docu — README de onboarding (Nivel 4)
 
-Generado por `docu 0.1.0` · fuente `sha256:628e7` · archivos analizados: 65 · afirmaciones: 1208 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:cbbe2` · archivos analizados: 66 · afirmaciones: 1213 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -30,7 +30,7 @@ Proyecto **docu** con 0 módulos, 15 paquetes, 97 tipos y 0 rutas HTTP documenta
 
 > El repositorio **ya documenta** esto. Se cita para no duplicarlo ni contradecirlo.
 
-**Updating an install** — Installed as a tool, `docu` is a **frozen copy** from the day you installed it: new commands do not appear on their own. [`README.md#L71-L84`]
+**Updating an install** — Installed as a tool, `docu` is a **frozen copy** from the day you installed it: new commands do not appear on their own. [`README.md#L75-L88`]
 
 ## Puesta en marcha
 
@@ -42,4 +42,4 @@ Proyecto **docu** con 0 módulos, 15 paquetes, 97 tipos y 0 rutas HTTP documenta
 
 ## Fuentes
 
-Documento generado leyendo 65 archivos del repositorio. Las secciones sin evidencia se declaran como huecos, no se rellenan.
+Documento generado leyendo 66 archivos del repositorio. Las secciones sin evidencia se declaran como huecos, no se rellenan.

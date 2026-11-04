@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:628e7` · archivos analizados: 65 · afirmaciones: 1208 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:cbbe2` · archivos analizados: 66 · afirmaciones: 1213 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -29,7 +29,7 @@ El repositorio deja constancia de 13 decisiones («Se oscurece apenas el arte pa
 | Declaración | Intención | Cita |
 |---|---|---|
 | `pyproject.toml (description)` | Verifiable technical documentation generated from source code: every claim cites the file and line that supports it. | `pyproject.toml#L8-L8` |
-| `docu` | Technical documentation you can verify. Every claim in the generated document links to the file and line that supports it. If a citation cannot be opened and confirmed, the claim does not ship. | `README.md#L19-L20` |
+| `docu` | Technical documentation you can verify. Every claim in the generated document links to the file and line that supports it. If a citation cannot be opened and confirmed, the claim does not ship. | `README.md#L20-L21` |
 | `docs/brand/make-cover.py (módulo)` | Portada del README a partir de un frame del video y del sistema de diseño de `docu`. | `docs/brand/make-cover.py#L1-L13` |
 | `_espaciado` | Texto con espaciado entre letras: el logotipo respira, el texto normal no. | `docs/brand/make-cover.py#L47-L52` |
 | `eval/__init__.py (módulo)` | Arnés de evaluación: golden sets y línea base de recuperación (F0). | `eval/__init__.py#L1-L1` |
@@ -91,21 +91,21 @@ El repositorio deja constancia de 13 decisiones («Se oscurece apenas el arte pa
 
 | Sección | Cita |
 |---|---|
-| `README.md › docu` | `README.md#L1-L24` |
-| `README.md › The problem, in two sentences` | `README.md#L24-L30` |
-| `README.md › What you get` | `README.md#L30-L45` |
-| `README.md › How it works` | `README.md#L45-L60` |
-| `README.md › Start in three commands` | `README.md#L60-L71` |
-| `README.md › Updating an install` | `README.md#L71-L84` |
-| `README.md › What makes it different` | `README.md#L84-L94` |
-| `README.md › The four levels` | `README.md#L94-L107` |
-| `README.md › Diagrams and website` | `README.md#L107-L117` |
-| `README.md › MCP server` | `README.md#L117-L130` |
-| `README.md › Corpus hygiene` | `README.md#L130-L136` |
-| `README.md › Exit codes` | `README.md#L136-L156` |
-| `README.md › Back to zero` | `README.md#L156-L171` |
-| `README.md › Try it without touching your project` | `README.md#L171-L181` |
-| `README.md › Declared limits` | `README.md#L181-L190` |
+| `README.md › docu` | `README.md#L1-L28` |
+| `README.md › The problem, in two sentences` | `README.md#L28-L34` |
+| `README.md › What you get` | `README.md#L34-L49` |
+| `README.md › How it works` | `README.md#L49-L64` |
+| `README.md › Start in three commands` | `README.md#L64-L75` |
+| `README.md › Updating an install` | `README.md#L75-L88` |
+| `README.md › What makes it different` | `README.md#L88-L98` |
+| `README.md › The four levels` | `README.md#L98-L111` |
+| `README.md › Diagrams and website` | `README.md#L111-L121` |
+| `README.md › MCP server` | `README.md#L121-L134` |
+| `README.md › Corpus hygiene` | `README.md#L134-L140` |
+| `README.md › Exit codes` | `README.md#L140-L160` |
+| `README.md › Back to zero` | `README.md#L160-L175` |
+| `README.md › Try it without touching your project` | `README.md#L175-L185` |
+| `README.md › Declared limits` | `README.md#L185-L194` |
 
 ## 4. Arquitectura: módulos y paquetes
 
@@ -1370,7 +1370,8 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 
 | Archivo | sha256 |
 |---|---|
-| `.github/workflows/docu.yml` | `1a164973b830` |
+| `.github/workflows/docu.yml` | `a319ef05bb5c` |
+| `.github/workflows/pages.yml` | `a62284389f13` |
 | `docs/brand/make-cover.py` | `bbe4d72bcbfa` |
 | `docu.profile.yaml` | `536bf0c2d80d` |
 | `eval/__init__.py` | `65861c4d8840` |
