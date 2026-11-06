@@ -54,7 +54,7 @@ class TokenizeTests(unittest.TestCase):
 
 class CorpusTests(unittest.TestCase):
     def setUp(self) -> None:
-        self._tmp = tempfile.TemporaryDirectory()
+        self._tmp = tempfile.TemporaryDirectory(prefix="docu-test-corpus-")
         self.root = Path(self._tmp.name)
         (self.root / "src").mkdir()
         (self.root / "src" / "Auth.java").write_text(
@@ -92,7 +92,7 @@ class CorpusTests(unittest.TestCase):
 
 class BM25Tests(unittest.TestCase):
     def setUp(self) -> None:
-        self._tmp = tempfile.TemporaryDirectory()
+        self._tmp = tempfile.TemporaryDirectory(prefix="docu-test-bm25-")
         root = Path(self._tmp.name)
         (root / "Auth.java").write_text("class Auth { generateToken verifyExpiration }", encoding="utf-8")
         (root / "Cors.java").write_text("class Cors { allowedOrigins allowCredentials }", encoding="utf-8")
@@ -185,12 +185,15 @@ class QueryRoutingTests(unittest.TestCase):
             "SecurityErrorWriter json error",
             "bss.security.cache.enabled",
             "LEEWAY_SECONDS 60",
-            "application.yml server port",
             "@PostMapping /api/auth/refresh",
             "spring-boot-starter-parent",
         ):
             with self.subTest(query=query):
                 self.assertTrue(_looks_like_identifier(query))
+
+    def test_filename_with_natural_terms_is_not_identifier(self) -> None:
+        # F-12: "application.yml server port" es una pregunta humana, no un identifier
+        self.assertFalse(_looks_like_identifier("application.yml server port"))
 
     def test_human_questions_are_not_identifiers(self) -> None:
         for query in (
@@ -229,9 +232,147 @@ class DiversityTests(unittest.TestCase):
         self.assertEqual(len(_diversity(ordered, k=3, cap=5, by_key=by_key)), 3)
 
 
+class GoldenValidationTests(unittest.TestCase):
+    """Tests para F-06: validacion del golden set en carga."""
+
+    def test_optional_duplicate_of_primary_is_rejected(self) -> None:
+        """C-07: una opcion no puede duplicar un path primario."""
+        from eval.harness import _validate_golden_set
+        from eval.harness import Case, Expected
+
+        case = Case(
+            id="C-07",
+            category="code",
+            question="test",
+            expected=(
+                Expected(path="A.java"),
+                Expected(path="B.java", optional=True),
+                Expected(path="B.java"),  # duplica opcional como primaria -> error
+            ),
+        )
+        errors = _validate_golden_set([case])
+        self.assertTrue(any("duplicada" in e for e in errors))
+
+    def test_optional_secondary_not_contaminating_is_ok(self) -> None:
+        """Un optional que NO duplica un primario es valido."""
+        from eval.harness import _validate_golden_set
+        from eval.harness import Case, Expected
+
+        case = Case(
+            id="C-07",
+            category="code",
+            question="test",
+            expected=(
+                Expected(path="A.java"),
+                Expected(path="B.java", optional=True),
+            ),
+        )
+        errors = _validate_golden_set([case])
+        self.assertEqual(errors, [])
+
+    def test_duplicate_required_paths_is_rejected(self) -> None:
+        """Dos primarios iguales son invalidos."""
+        from eval.harness import _validate_golden_set
+        from eval.harness import Case, Expected
+
+        case = Case(
+            id="T-DUP",
+            category="code",
+            question="test",
+            expected=(
+                Expected(path="A.java"),
+                Expected(path="A.java"),
+            ),
+        )
+        errors = _validate_golden_set([case])
+        self.assertTrue(any("duplicada" in e for e in errors))
+
+    def test_empty_case_is_rejected(self) -> None:
+        from eval.harness import _validate_case_id
+        from eval.harness import Case
+
+        case = Case(id="", category="code", question="", expected=())
+        errors = _validate_case_id(case)
+        self.assertTrue(errors)
+
+
+class ThresholdsByModeTests(unittest.TestCase):
+    """Tests para thresholds diferenciados por modo de consulta."""
+
+    def test_recall_thresholds_by_mode(self) -> None:
+        from eval.harness import RECALL_THRESHOLDS
+
+        self.assertGreaterEqual(RECALL_THRESHOLDS["identifier"], RECALL_THRESHOLDS["human"])
+        self.assertEqual(RECALL_THRESHOLDS["identifier"], 0.85)
+        self.assertEqual(RECALL_THRESHOLDS["human"], 0.70)
+
+    def test_mrr_thresholds_by_mode(self) -> None:
+        from eval.harness import MRR_THRESHOLDS
+
+        self.assertGreaterEqual(MRR_THRESHOLDS["identifier"], MRR_THRESHOLDS["human"])
+
+
+class QueryRoutingFixedTests(unittest.TestCase):
+    """Tests para F-12: _looks_like_identifier no debe confundir consultas humanas con identificadores."""
+
+    def test_application_yml_server_port_is_not_identifier(self) -> None:
+        from eval.harness import _looks_like_identifier
+        self.assertFalse(_looks_like_identifier("application.yml server port"))
+
+    def test_identifier_with_dot_is_identifier(self) -> None:
+        from eval.harness import _looks_like_identifier
+        self.assertTrue(_looks_like_identifier("SecurityErrorWriter.json"))
+
+    def test_snake_case_is_identifier(self) -> None:
+        from eval.harness import _looks_like_identifier
+        self.assertTrue(_looks_like_identifier("bss_security_cache_enabled"))
+
+    def test_camel_case_is_identifier(self) -> None:
+        from eval.harness import _looks_like_identifier
+        self.assertTrue(_looks_like_identifier("generateToken"))
+
+    def test_human_spanish_question_is_not_identifier(self) -> None:
+        from eval.harness import _looks_like_identifier
+        self.assertFalse(_looks_like_identifier("¿Dónde se define la cadena de filtros de seguridad?"))
+
+    def test_short_human_query_not_identifier(self) -> None:
+        from eval.harness import _looks_like_identifier
+        self.assertFalse(_looks_like_identifier("¿Qué puerto usa la app?"))
+
+
+class ReportThresholdTests(unittest.TestCase):
+    """Tests para verificar que Report incluye thresholds y modos."""
+
+    def test_report_has_thresholds_by_mode(self) -> None:
+        from eval.harness import Report, CaseResult
+
+        report = Report(
+            project="demo",
+            k=10,
+            files=2,
+            segments=3,
+            results=[self._result()],
+        )
+        d = report.to_dict()
+        self.assertIn("thresholds_by_mode", d)
+        self.assertIn("identifier", d["thresholds_by_mode"])
+        self.assertIn("human", d["thresholds_by_mode"])
+
+    def _result(self, recall: float = 1.0, hit: bool = True, mrr: float = 1.0, mode: str = "identifier") -> CaseResult:
+        return CaseResult(
+            case_id="C", category="code", recall=recall, hit=hit, mrr=mrr,
+            line_hit=None, symbol_hit=None, query_mode=mode, passed=True,
+            retrieved=(), elapsed_ms=1.0,
+        )
+
+
 class ReportTests(unittest.TestCase):
-    def _result(self, recall: float, hit: bool, mrr: float) -> CaseResult:
-        return CaseResult("C", "code", recall, hit, mrr, None, (), 1.0)
+    def _result(self, recall: float = 1.0, hit: bool = True, mrr: float = 1.0) -> CaseResult:
+        return CaseResult(
+            case_id="C", category="code", recall=recall, hit=hit, mrr=mrr,
+            line_hit=None, symbol_hit=None, query_mode="identifier", passed=True,
+            retrieved=(), elapsed_ms=1.0,
+        )
 
     def test_aggregates(self) -> None:
         report = Report(
