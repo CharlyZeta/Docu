@@ -14,7 +14,7 @@
 ![Dependencies](https://img.shields.io/badge/dependencies-0-blue)
 ![No LLM](https://img.shields.io/badge/LLM-not%20required-purple)
 ![Audit](https://img.shields.io/badge/audit-deterministic-brightgreen)
-![Tests](https://img.shields.io/badge/tests-632-brightgreen)
+![Tests](https://img.shields.io/badge/tests-634-brightgreen)
 [![Docs](https://img.shields.io/badge/docs-live-brightgreen)](https://charlyzeta.github.io/Docu/)
 
 **Technical documentation you can verify.** Every claim in the generated document links to the file
@@ -190,6 +190,26 @@ A full recipe to hand to an agent: [`PROBAR-CON-OTRO-AGENTE.md`](PROBAR-CON-OTRO
 - **It does not invent foreign keys**: the ERD relates by declared field type.
 - **It does not cover IaC** (Terraform/CloudFormation) or sequence diagrams.
 - **Three languages**: Java, Python and TypeScript/JS; anything else is declared unsupported.
+
+## Línea de comandos
+
+`docu` usa `argparse` (stdlib), por lo que `docu --help` funciona en cualquier máquina sin instalar
+nada. Typer (`>=0.12`) está declarado como dependencia opcional `[cli]` para futuras mejoras
+ergonómicas, pero el CLI actual no lo importa; no instales typer esperando funciones de typer que
+no existen todavía.
+
+```bash
+docu init --root . --apply   # detecta el stack y escribe el perfil
+docu gen --root .            # genera los niveles con sus citas
+docu status --root .         # frescura, cobertura y huecos
+docu status --why --root .   # nombres los archivos que invalidaron la frescura
+docu status --languages      # lenguajes soportados y estado de adapters
+docu audit --root .          # cinco comprobaciones, nota ponderada
+```
+
+Usá `docu --version` para saber desde dónde ejecuta el binario (ruta + cantidad de comandos). Si un
+comando "no existe", tu copia instalada es anterior a este repositorio; actualizá con
+`uv tool install --force <ruta-del-repo>` o `pipx reinstall docu`.
 
 ## Supported languages
 

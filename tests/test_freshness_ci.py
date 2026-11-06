@@ -300,6 +300,31 @@ class CliTests(unittest.TestCase):
         self.assertIn("Archivos actualizados", content)
         self.assertIn("PR body", output)
 
+    def test_ci_check_why_lists_files(self) -> None:
+        """F9: `--why` en `ci check` nombra los archivos que invalidaron la frescura.
+
+        Antes, `docu ci check --why` rechazaba la bandera (no estaba en el subparser).
+        Ahora comparte la lógica de `status --why`: lista agregados, modificados, eliminados.
+        """
+        run_cli("gen", "--root", str(self.root), "--out", self.out, "--project", "demo")
+        # Modificar un archivo fuente para que el hash cambie y quede stale.
+        (self.root / "src" / "main" / "java" / "Api.java").write_text(
+            JAVA + "\n// modificado por el test\n", encoding="utf-8"
+        )
+        code, output = run_cli("ci", "check", "--root", str(self.root), "--why")
+        self.assertEqual(code, int(ExitCode.NEEDS_REVIEW))
+        self.assertIn("modificado", output)
+        self.assertIn("Api.java", output)
+
+    def test_status_languages(self) -> None:
+        """F9: `docu status --languages` muestra los lenguajes soportados."""
+        code, output = run_cli("status", "--languages", "--root", str(self.root))
+        self.assertEqual(code, int(ExitCode.OK))
+        # Los nombres vienen del registry: minúsculas (java, python, typescript).
+        lowered = output.lower()
+        for lang in ("java", "python", "typescript"):
+            self.assertIn(lang, lowered)
+
 
 class HashHygieneTests(unittest.TestCase):
     def test_source_hash_is_truncated_and_prefixed(self) -> None:

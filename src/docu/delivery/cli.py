@@ -138,6 +138,11 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="lista los archivos que invalidaron la frescura (agregados, modificados, eliminados)",
     )
+    p_status.add_argument(
+        "--languages",
+        action="store_true",
+        help="muestra los lenguajes soportados por docu (usado por README)",
+    )
 
     p_ci = sub.add_parser("ci", help="integraciones de CI (validar y proponer PR)")
     ci_sub = p_ci.add_subparsers(dest="ci_command", required=True)
@@ -146,6 +151,16 @@ def _build_parser() -> argparse.ArgumentParser:
     p_check.add_argument("--profile", default=argparse.SUPPRESS)
     p_check.add_argument("--manifest", default=None)
     p_check.add_argument("--json", action="store_true")
+    p_check.add_argument(
+        "--why",
+        action="store_true",
+        help="lista los archivos que invalidaron la frescura (agregados, modificados, eliminados)",
+    )
+    p_check.add_argument(
+        "--languages",
+        action="store_true",
+        help="muestra los lenguajes soportados por docu (usado por README)",
+    )
     p_regen = ci_sub.add_parser("regen", help="regenera lo stale y prepara el PR")
     p_regen.add_argument("--root", default=".")
     p_regen.add_argument("--profile", default=argparse.SUPPRESS)
@@ -1143,6 +1158,15 @@ def _run_status(
     from docu.core.contracts import DocState
     from docu.generate.pipeline import inspect
 
+    # F9: --languages short-circuits and prints supported languages
+    if getattr(args, "languages", False):
+        from docu.adapters.langs.registry import supported_languages
+
+        print("Lenguajes soportados:")
+        for lang in supported_languages():
+            print(f"  {lang}")
+        return int(ExitCode.OK)
+
     root = Path(args.root).resolve()
     options = _resolve(args, root)
     manifest, states, hashes = inspect(
@@ -1202,7 +1226,7 @@ def _run_status(
         if not quiet_ok:
             print("todo fresco: no hay nada que regenerar")
         return int(ExitCode.OK)
-    if not quiet_ok:
+    if not quiet_ok or getattr(args, "why", False):
         if missing:
             print(
                 "faltan documentos que el manifest declara (borrados o movidos): "
