@@ -11,6 +11,7 @@ from typing import Mapping, Sequence
 
 from docu.generate.docs_evidence import (
     PREREQUISITE_HINTS,
+    PURPOSE_HINTS,
     SETUP_HINTS,
     DocSection,
     find as find_docs,
@@ -718,6 +719,7 @@ def render_l3(
     sources: Mapping[str, str],
     meta: Mapping[str, str],
     diagrams: Sequence[object] = (),
+    docs_sections: Sequence[DocSection] = (),
 ) -> str:
     """Guia de uso para personas sin perfil tecnico: acciones, ajustes y avisos."""
     lines = _header(project, "Guía de uso (Nivel 3)", meta, facts, plain=True)
@@ -741,7 +743,19 @@ def render_l3(
     ]
 
     lines += ["## Preguntas frecuentes", ""]
-    lines += [NO_EVIDENCE, ""]
+    # F10: rellenar con secciones del README que respondan PURPOSE_HINTS. No va un subtítulo `##`
+    # dentro: el lector de L3 no necesita otra cabecera, y la cita debe ir en el mismo bloque.
+    matched = find_docs(docs_sections, PURPOSE_HINTS, limit=3)
+    if matched:
+        lines += [
+            "> El proyecto **ya documenta** esto. Se cita para no duplicarlo ni contradecirlo.",
+            "",
+        ]
+        for section in matched:
+            body = f" — {section.body[:300]}" if section.body else ""
+            lines += [f"- **{section.title}**{body} [`{section.citation}`]", ""]
+    else:
+        lines += [NO_EVIDENCE, ""]
 
     lines += ["## Aviso", ""]
     lines += [

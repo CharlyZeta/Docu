@@ -14,7 +14,7 @@
 ![Dependencies](https://img.shields.io/badge/dependencies-0-blue)
 ![No LLM](https://img.shields.io/badge/LLM-not%20required-purple)
 ![Audit](https://img.shields.io/badge/audit-deterministic-brightgreen)
-![Tests](https://img.shields.io/badge/tests-634-brightgreen)
+![Tests](https://img.shields.io/badge/tests-636-brightgreen)
 [![Docs](https://img.shields.io/badge/docs-live-brightgreen)](https://charlyzeta.github.io/Docu/)
 
 **Technical documentation you can verify.** Every claim in the generated document links to the file

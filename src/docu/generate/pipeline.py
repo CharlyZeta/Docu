@@ -38,7 +38,7 @@ from docu.generate.facts import (
     yaml_facts,
 )
 from docu.generate.diagrams import build_all, write_diagrams
-from docu.generate.markdown import RENDERERS
+from docu.generate.markdown import RENDERERS, _doc_sections
 from docu.generate.ops import (
     compose_facts,
     dockerfile_facts,
@@ -688,7 +688,10 @@ def generate(
         if gate.outcome is GateOutcome.ABORT:
             continue
         renderer = RENDERERS[level]
-        content = renderer(name, facts, sources, meta, diagrams=diagrams)
+        # F10: el renderer de L3 llena su FAQ con las secciones del README ya escritas (doc_section
+        # facts); sin esto declara huecos que la documentación existente responde.
+        extra = {"docs_sections": _doc_sections(facts)} if level == "l3" else {}
+        content = renderer(name, facts, sources, meta, diagrams=diagrams, **extra)
         filename = LEVEL_FILENAMES.get(level, f"{level}.md")
         destination = out_path / filename
         if dry_run:
