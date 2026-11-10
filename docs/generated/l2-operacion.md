@@ -1,6 +1,6 @@
 # docu — Operación y despliegue (Nivel 2)
 
-Generado por `docu 0.1.0` · fuente `sha256:f73d3` · archivos analizados: 67 · afirmaciones: 1230 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:0df76` · archivos analizados: 67 · afirmaciones: 1230 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -32,9 +32,9 @@ Generado por `docu 0.1.0` · fuente `sha256:f73d3` · archivos analizados: 67 ·
 
 | Disparador | Workflow | Cita |
 |---|---|---|
-| `push` | dispara ci | `.github/workflows/ci.yml#L10-L10` |
-| `pull_request` | dispara ci | `.github/workflows/ci.yml#L12-L12` |
-| `workflow_dispatch` | dispara ci | `.github/workflows/ci.yml#L14-L14` |
+| `push` | dispara ci | `.github/workflows/ci.yml#L13-L13` |
+| `pull_request` | dispara ci | `.github/workflows/ci.yml#L14-L14` |
+| `workflow_dispatch` | dispara ci | `.github/workflows/ci.yml#L16-L16` |
 | `pull_request` | dispara docu | `.github/workflows/docu.yml#L4-L4` |
 | `push` | dispara docu | `.github/workflows/docu.yml#L6-L6` |
 | `workflow_dispatch` | dispara docu | `.github/workflows/docu.yml#L8-L8` |
@@ -43,9 +43,9 @@ Generado por `docu 0.1.0` · fuente `sha256:f73d3` · archivos analizados: 67 ·
 
 | Job | Workflow | Cita |
 |---|---|---|
-| `test` | job de ci | `.github/workflows/ci.yml#L24-L24` |
-| `lint` | job de ci | `.github/workflows/ci.yml#L62-L62` |
-| `packaging` | job de ci | `.github/workflows/ci.yml#L81-L81` |
+| `test` | job de ci | `.github/workflows/ci.yml#L26-L26` |
+| `lint` | job de ci | `.github/workflows/ci.yml#L64-L64` |
+| `packaging` | job de ci | `.github/workflows/ci.yml#L83-L83` |
 | `check` | job de docu | `.github/workflows/docu.yml#L21-L21` |
 | `regen` | job de docu | `.github/workflows/docu.yml#L42-L42` |
 | `build` | job de pages | `.github/workflows/pages.yml#L21-L21` |
