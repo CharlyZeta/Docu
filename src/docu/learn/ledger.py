@@ -8,10 +8,9 @@ aquí. El ledger es del proyecto, no del fabricante: vive en `.docu/ledger.jsonl
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
-from datetime import datetime, timezone
+from collections.abc import Iterable, Mapping, Sequence
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Iterable, Mapping, Sequence
 
 from docu.core.contracts import GateDecision, GateOutcome, Metrics, Mode, RunRecord, utcnow
 
@@ -143,7 +142,7 @@ def parse_timestamp(value: object) -> datetime | None:
         parsed = datetime.fromisoformat(value)
     except ValueError:
         return None
-    return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+    return parsed if parsed.tzinfo else parsed.replace(tzinfo=UTC)
 
 
 __all__ = [

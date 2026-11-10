@@ -12,9 +12,9 @@ hueco sigue declarado. Docu no copia prosa: enlaza y cita el párrafo.
 from __future__ import annotations
 
 import re
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping, Sequence
 
 from docu.generate.facts import Fact
 
@@ -163,11 +163,11 @@ def find(sections: Sequence[DocSection], hints: Sequence[str], limit: int = 3) -
 __all__ = [
     "DOC_DIRS",
     "DOC_FILES",
-    "DocSection",
     "MAX_SECTIONS",
     "PREREQUISITE_HINTS",
     "PURPOSE_HINTS",
     "SETUP_HINTS",
+    "DocSection",
     "discover",
     "find",
     "parse_sections",

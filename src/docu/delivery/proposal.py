@@ -8,14 +8,14 @@ mismo repositorio lo dejó a la vista.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 from docu.adapters.langs.registry import adapter_for
 from docu.core.profile import DEFAULT_EXCLUDE, LEVELS, Profile
 from docu.generate.facts import symbol_facts
-from docu.generate.pipeline import _discover, collect_facts, _read
 from docu.generate.ops import is_compose_file, is_docker_file, is_env_file, is_workflow_file
+from docu.generate.pipeline import _discover, _read, collect_facts
 from docu.retrieve.glossary import DEFAULT_GLOSSARY
 
 #: Nombres de framework que, si aparecen en las dependencias, cambian el perfil propuesto.
@@ -65,7 +65,7 @@ def propose(root: Path, *, project: str | None = None) -> Profile:
     """Perfil sugerido a partir de lo detectado, listo para que un humano lo corrija."""
     root = Path(root)
     detection = detect(root)
-    languages: Sequence[str] = detection["languages"]  # type: ignore[assignment]
+    detection["languages"]  # type: ignore[assignment]
     frameworks: Sequence[str] = detection["frameworks"]  # type: ignore[assignment]
     routes: int = detection["routes"]  # type: ignore[assignment]
 

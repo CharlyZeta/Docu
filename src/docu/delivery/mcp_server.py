@@ -11,14 +11,15 @@ from __future__ import annotations
 
 import json
 import sys
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any
 
 from docu import __version__
 from docu.conformance.model import load_architecture
-from docu.generate.pipeline import inspect
 from docu.generate.markdown import NO_EVIDENCE_MARKER
+from docu.generate.pipeline import inspect
 from docu.retrieve.search import DocIndex
 
 PROTOCOL_VERSION = "2024-11-05"
@@ -187,7 +188,7 @@ class ProjectRef:
         return self.root.name
 
 
-def _documented_files(ref: "ProjectRef") -> int:
+def _documented_files(ref: ProjectRef) -> int:
     """Archivos que el manual declaró haber analizado (inventario del manifest)."""
     from docu.generate.pipeline import manifest_file
     from docu.index.manifest import Manifest
@@ -527,8 +528,8 @@ class McpServer:
     def _tool_list_unsupported(self, arguments: Mapping[str, Any]) -> dict[str, Any]:
         """Lo que el documento declara como no cubierto: lenguajes, secciones y fuentes."""
         from docu.generate.facts import unsupported as uncitable
-        from docu.generate.pipeline import collect_facts, unsupported_sources
         from docu.generate.markdown import NO_EVIDENCE_MARKER
+        from docu.generate.pipeline import collect_facts, unsupported_sources
 
         ref = self.resolve(arguments)
         facts, _sources = collect_facts(ref.root)
@@ -683,11 +684,11 @@ def build_server(
 
 
 __all__ = [
-    "McpServer",
     "PROTOCOL_VERSION",
-    "ProjectRef",
     "READ_ONLY_TOOLS",
     "TOOL_DEFINITIONS",
+    "McpServer",
+    "ProjectRef",
     "ToolError",
     "build_server",
     "discover_workspace",

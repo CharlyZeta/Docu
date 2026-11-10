@@ -7,13 +7,15 @@ sabe: el segundo se puede corregir.
 
 from __future__ import annotations
 
-from typing import Mapping, Sequence
+from collections.abc import Mapping, Sequence
 
 from docu.generate.docs_evidence import (
     PREREQUISITE_HINTS,
     PURPOSE_HINTS,
     SETUP_HINTS,
     DocSection,
+)
+from docu.generate.docs_evidence import (
     find as find_docs,
 )
 from docu.generate.facts import Fact
@@ -112,24 +114,24 @@ def _header(
         return [
             f"# {project} — {title}",
             "",
-            f"Generado por `docu {meta.get('version', '0.1.0')}` a partir de las acciones y la "
-            "configuración vigentes.",
+            (f"Generado por `docu {meta.get('version', '0.1.0')}` a partir de las acciones y la "
+            "configuración vigentes."),
             "",
             "> Cada dato de esta guía indica de dónde sale. Lo que no está declarado no se inventa.",
             "",
         ]
-    counts = _counts(facts)
+    _counts(facts)
     stamp = f" el {meta['generated_at']}" if meta.get("generated_at") else ""
     return [
         f"# {project} — {title}",
         "",
-        f"Generado por `docu {meta.get('version', '0.1.0')}`{stamp} · "
+        (f"Generado por `docu {meta.get('version', '0.1.0')}`{stamp} · "
         f"fuente `{meta.get('digest', '—')}` · "
         f"archivos analizados: {meta.get('sources', '0')} · "
-        f"afirmaciones: {len(facts)} · sin cita: {meta.get('unsupported', '0')}",
+        f"afirmaciones: {len(facts)} · sin cita: {meta.get('unsupported', '0')}"),
         "",
-        "> Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del "
-        "repositorio. No hay texto generado sin evidencia.",
+        ("> Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del "
+        "repositorio. No hay texto generado sin evidencia."),
         "",
     ]
 
@@ -154,9 +156,9 @@ def _diagrams_block(diagrams: Sequence[object], facts: Sequence[Fact]) -> list[s
         blocks += [
             NO_EVIDENCE,
             "",
-            "> No se generan diagramas de secuencia: el grafo de llamadas no resuelve despacho "
+            ("> No se generan diagramas de secuencia: el grafo de llamadas no resuelve despacho "
             "dinámico (inyección de dependencias, interfaces), y un diagrama de secuencia inventado "
-            "sería peor que su ausencia.",
+            "sería peor que su ausencia."),
             "",
         ]
     return blocks
@@ -180,8 +182,8 @@ def render_l1(
     intro = str(meta.get("intro") or "").strip()
     if intro:
         lines += [
-            "> Introducción compuesta con hechos citados: cada frase sale de un conteo o de la propia "
-            "documentación del proyecto. No es prosa libre.",
+            ("> Introducción compuesta con hechos citados: cada frase sale de un conteo o de la propia "
+            "documentación del proyecto. No es prosa libre."),
             "",
             intro,
             "",
@@ -198,8 +200,8 @@ def render_l1(
         lines += [f"_({'; '.join(details)} · validada por docu: ninguna cifra nueva)_", ""]
     elif meta.get("prose_error"):
         lines += [
-            f"> La prosa delegada **no se incluyó**: {meta['prose_error']}. "
-            "Se regenera con `docu prose --apply`.",
+            (f"> La prosa delegada **no se incluyó**: {meta['prose_error']}. "
+            "Se regenera con `docu prose --apply`."),
             "",
         ]
 
@@ -218,8 +220,8 @@ def render_l1(
     decisions = _dedupe(_by_kind(facts, "decision"))
     if intents:
         lines += [
-            "**Qué dice el proyecto que es.** Extraído de sus docstrings y de su documentación; la "
-            "columna *Cita* lleva al párrafo exacto.",
+            ("**Qué dice el proyecto que es.** Extraído de sus docstrings y de su documentación; la "
+            "columna *Cita* lleva al párrafo exacto."),
             "",
             _table(
                 ["Declaración", "Intención", "Cita"],
@@ -232,8 +234,8 @@ def render_l1(
         ]
     if decisions:
         lines += [
-            "**Decisiones registradas.** De ADRs, contratos y comentarios que explican un porqué: el "
-            "lugar donde el equipo dejó escrito *por qué* algo es así.",
+            ("**Decisiones registradas.** De ADRs, contratos y comentarios que explican un porqué: el "
+            "lugar donde el equipo dejó escrito *por qué* algo es así."),
             "",
             _table(
                 ["Decisión", "Estado y contexto", "Cita"],
@@ -248,16 +250,16 @@ def render_l1(
         lines += [
             NO_EVIDENCE,
             "",
-            "> El proyecto no declara su intención en docstrings, README ni ADRs, ni deja comentarios "
-            "que expliquen un porqué. Esta sección no la inventa.",
+            ("> El proyecto no declara su intención en docstrings, README ni ADRs, ni deja comentarios "
+            "que expliquen un porqué. Esta sección no la inventa."),
             "",
         ]
 
     sections = _dedupe(_by_kind(facts, "doc_section"))[:15]
     if sections:
         lines += [
-            "**Documentación existente del repositorio.** Secciones que el equipo ya escribió; se "
-            "citan para que este manual no las duplique ni las contradiga.",
+            ("**Documentación existente del repositorio.** Secciones que el equipo ya escribió; se "
+            "citan para que este manual no las duplique ni las contradiga."),
             "",
             _table(
                 ["Sección", "Cita"],
@@ -288,8 +290,8 @@ def render_l1(
         lines += [NO_EVIDENCE, ""]
     if package_rows:
         lines += [
-            "> Las unidades por carpeta sólo se listan con **3 archivos o más**: por debajo de ese "
-            "umbral no son una unidad de arquitectura y se omiten a propósito, no por descuido.",
+            ("> Las unidades por carpeta sólo se listan con **3 archivos o más**: por debajo de ese "
+            "umbral no son una unidad de arquitectura y se omiten a propósito, no por descuido."),
             "",
         ]
 
@@ -368,8 +370,8 @@ def render_l1(
     fields = _by_kind(facts, "field")
     if fields:
         lines += [
-            "> Campos **declarados** en el código. El tipo es el que declara el lenguaje, no una "
-            "inferencia: si aparece «sin tipo declarado», el campo no lo tiene.",
+            ("> Campos **declarados** en el código. El tipo es el que declara el lenguaje, no una "
+            "inferencia: si aparece «sin tipo declarado», el campo no lo tiene."),
             "",
             _table(
                 ["Entidad", "Campo", "Tipo declarado", "Anotaciones", "Cita"],
@@ -407,9 +409,9 @@ def render_l1(
     pdfs = _by_kind(facts, "pdf_document")
     web = _by_kind(facts, "web_source")
     lines += [
-        "> Las citas externas apuntan a una **copia congelada** del texto, no a la página viva: una URL "
+        ("> Las citas externas apuntan a una **copia congelada** del texto, no a la página viva: una URL "
         "cambia y una cita que no se puede abrir no sirve. La unidad de cita de un PDF es la página; "
-        "la de una web, la línea del snapshot.",
+        "la de una web, la línea del snapshot."),
         "",
     ]
     if pdfs:
@@ -430,40 +432,40 @@ def render_l1(
         ]
     if not pdfs and not web:
         lines += [
-            "No se encontraron PDFs ni fuentes web en este proyecto. Cuando existan, se listan aquí "
-            "con su estado de captura y su cita verificable.",
+            ("No se encontraron PDFs ni fuentes web en este proyecto. Cuando existan, se listan aquí "
+            "con su estado de captura y su cita verificable."),
             "",
         ]
 
     lines += ["## 13. Alcance y límites", ""]
     lines += [
-        "Secciones aplicables a este proyecto (y por tanto exigibles en la compuerta): "
-        f"**{meta.get('applicable', '—') or '—'}**.",
+        ("Secciones aplicables a este proyecto (y por tanto exigibles en la compuerta): "
+        f"**{meta.get('applicable', '—') or '—'}**."),
         "",
-        "Secciones **no aplicables** —no existen en este proyecto y no se penalizan—: "
-        f"{meta.get('not_applicable', '—') or '—'}.",
+        ("Secciones **no aplicables** —no existen en este proyecto y no se penalizan—: "
+        f"{meta.get('not_applicable', '—') or '—'}."),
         "",
     ]
     if meta.get("unsupported_languages"):
         lines += [
-            f"**Lenguajes no soportados** presentes en el proyecto: "
+            (f"**Lenguajes no soportados** presentes en el proyecto: "
             f"{meta['unsupported_languages']}. Esos archivos no se documentan: el generador los "
-            "declara en lugar de ignorarlos.",
+            "declara en lugar de ignorarlos."),
             "",
         ]
     lines += [
-        "No cubierto todavía por el generador: diagramas de secuencia (el grafo de llamadas no "
+        ("No cubierto todavía por el generador: diagramas de secuencia (el grafo de llamadas no "
         "resuelve despacho dinámico), contratos OpenAPI si no están declarados, e infraestructura "
         "provisionada (Terraform/CloudFormation). Los diagramas de "
         "componentes, clases y flujo de API están en la sección 3; la operación y el despliegue, en "
-        "el documento de Nivel 2.",
+        "el documento de Nivel 2."),
         "",
     ]
 
     lines += ["## 14. Trazabilidad", ""]
     lines += [
-        "Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos fuente y su "
-        "huella son:",
+        ("Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos fuente y su "
+        "huella son:"),
         "",
         _table(
             ["Archivo", "sha256"],
@@ -490,9 +492,9 @@ def render_l4(
 
     lines += ["## Qué es", ""]
     lines += [
-        f"Proyecto **{project}** con {counts.get('module', 0)} módulos, "
+        (f"Proyecto **{project}** con {counts.get('module', 0)} módulos, "
         f"{counts.get('package', 0)} paquetes, "
-        f"{counts.get('type', 0)} tipos y {counts.get('route', 0)} rutas HTTP documentadas.",
+        f"{counts.get('type', 0)} tipos y {counts.get('route', 0)} rutas HTTP documentadas."),
         "",
     ]
     prose = str(meta.get("prose") or "").strip()
@@ -564,8 +566,8 @@ def render_l4(
 
     lines += ["## Fuentes", ""]
     lines += [
-        f"Documento generado leyendo {len(sources)} archivos del repositorio. "
-        "Las secciones sin evidencia se declaran como huecos, no se rellenan.",
+        (f"Documento generado leyendo {len(sources)} archivos del repositorio. "
+        "Las secciones sin evidencia se declaran como huecos, no se rellenan."),
         "",
     ]
     return "\n".join(lines)
@@ -627,8 +629,8 @@ def render_l2(
     ]
     if env_rows:
         lines += [
-            "> Sólo se documentan los **nombres** de las variables. Los valores de los archivos de "
-            "ejemplo no se copian, y un `.env` real nunca se lee.",
+            ("> Sólo se documentan los **nombres** de las variables. Los valores de los archivos de "
+            "ejemplo no se copian, y un `.env` real nunca se lee."),
             "",
             _table(["Variable", "Archivo de ejemplo", "Cita"], env_rows),
             "",
@@ -702,12 +704,12 @@ def render_l2(
 
     lines += ["## 6. Alcance y límites", ""]
     lines += [
-        f"- Afirmaciones documentadas: **{len(facts)}** · entorno {counts.get('env_var', 0)}, "
+        (f"- Afirmaciones documentadas: **{len(facts)}** · entorno {counts.get('env_var', 0)}, "
         f"puertos {counts.get('port', 0)}, servicios {counts.get('service', 0)}, "
-        f"comandos {counts.get('command', 0)}, jobs de CI {counts.get('ci_job', 0)}",
+        f"comandos {counts.get('command', 0)}, jobs de CI {counts.get('ci_job', 0)}"),
         "- **No** se documentan valores de secretos ni el contenido de un `.env` real.",
-        "- **No** se describe infraestructura provisionada que no esté declarada en el repositorio: "
-        "Terraform y CloudFormation aún no se leen.",
+        ("- **No** se describe infraestructura provisionada que no esté declarada en el repositorio: "
+        "Terraform y CloudFormation aún no se leen."),
         "",
     ]
     return "\n".join(lines)
@@ -759,9 +761,9 @@ def render_l3(
 
     lines += ["## Aviso", ""]
     lines += [
-        "Esta guía se construye a partir de lo que el sistema expone hoy y de su configuración actual. "
+        ("Esta guía se construye a partir de lo que el sistema expone hoy y de su configuración actual. "
         "No sustituye la validación con el equipo responsable del negocio: si una acción no aparece "
-        "aquí, es que no está declarada en el sistema, no que no exista.",
+        "aquí, es que no está declarada en el sistema, no que no exista."),
         "",
     ]
     return "\n".join(lines)

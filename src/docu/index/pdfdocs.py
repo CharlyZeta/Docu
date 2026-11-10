@@ -7,9 +7,9 @@ documentación para que sea legible sin herramientas.
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping, Sequence
 
 from docu.adapters.sources.pdf import PdfText, extract, pages_text
 from docu.core.contracts import sha256_of
@@ -64,7 +64,8 @@ def discover_pdfs(
         _is_test_path,
         _path_matches,
     )
-    from docu.index.ignore import is_ignored, load as load_ignore
+    from docu.index.ignore import is_ignored
+    from docu.index.ignore import load as load_ignore
 
     root_path = Path(root)
     patterns = _effective_exclude(exclude)

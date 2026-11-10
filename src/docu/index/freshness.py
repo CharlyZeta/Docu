@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-from docu.core.contracts import DocState, FreshnessRecord, utcnow, sha256_of
+from docu.core.contracts import DocState, FreshnessRecord, sha256_of, utcnow
 
 #: Orden canonico: cambiarlo invalida todos los hashes almacenados (a proposito y de golpe).
 HASH_COMPONENTS: tuple[str, ...] = (

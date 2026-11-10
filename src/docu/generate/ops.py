@@ -14,9 +14,9 @@ Tres reglas que definen este módulo:
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
 
-from docu.core.yamlmini import YamlError, parse as parse_yaml
+from docu.core.yamlmini import YamlError
+from docu.core.yamlmini import parse as parse_yaml
 from docu.generate.facts import Fact, _line_with, _line_with_after
 
 ENV_FILES = (".env.example", ".env.sample", ".env.template", ".env.dist")
@@ -209,7 +209,7 @@ def workflow_facts(path: str, source: str) -> list[Fact]:
         for trigger in triggers:
             # La cita debe apuntar a la línea del disparador, no a la clave `on:`: si no, la
             # auditoría tiene razón en marcarla y el lector no encuentra nada al abrirla.
-            line = _line_with_after(source, f"{trigger}", on_start if on_start >= 0 else 0)
+            line = _line_with_after(source, f"{trigger}", max(on_start, 0))
             facts.append(
                 Fact(
                     kind="trigger",

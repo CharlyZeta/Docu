@@ -18,14 +18,14 @@ from docu.index.freshness import (
 
 
 def _components(**overrides: str) -> InputComponents:
-    base = dict(
-        source_content="sha256:a",
-        deps_signature="sha256:b",
-        template="l1-reference@v1",
-        embedder="onnx-bge-768@1",
-        chunker="ast-v2",
-        profile="sha256:c",
-    )
+    base = {
+        "source_content": "sha256:a",
+        "deps_signature": "sha256:b",
+        "template": "l1-reference@v1",
+        "embedder": "onnx-bge-768@1",
+        "chunker": "ast-v2",
+        "profile": "sha256:c",
+    }
     base.update(overrides)
     return InputComponents(**base)  # type: ignore[arg-type]
 

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -39,7 +38,7 @@ class Opener:
         self.body = body.encode("utf-8")
         self.status = status
 
-    def __call__(self, request, timeout=None):  # noqa: ARG002
+    def __call__(self, request, timeout=None):
         return self
 
     def __enter__(self):

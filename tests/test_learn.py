@@ -41,15 +41,15 @@ def build_repo(root: Path) -> None:
 
 
 def metrics(**overrides: float) -> Metrics:
-    base: dict[str, float] = dict(
-        accuracy=9.0,
-        completeness=9.0,
-        attribution=9.5,
-        conciseness=8.0,
-        freshness=10.0,
-        cost_usd=0.0,
-        unsupported_claims=0,
-    )
+    base: dict[str, float] = {
+        "accuracy": 9.0,
+        "completeness": 9.0,
+        "attribution": 9.5,
+        "conciseness": 8.0,
+        "freshness": 10.0,
+        "cost_usd": 0.0,
+        "unsupported_claims": 0,
+    }
     base.update(overrides)
     return Metrics(**base)  # type: ignore[arg-type]
 
@@ -283,7 +283,7 @@ class CliLearnTests(unittest.TestCase):
 
     def test_federate_json_is_machine_readable(self) -> None:
         run_cli("learn", "--root", str(self.root), "--federate", "--dry-run", "--json")
-        lines = output = run_cli("learn", "--root", str(self.root), "--federate", "--dry-run", "--json")[1]
+        lines = run_cli("learn", "--root", str(self.root), "--federate", "--dry-run", "--json")[1]
         first = lines.strip().splitlines()[0]
         self.assertTrue(first.startswith("{"))
 

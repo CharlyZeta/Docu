@@ -15,9 +15,9 @@ from __future__ import annotations
 
 import posixpath
 import re
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping, Sequence
 
 from docu.adapters.langs.registry import adapter_for
 from docu.generate.facts import Fact
@@ -77,9 +77,10 @@ def resolve_import(
     best: str | None = None
     for package in packages:
         name = package.name
-        if module == name or module.startswith(name + "."):
-            if best is None or len(name) > len(best):
-                best = name
+        if (module == name or module.startswith(name + ".")) and (
+            best is None or len(name) > len(best)
+        ):
+            best = name
     return best
 
 

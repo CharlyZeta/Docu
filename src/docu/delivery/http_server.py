@@ -29,7 +29,7 @@ class _Handler(BaseHTTPRequestHandler):
 
     # ------------------------------------------------------------------ rutas
 
-    def do_GET(self) -> None:  # noqa: N802 - API de BaseHTTPRequestHandler
+    def do_GET(self) -> None:
         if self.path.rstrip("/") in ("/health", ""):
             self._json(
                 200,
@@ -48,7 +48,7 @@ class _Handler(BaseHTTPRequestHandler):
             return
         self._json(404, {"error": f"ruta desconocida: {self.path}"})
 
-    def do_POST(self) -> None:  # noqa: N802 - API de BaseHTTPRequestHandler
+    def do_POST(self) -> None:
         if self.path.rstrip("/") != "/mcp":
             self._json(404, {"error": f"ruta desconocida: {self.path}"})
             return

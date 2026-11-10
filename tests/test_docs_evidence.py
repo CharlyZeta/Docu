@@ -118,7 +118,6 @@ class MatchTests(unittest.TestCase):
 
 class RenderTests(unittest.TestCase):
     def test_l4_fills_prerequisites_with_the_repository_readme(self) -> None:
-        from docu.generate.facts import Fact
         from docu.generate.markdown import render_l4
 
         sections = {section.title: section for section in parse_sections("README.md", README)}

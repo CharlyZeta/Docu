@@ -8,8 +8,8 @@ emite el hecho: el documento mostrara el hueco declarado en lugar de inventar pr
 from __future__ import annotations
 
 import re
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Mapping, Sequence
 
 from docu.core.contracts import Symbol, SymbolKind
 

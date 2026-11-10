@@ -6,8 +6,8 @@ testeable: ninguna decision de publicacion puede saltarse `evaluate()`.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Mapping
 
 from docu.core.contracts import GateDecision, GateOutcome, Metrics, Mode
 

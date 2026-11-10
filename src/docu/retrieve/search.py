@@ -9,17 +9,18 @@ from __future__ import annotations
 
 import math
 import re
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, Mapping, Sequence
 
 from docu.retrieve.glossary import expand, fold
 
 _WORD = re.compile(r"[\w.\-]+", re.UNICODE)
+#: Puntuación que se recorta de los extremos de un token de búsqueda.
+_EDGE_PUNCTUATION = re.compile(r"""[`"'(),:;¿?!¡\[\]{}]+$|^[`"'(),:;¿?!¡\[\]{}]+""")
 _CAMEL = re.compile(r"[A-Z]+(?=[A-Z][a-z])|[A-Z]?[a-z]+|[A-Z]+|\d+")
 _STOP = frozenset(
-    "de la el los las en y que con para por un una del al se como es son su sus lo le the a of and "
-    "or in to is are for with on by".split()
+    ["de", "la", "el", "los", "las", "en", "y", "que", "con", "para", "por", "un", "una", "del", "al", "se", "como", "es", "son", "su", "sus", "lo", "le", "the", "a", "of", "and", "or", "in", "to", "is", "are", "for", "with", "on", "by"]
 )
 
 
@@ -49,7 +50,9 @@ def looks_like_identifier(query: str) -> bool:
     camelCase real.
     """
     for token in query.split():
-        cleaned = token.strip('`"\'(),:;¿?¿!¡[]{}')
+        # Se recorta la puntuación de los extremos con una expresión regular y no con `strip`: con
+        # `strip` el efecto es el mismo, pero parece que quita una subcadena, y no es eso.
+        cleaned = _EDGE_PUNCTUATION.sub("", token)
         if re.search(r"\w\.\w", cleaned):
             return True
         if "_" in cleaned:
@@ -138,7 +141,7 @@ class DocIndex:
         self._avgdl = (sum(lengths) / len(lengths)) if lengths else 0.0
 
     @classmethod
-    def from_directory(cls, directory: Path | str, glossary: Mapping[str, Sequence[str]] | None = None) -> "DocIndex":
+    def from_directory(cls, directory: Path | str, glossary: Mapping[str, Sequence[str]] | None = None) -> DocIndex:
         """Carga todos los `.md` de un directorio de documentacion generada."""
         sections: list[Section] = []
         root = Path(directory)

@@ -82,7 +82,7 @@ class PipelineTests(unittest.TestCase):
             (root / "src" / "app.ts").write_text("export class App {}\n", encoding="utf-8")
             (root / "coverage").mkdir()
             (root / "coverage" / "block-navigation.js").write_text("var x = 1;\n", encoding="utf-8")
-            facts, sources = collect_facts(root)
+            _facts, sources = collect_facts(root)
             self.assertNotIn("coverage/block-navigation.js", sources)
             self.assertIn("src/app.ts", sources)
 
@@ -96,7 +96,7 @@ class PipelineTests(unittest.TestCase):
             (root / "src" / "app.ts").write_text("export class App {}\n", encoding="utf-8")
             (root / "mirror-cliente").mkdir()
             (root / "mirror-cliente" / "legacy.php").write_text("<?php echo 1;\n", encoding="utf-8")
-            facts, sources = collect_facts(root)
+            _facts, sources = collect_facts(root)
             self.assertNotIn("mirror-cliente/legacy.php", sources)
             self.assertEqual(sources.get("src/app.ts") is not None, True)
 

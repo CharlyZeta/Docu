@@ -239,7 +239,7 @@ class ApiFlowSvgTests(unittest.TestCase):
     def test_caps_routes_and_says_so(self) -> None:
         lines = ['flowchart LR', '    cliente(["Cliente"])']
         for index in range(20):
-            lines += [f'    r{index}["GET /api/{index}"]', f"    cliente --> r{index}", f'    h0["Ctl"]', f"    r{index} --> h0"]
+            lines += [f'    r{index}["GET /api/{index}"]', f"    cliente --> r{index}", '    h0["Ctl"]', f"    r{index} --> h0"]
         svg, note = svg_api_flow("\n".join(lines), max_routes=5)
         assert svg is not None
         self.assertIn("se muestran 5 de 20 rutas", note)

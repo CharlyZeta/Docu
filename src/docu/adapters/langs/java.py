@@ -16,7 +16,6 @@ import re
 from dataclasses import dataclass, replace
 
 from docu.adapters.langs._braces import (
-    annotations_before,
     iter_callables,
     mask_annotation_braces,
     matching_paren,
@@ -24,15 +23,15 @@ from docu.adapters.langs._braces import (
 from docu.core.contracts import Symbol, SymbolKind
 
 CONTROL_WORDS = frozenset(
-    "if for while switch catch return new throw do else try synchronized assert yield".split()
+    ["if", "for", "while", "switch", "catch", "return", "new", "throw", "do", "else", "try", "synchronized", "assert", "yield"]
 )
 
 #: Palabras que preceden a una declaracion de tipo, no a un metodo: `record X(...)`, `new X(...)`.
-NOT_METHODS = frozenset("record class interface enum new return extends implements throws".split())
+NOT_METHODS = frozenset(["record", "class", "interface", "enum", "new", "return", "extends", "implements", "throws"])
 
 #: Modificadores que no forman parte del tipo de un campo.
 FIELD_MODIFIERS = frozenset(
-    "public private protected static final transient volatile readonly default".split()
+    ["public", "private", "protected", "static", "final", "transient", "volatile", "readonly", "default"]
 )
 
 HTTP_MAPPINGS = {
@@ -215,7 +214,7 @@ def _java_fields(
     close_brace: int,
     type_name: str,
     path: str,
-    lines: "_Lines",
+    lines: _Lines,
 ) -> list[Symbol]:
     """Campos declarados en el cuerpo del tipo.
 
@@ -274,7 +273,7 @@ def _record_fields(
     type_name: str,
     path: str,
     match_end: int,
-    lines: "_Lines",
+    lines: _Lines,
 ) -> list[Symbol]:
     """Componentes de un `record`: son sus campos, aunque vivan en la firma."""
     paren = masked.find("(", match_end)
@@ -437,9 +436,12 @@ class JavaLangAdapter:
             # si se lista como hermano, el documento de arquitectura miente sobre la jerarquia.
             parent_index = None
             for index, (_symbol, start, end) in enumerate(types):
-                if start < decl_start and close_brace < end:
-                    if parent_index is None or start > types[parent_index][1]:
-                        parent_index = index
+                if (
+                    start < decl_start
+                    and close_brace < end
+                    and (parent_index is None or start > types[parent_index][1])
+                ):
+                    parent_index = index
 
             symbol = Symbol(
                 name=name,

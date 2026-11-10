@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from docu.conformance.drift import analyze, bootstrap, compare, describe_code
+from docu.conformance.drift import bootstrap, compare, describe_code
 from docu.conformance.model import (
     ArchitectureModel,
     DeclaredComponent,

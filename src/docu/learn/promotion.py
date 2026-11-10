@@ -7,8 +7,8 @@ escondidas en el código.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Sequence
 
 from docu.learn.patterns import WATCHED, Pattern
 
@@ -89,4 +89,4 @@ def decide(
     )
 
 
-__all__ = ["Decision", "PROMOTE", "REJECT", "ROLLBACK", "decide"]
+__all__ = ["PROMOTE", "REJECT", "ROLLBACK", "Decision", "decide"]

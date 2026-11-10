@@ -17,7 +17,7 @@ import re
 import time
 import urllib.error
 import urllib.request
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from html.parser import HTMLParser
 from urllib.parse import urlparse
 
@@ -28,11 +28,10 @@ MIN_TEXT_CHARS = 200
 USER_AGENT = "docu/0.1 (+ingesta de documentación técnica; contacto: repo)"
 
 SKIP_TAGS = frozenset(
-    "script style noscript svg head iframe canvas template form nav footer aside".split()
+    ["script", "style", "noscript", "svg", "head", "iframe", "canvas", "template", "form", "nav", "footer", "aside"]
 )
 BLOCK_TAGS = frozenset(
-    "p div section article header h1 h2 h3 h4 h5 h6 li tr br table thead tbody ul ol pre blockquote "
-    "figure figcaption main details summary".split()
+    ["p", "div", "section", "article", "header", "h1", "h2", "h3", "h4", "h5", "h6", "li", "tr", "br", "table", "thead", "tbody", "ul", "ol", "pre", "blockquote", "figure", "figcaption", "main", "details", "summary"]
 )
 
 

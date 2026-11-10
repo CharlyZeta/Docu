@@ -45,11 +45,12 @@ class CiWorkflowTests(unittest.TestCase):
         self.assertIn("3.13", matriz["python"])
         self.assertIn("unittest discover", pasos(job))
 
-    def test_lint_gate_checks_real_errors(self) -> None:
+    def test_lint_gate_runs_the_project_rule_set(self) -> None:
+        """La compuerta usa el conjunto completo del proyecto, con la versión fijada."""
         texto = pasos(self.workflow["jobs"]["lint"])
-        self.assertIn("ruff check", texto)
-        for codigo in ("E9", "F63", "F7", "F82"):
-            self.assertIn(codigo, texto, msg=f"falta el chequeo {codigo}")
+        self.assertIn("ruff check src tests", texto)
+        self.assertNotIn("--select", texto, msg="el conjunto de reglas vive en pyproject.toml")
+        self.assertIn("ruff~=", texto, msg="una regla nueva de una versión futura rompería PRs ajenos")
 
     def test_packaging_installs_the_wheel(self) -> None:
         texto = pasos(self.workflow["jobs"]["packaging"])

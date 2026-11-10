@@ -8,16 +8,16 @@ from docu.core.contracts import GateOutcome, Metrics, Mode
 from docu.core.policy import Budget, BudgetExhausted, GatePolicy, Thresholds
 
 
-def _metrics(**overrides: float | int) -> Metrics:
-    base: dict[str, float | int] = dict(
-        accuracy=9.0,
-        completeness=9.5,
-        attribution=9.8,
-        conciseness=8.0,
-        freshness=10.0,
-        cost_usd=0.4,
-        unsupported_claims=0,
-    )
+def _metrics(**overrides: float) -> Metrics:
+    base: dict[str, float | int] = {
+        "accuracy": 9.0,
+        "completeness": 9.5,
+        "attribution": 9.8,
+        "conciseness": 8.0,
+        "freshness": 10.0,
+        "cost_usd": 0.4,
+        "unsupported_claims": 0,
+    }
     base.update(overrides)
     return Metrics(**base)  # type: ignore[arg-type]
 

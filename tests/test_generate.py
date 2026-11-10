@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from docu.core.contracts import GateOutcome, SymbolKind
+from docu.core.contracts import GateOutcome
 from docu.generate.facts import Fact, java_facts, pom_facts, unsupported, yaml_facts
 from docu.generate.markdown import NO_EVIDENCE, render_l1, render_l4
 from docu.generate.pipeline import generate

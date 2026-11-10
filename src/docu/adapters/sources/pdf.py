@@ -16,8 +16,8 @@ from __future__ import annotations
 
 import re
 import zlib
+from collections.abc import Iterable
 from dataclasses import dataclass, field
-from typing import Iterable
 
 OBJECT_RE = re.compile(rb"(\d+)\s+(\d+)\s+obj\b(.*?)\bendobj", re.DOTALL)
 STREAM_RE = re.compile(rb"stream\r?\n(.*?)\r?\n?endstream", re.DOTALL)
@@ -112,9 +112,7 @@ def _looks_like_garbage(text: str) -> bool:
         return True
     if single_char_tokens / tokens > 0.55:
         return True
-    if spaces and len(compact) / spaces < 2.0:
-        return True
-    return False
+    return bool(spaces and len(compact) / spaces < 2.0)
 
 
 @dataclass(frozen=True, slots=True)
@@ -362,7 +360,6 @@ def _content_text(
                 index += number_match.end()
                 continue
         if char == 0x5B:  # [ … ]  (arreglo de TJ: los números negativos grandes son espacios)
-            array: list[bytes] = []
             pieces_tj: list[bytes] = []
             index += 1
             depth = 1

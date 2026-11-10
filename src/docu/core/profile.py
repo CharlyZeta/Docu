@@ -10,9 +10,9 @@ porque un perfil mal escrito produce documentación que parece correcta y no lo 
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from pathlib import Path
-from typing import Mapping, Sequence
 
 from docu.core.contracts import Mode
 from docu.core.policy import Thresholds
@@ -296,7 +296,7 @@ def to_yaml(profile: Profile) -> str:
     lines.append(f"    attribution: {profile.thresholds.attribution}")
     lines.append(f"    conciseness: {profile.thresholds.conciseness}")
     lines.append("")
-    lines.append(f"freshness:")
+    lines.append("freshness:")
     lines.append(f"  ttl_days: {profile.ttl_days}")
     lines.append("")
     lines.append("learn:")
@@ -437,12 +437,12 @@ def render_change_order(changes: Sequence[Change], project: str) -> str:
 
 __all__ = [
     "DEFAULT_EXCLUDE",
-    "LEVELS",
-    "Change",
     "HUMAN_FIELDS",
+    "LEVELS",
+    "SUPPORTED_LEVELS",
+    "Change",
     "Profile",
     "ProfileError",
-    "SUPPORTED_LEVELS",
     "candidate_paths",
     "find",
     "from_dict",

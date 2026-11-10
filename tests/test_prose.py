@@ -13,7 +13,6 @@ from docu.generate.prose import (
     MIN_JUDGE_SCORE,
     build_judge_request,
     build_request,
-    fact_id,
     load,
     load_verdict,
     render,
@@ -242,7 +241,6 @@ class RenderAndStoreTests(unittest.TestCase):
 class PipelineTests(unittest.TestCase):
     def test_accepted_prose_appears_in_the_document_with_provenance(self) -> None:
         from docu.delivery.cli import main
-        from docu.generate.facts import Fact as F
 
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

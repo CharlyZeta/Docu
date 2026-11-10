@@ -20,9 +20,9 @@ from __future__ import annotations
 import json
 import re
 import unicodedata
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Mapping, Sequence
 
 from docu.generate.facts import Fact
 
@@ -347,9 +347,9 @@ def load_verdict(payload: Mapping[str, object]) -> Verdict:
 def render(prose: ProseResponse, facts_index: Mapping[str, Fact]) -> str:
     """Markdown de la prosa con su procedencia, lista para embeber en el documento."""
     lines = [
-        f"> **Prosa redactada por `{prose.reviewer or 'un agente'}`** a partir de hechos citados, y "
+        (f"> **Prosa redactada por `{prose.reviewer or 'un agente'}`** a partir de hechos citados, y "
         "validada por `docu`: ninguna frase aporta datos nuevos. Las cifras y las tablas de este "
-        "documento siguen viniendo de la evidencia, no de la prosa.",
+        "documento siguen viniendo de la evidencia, no de la prosa."),
         "",
     ]
     for sentences in prose.sections.values():
@@ -445,10 +445,10 @@ __all__ = [
     "MAX_SENTENCES",
     "MIN_JUDGE_SCORE",
     "PROSE_DIR",
-    "ProseResponse",
     "REQUEST_MARKDOWN",
     "REQUEST_NAME",
     "STORE_NAME",
+    "ProseResponse",
     "Verdict",
     "build_judge_request",
     "build_request",

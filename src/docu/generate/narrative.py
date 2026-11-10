@@ -18,9 +18,9 @@ from __future__ import annotations
 import ast
 import json
 import re
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Mapping, Sequence
 
 from docu.generate.facts import Fact
 

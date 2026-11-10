@@ -8,9 +8,9 @@ las preguntas se hacen en espanol y el codigo esta en ingles.
 from __future__ import annotations
 
 import math
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Sequence
 
 DEFAULT_MODEL_DIR = ".models/multilingual-minilm"
 DEFAULT_EMBEDDER_ID = "onnx-minilm-multilingual-384"

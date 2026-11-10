@@ -8,7 +8,7 @@ interpretarla mal. Un lector honesto y limitado es mejor que una dependencia que
 
 from __future__ import annotations
 
-__all__ = ["parse", "YamlError"]
+__all__ = ["YamlError", "parse"]
 
 
 class YamlError(ValueError):

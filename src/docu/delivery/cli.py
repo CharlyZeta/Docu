@@ -8,9 +8,9 @@ from __future__ import annotations
 
 import argparse
 import sys
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Sequence
 
 from docu import __version__
 from docu.core.contracts import SCHEMA_VERSION, GateOutcome, Mode
@@ -470,9 +470,10 @@ def _run_learn(args: argparse.Namespace) -> int:
             if decision.action == promotion.PROMOTE:
                 library.promote(candidate.pattern)
                 changed = True
-            elif decision.action == promotion.ROLLBACK:
-                if library.revert(candidate.pattern.pattern_id):
-                    changed = True
+            elif decision.action == promotion.ROLLBACK and library.revert(
+                candidate.pattern.pattern_id
+            ):
+                changed = True
             decisions.append(decision)
 
         if changed:

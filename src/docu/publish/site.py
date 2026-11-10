@@ -16,9 +16,9 @@ from __future__ import annotations
 import html
 import json
 import re
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping, Sequence
 
 from docu.generate.facts import Fact
 
@@ -259,7 +259,7 @@ def parse_flowchart(text: str) -> tuple[list[tuple[str, str]], list[tuple[str, s
     edges: list[tuple[str, str]] = []
     for line in text.splitlines():
         stripped = line.strip()
-        if not stripped or stripped.startswith("flowchart") or stripped.startswith("%%"):
+        if not stripped or stripped.startswith(("flowchart", "%%")):
             continue
         if "-->" in stripped:
             left, _, right = stripped.partition("-->")
@@ -302,10 +302,10 @@ def svg_architecture(text: str, max_nodes: int = 24) -> str | None:
     width = margin * 2 + (max(columns) + 1) * column_width
     height = margin * 2 + max(len(names) for names in columns.values()) * row_height
     parts = [
-        f'<svg viewBox="0 0 {width} {height}" width="100%" role="img" '
-        f'aria-label="Dependencias entre paquetes" xmlns="http://www.w3.org/2000/svg">',
-        '<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" '
-        'markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6ea8fe"/></marker></defs>',
+        (f'<svg viewBox="0 0 {width} {height}" width="100%" role="img" '
+        f'aria-label="Dependencias entre paquetes" xmlns="http://www.w3.org/2000/svg">'),
+        ('<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" '
+        'markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6ea8fe"/></marker></defs>'),
     ]
     for source, target in edges:
         if source not in positions or target not in positions:
@@ -419,10 +419,10 @@ def svg_erd(
     width = margin * 2 + columns * box_width + (columns - 1) * gap * 2
     height = max(column_rows) + margin
     parts = [
-        f'<svg viewBox="0 0 {width} {height}" width="100%" role="img" '
-        'aria-label="Modelo de datos" xmlns="http://www.w3.org/2000/svg">',
-        '<defs><marker id="e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" '
-        'markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6ea8fe"/></marker></defs>',
+        (f'<svg viewBox="0 0 {width} {height}" width="100%" role="img" '
+        'aria-label="Modelo de datos" xmlns="http://www.w3.org/2000/svg">'),
+        ('<defs><marker id="e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" '
+        'markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6ea8fe"/></marker></defs>'),
     ]
     for left, cardinality, right, label in kept:
         x1, y1 = positions[left]
@@ -482,7 +482,7 @@ def svg_api_flow(text: str, max_routes: int = 12) -> tuple[str | None, str]:
     labels = dict(nodes)
     routes = [name for name in labels if name.startswith("r") and labels[name] not in ("Cliente",)]
     routes = sorted(routes, key=lambda name: int(name[1:]) if name[1:].isdigit() else 0)
-    handlers = [name for name in labels if name.startswith("h")]
+    [name for name in labels if name.startswith("h")]
     if not routes:
         return None, ""
     kept = routes[:max_routes]
@@ -499,10 +499,10 @@ def svg_api_flow(text: str, max_routes: int = 12) -> tuple[str | None, str]:
         positions[name] = (column_x[2], margin + index * row)
     height = max(margin + 80, margin + max(len(kept), len(linked_handlers)) * row + margin)
     parts = [
-        f'<svg viewBox="0 0 {width} {height}" width="100%" role="img" '
-        'aria-label="Flujo de la API" xmlns="http://www.w3.org/2000/svg">',
-        '<defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" '
-        'markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6ea8fe"/></marker></defs>',
+        (f'<svg viewBox="0 0 {width} {height}" width="100%" role="img" '
+        'aria-label="Flujo de la API" xmlns="http://www.w3.org/2000/svg">'),
+        ('<defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" '
+        'markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6ea8fe"/></marker></defs>'),
     ]
     for source, target in edges:
         if source not in positions or target not in positions:

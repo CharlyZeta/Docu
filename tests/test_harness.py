@@ -11,15 +11,16 @@ from eval.harness import (
     Case,
     CaseResult,
     Expected,
-    HybridIndex,
     Report,
     Segment,
+    _diversity,
+    _looks_like_identifier,
+    _overlaps,
     build_corpus,
     discover_files,
     evaluate,
     tokenize,
 )
-from eval.harness import _diversity, _looks_like_identifier, _overlaps
 
 
 class TokenizeTests(unittest.TestCase):
@@ -237,8 +238,7 @@ class GoldenValidationTests(unittest.TestCase):
 
     def test_optional_duplicate_of_primary_is_rejected(self) -> None:
         """C-07: una opcion no puede duplicar un path primario."""
-        from eval.harness import _validate_golden_set
-        from eval.harness import Case, Expected
+        from eval.harness import Case, Expected, _validate_golden_set
 
         case = Case(
             id="C-07",
@@ -255,8 +255,7 @@ class GoldenValidationTests(unittest.TestCase):
 
     def test_optional_secondary_not_contaminating_is_ok(self) -> None:
         """Un optional que NO duplica un primario es valido."""
-        from eval.harness import _validate_golden_set
-        from eval.harness import Case, Expected
+        from eval.harness import Case, Expected, _validate_golden_set
 
         case = Case(
             id="C-07",
@@ -272,8 +271,7 @@ class GoldenValidationTests(unittest.TestCase):
 
     def test_duplicate_required_paths_is_rejected(self) -> None:
         """Dos primarios iguales son invalidos."""
-        from eval.harness import _validate_golden_set
-        from eval.harness import Case, Expected
+        from eval.harness import Case, Expected, _validate_golden_set
 
         case = Case(
             id="T-DUP",
@@ -288,8 +286,7 @@ class GoldenValidationTests(unittest.TestCase):
         self.assertTrue(any("duplicada" in e for e in errors))
 
     def test_empty_case_is_rejected(self) -> None:
-        from eval.harness import _validate_case_id
-        from eval.harness import Case
+        from eval.harness import Case, _validate_case_id
 
         case = Case(id="", category="code", question="", expected=())
         errors = _validate_case_id(case)
@@ -344,7 +341,7 @@ class ReportThresholdTests(unittest.TestCase):
     """Tests para verificar que Report incluye thresholds y modos."""
 
     def test_report_has_thresholds_by_mode(self) -> None:
-        from eval.harness import Report, CaseResult
+        from eval.harness import Report
 
         report = Report(
             project="demo",

@@ -12,7 +12,6 @@ from dataclasses import dataclass
 
 from docu.adapters.langs._braces import (
     Lines,
-    annotations_before,
     declaration_start,
     depth_map,
     iter_callables,
@@ -23,11 +22,11 @@ from docu.adapters.langs._braces import (
 from docu.core.contracts import Symbol, SymbolKind
 
 CONTROL_WORDS = frozenset(
-    "if for while switch catch return new throw do else try typeof yield await constructor".split()
+    ["if", "for", "while", "switch", "catch", "return", "new", "throw", "do", "else", "try", "typeof", "yield", "await", "constructor"]
 )
 
 #: Palabras que preceden a una declaracion de tipo o instanciacion, no a un metodo.
-NOT_METHODS = frozenset("new class interface enum extends implements typeof function".split())
+NOT_METHODS = frozenset(["new", "class", "interface", "enum", "extends", "implements", "typeof", "function"])
 
 HTTP_DECORATORS = {
     "Get": "GET",
@@ -80,7 +79,7 @@ PROPERTY_RE = re.compile(
 
 #: Literales que son tipos de JavaScript, no rutas (`typeof path === 'string'`).
 TYPE_LITERALS = frozenset(
-    "string number object boolean function undefined symbol bigint".split()
+    ["string", "number", "object", "boolean", "function", "undefined", "symbol", "bigint"]
 )
 
 

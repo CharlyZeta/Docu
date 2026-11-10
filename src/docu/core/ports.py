@@ -6,10 +6,10 @@ implementacion concreta vive en `docu.adapters.*` y se descubre por entry points
 
 from __future__ import annotations
 
-from typing import Any, Iterable, Mapping, Protocol, Sequence, runtime_checkable
+from collections.abc import Iterable, Mapping, Sequence
+from typing import Any, Protocol, runtime_checkable
 
 from docu.core.contracts import Artifact, Chunk, ContentNode, Metrics, Symbol
-
 
 # --------------------------------------------------------------------------- ingesta
 
@@ -146,13 +146,13 @@ class Publisher(Protocol):
 
 
 __all__ = [
-    "SourceAdapter",
-    "LangAdapter",
     "Chunker",
     "Embedder",
-    "VectorStore",
-    "Reranker",
-    "RenderAdapter",
     "Judge",
+    "LangAdapter",
     "Publisher",
+    "RenderAdapter",
+    "Reranker",
+    "SourceAdapter",
+    "VectorStore",
 ]

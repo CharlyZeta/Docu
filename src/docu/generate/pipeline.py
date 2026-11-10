@@ -10,9 +10,9 @@ from __future__ import annotations
 
 import json
 import time
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Mapping, Sequence
 
 from docu.adapters.langs.registry import adapter_for
 from docu.core.contracts import (
@@ -25,6 +25,7 @@ from docu.core.contracts import (
     utcnow,
 )
 from docu.core.policy import GatePolicy, Thresholds
+from docu.generate.diagrams import build_all, write_diagrams
 from docu.generate.facts import (
     Fact,
     package_facts,
@@ -33,11 +34,12 @@ from docu.generate.facts import (
     pyproject_facts,
     pyproject_scripts_facts,
     requirements_facts,
-    symbol_facts as java_facts,
     unsupported,
     yaml_facts,
 )
-from docu.generate.diagrams import build_all, write_diagrams
+from docu.generate.facts import (
+    symbol_facts as java_facts,
+)
 from docu.generate.markdown import RENDERERS, _doc_sections
 from docu.generate.ops import (
     compose_facts,
@@ -50,7 +52,6 @@ from docu.generate.ops import (
     scripts_facts,
     workflow_facts,
 )
-from docu.index.packages import detect_packages
 from docu.index.manifest import (
     DEFAULT_VERSIONS,
     MANIFEST_PATH,
@@ -62,6 +63,7 @@ from docu.index.manifest import (
     profile_digest,
     state_of,
 )
+from docu.index.packages import detect_packages
 
 EXCLUDED_PARTS = ("target", ".git", "node_modules", "build", "dist", ".sdd", ".agents", ".idea", ".venv")
 
@@ -157,7 +159,8 @@ def _discover(
     exclude: Sequence[str] = (),
 ) -> dict[str, Path]:
     """Archivos relevantes, con la higiene de corpus que declare el perfil."""
-    from docu.index.ignore import is_ignored, load as load_ignore
+    from docu.index.ignore import is_ignored
+    from docu.index.ignore import load as load_ignore
 
     patterns = _effective_exclude(exclude)
     rules = load_ignore(root)
@@ -257,7 +260,8 @@ def collect_facts(
 
     # Fuentes web congeladas: se leen del índice local, nunca de la red. La generación debe dar el
     # mismo resultado sin conexión; refrescar es una decisión explícita (`docu web --fetch`).
-    from docu.core.profile import find as find_profile, load as load_profile
+    from docu.core.profile import find as find_profile
+    from docu.core.profile import load as load_profile
     from docu.index.webdocs import load_documents
 
     profile_path = find_profile(root)
@@ -324,7 +328,8 @@ def unsupported_sources(
     exclude: Sequence[str] = (),
 ) -> dict[str, int]:
     """Cuenta archivos de lenguajes conocidos pero no soportados, por extension."""
-    from docu.index.ignore import is_ignored, load as load_ignore
+    from docu.index.ignore import is_ignored
+    from docu.index.ignore import load as load_ignore
 
     patterns = _effective_exclude(exclude)
     rules = load_ignore(root)
@@ -516,7 +521,7 @@ def collect_all_facts(
     include: Sequence[str] = (),
     exclude: Sequence[str] = (),
     project: str | None = None,
-) -> tuple[list[Fact], dict[str, str], dict[str, Path], "object"]:
+) -> tuple[list[Fact], dict[str, str], dict[str, Path], object]:
     """Hechos completos: código, configuración, fuentes externas, intención y decisiones.
 
     Una sola puerta para que `gen`, `prose` y la auditoría hablen del **mismo** universo. Antes, la

@@ -626,5 +626,29 @@ explotado con `AttributeError`. Corregido.
 el paso de tests, que la matriz incluya Windows, que Pages audite antes de publicar, que el regen no
 falle cuando GitHub bloquea la creación de PRs, y que **todo `docu <comando>` mencionado exista**.
 
-Ruff completo reporta 179 hallazgos (casi todos imports sin usar en tests). No se aplicaron en este
-cambio: se dejan como tarea aparte para no mezclar 40 archivos de reformateo con una compuerta nueva.
+**Ruff quedó limpio (§13.16).** Los 179 hallazgos que este cambio dejó pendientes se corrigieron después,
+y la compuerta pasó de un `--select` mínimo al conjunto completo del proyecto.
+
+### 13.16 Ruff limpio: 213 hallazgos a cero
+
+La compuerta de CI arrancó con un `--select` mínimo (errores de sintaxis y nombres indefinidos) para no
+mezclar una limpieza de 40 archivos con la introducción de la compuerta. Después se hizo la limpieza.
+
+| Regla | Hallazgos | Qué se hizo |
+|---|---|---|
+| `UP035` / `UP037` / `UP017` | 48 | imports y anotaciones modernas (`collections.abc`, sin comillas, `datetime.UTC`) |
+| `ISC004` | 33 | concatenación implícita entre paréntesis en literales de lista |
+| `F401` / `I001` / `RUF022` | 59 | imports sin usar, orden, `__all__` ordenado |
+| `SIM905` / `SIM102` / `SIM103` | 14 | sentencias simplificadas a mano donde el merge no quitaba claridad |
+| `F841` / `F541` / `C408` / `RUF059` | 14 | variables y `f`-strings sin uso, `dict()` por literal |
+| `B005` | 1 | `strip()` multi-carácter reemplazado por una expresión regular explícita |
+
+`B005` era el único con valor real: `token.strip('`"\'(),:;¿?¡[]{}')` recorta **cualquiera** de esos
+caracteres, no la subcadena, y el nombre de la función hacía pensar otra cosa. Ahora es
+`_EDGE_PUNCTUATION.sub("", token)`, con el mismo comportamiento y la intención escrita.
+
+`drift.py` y `diagrams.py` conservaron su lógica pero con el `if` aplanado: en `drift.py` se nombran las
+dos condiciones (`internal`, `folded`) antes de combinarlas, que se lee mejor que el anidamiento.
+
+La compuerta del CI pasó al **conjunto completo** con la versión de ruff fijada (`~=0.17.0`): una regla
+nueva en una versión futura no puede romper un PR que no cambió nada. 644 tests verdes.

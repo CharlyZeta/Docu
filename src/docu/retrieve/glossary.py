@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Mapping, Sequence
+from collections.abc import Mapping, Sequence
 
 #: Glosario v0, calibrado contra el piloto `Backend-Security-Starter`.
 #: frase en espanol (plegada, minusculas) -> terminos que aparecen en el codigo

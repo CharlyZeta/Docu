@@ -11,7 +11,6 @@ from pathlib import Path
 
 from docu.core.profile import (
     DEFAULT_EXCLUDE,
-    Profile,
     ProfileError,
     find,
     from_dict,
@@ -19,9 +18,9 @@ from docu.core.profile import (
     plan_changes,
     to_yaml,
 )
-from docu.delivery.proposal import detect, propose
 from docu.delivery.cli import main
 from docu.delivery.exit_codes import ExitCode
+from docu.delivery.proposal import detect, propose
 
 JAVA = '''package com.example;
 

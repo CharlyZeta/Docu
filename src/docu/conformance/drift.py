@@ -9,13 +9,13 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Mapping, Sequence
 
 from docu.adapters.langs.registry import adapter_for
 from docu.conformance.model import ArchitectureModel, DeclaredComponent, Route, load_architecture
-from docu.generate.pipeline import collect_facts, _discover, _read
+from docu.generate.pipeline import _discover, _read, collect_facts
 
 SEVERITY = {
     "undeclared_route": "warning",
@@ -96,8 +96,8 @@ class DriftReport:
         lines = [
             "# Deriva arquitectónica",
             "",
-            f"Modelo declarado: {', '.join(self.model.sources) or '—'} · "
-            f"rutas en código: {self.routes_in_code} · componentes en código: {self.components_in_code}",
+            (f"Modelo declarado: {', '.join(self.model.sources) or '—'} · "
+            f"rutas en código: {self.routes_in_code} · componentes en código: {self.components_in_code}"),
             "",
         ]
         if self.is_clean:
@@ -254,16 +254,17 @@ def compare(model: ArchitectureModel, code: CodeFacts) -> DriftReport:
 
     declared_edges = {(_owner(left), _owner(right)) for left, right in model.declared_dependencies()}
     for caller, callee in sorted(code_edges):
-        if caller in declared_components or callee in declared_components:
-            if (caller, callee) not in declared_edges and (callee, caller) not in declared_edges:
-                report.discrepancies.append(
-                    Discrepancy(
-                        kind="undeclared_dependency",
-                        subject=f"{caller} → {callee}",
-                        detail="dependencia detectada en el código y no declarada",
-                        code_citation=code.components.get(callee),
-                    )
+        internal = caller in declared_components or callee in declared_components
+        folded = (caller, callee) in declared_edges or (callee, caller) in declared_edges
+        if internal and not folded:
+            report.discrepancies.append(
+                Discrepancy(
+                    kind="undeclared_dependency",
+                    subject=f"{caller} → {callee}",
+                    detail="dependencia detectada en el código y no declarada",
+                    code_citation=code.components.get(callee),
                 )
+            )
     return report
 
 

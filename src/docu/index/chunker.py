@@ -8,8 +8,8 @@ semantica completa.
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Mapping, Sequence
 
 from docu.core.contracts import Artifact, Chunk, Symbol, SymbolKind, sha256_of, utcnow
 

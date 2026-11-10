@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:0df76` · archivos analizados: 67 · afirmaciones: 1230 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:77076` · archivos analizados: 67 · afirmaciones: 1230 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -75,16 +75,16 @@ El repositorio deja constancia de 15 decisiones («Se oscurece apenas el arte pa
 |---|---|---|
 | `Se oscurece apenas el arte para que el logotipo tenga contra` | Se oscurece apenas el arte para que el logotipo tenga contraste sin tapar la ilustración. | `docs/brand/make-cover.py#L59-L59` |
 | `es un nombre de archivo. Sin esto, "application.yml server p` | es un nombre de archivo. Sin esto, "application.yml server port" se enruta al | `eval/harness.py#L330-L330` |
-| `Saltar el bloque completo para que la proxima anotacion no h` | Saltar el bloque completo para que la proxima anotacion no herede estas lineas. | `src/docu/adapters/langs/java.py#L506-L506` |
-| `El inicializador se separa con `=(?!>)` para no cortar los t` | El inicializador se separa con `=(?!>)` para no cortar los tipos función (`() => void`). | `src/docu/adapters/langs/typescript.py#L74-L74` |
+| `Saltar el bloque completo para que la proxima anotacion no h` | Saltar el bloque completo para que la proxima anotacion no herede estas lineas. | `src/docu/adapters/langs/java.py#L508-L508` |
+| `El inicializador se separa con `=(?!>)` para no cortar los t` | El inicializador se separa con `=(?!>)` para no cortar los tipos función (`() => void`). | `src/docu/adapters/langs/typescript.py#L73-L73` |
 | `son el valor. Sin esto, un workflow real con `run: |` rompe ` | son el valor. Sin esto, un workflow real con `run: |` rompe toda la ingesta. | `src/docu/core/yamlmini.py#L96-L96` |
-| `contradecirse, porque el incremental necesita justamente el ` | contradecirse, porque el incremental necesita justamente el manifest que falta. | `src/docu/delivery/cli.py#L1204-L1204` |
-| `Se publican ambos para que la diferencia no sea silenciosa.` | Se publican ambos para que la diferencia no sea silenciosa. | `src/docu/delivery/mcp_server.py#L356-L356` |
+| `contradecirse, porque el incremental necesita justamente el ` | contradecirse, porque el incremental necesita justamente el manifest que falta. | `src/docu/delivery/cli.py#L1205-L1205` |
+| `Se publican ambos para que la diferencia no sea silenciosa.` | Se publican ambos para que la diferencia no sea silenciosa. | `src/docu/delivery/mcp_server.py#L357-L357` |
 | ``vite` puede estar en dependencies y en devDependencies: bus` | `vite` puede estar en dependencies y en devDependencies: buscar desde la seccion evita | `src/docu/generate/facts.py#L302-L302` |
 | `auditoría tiene razón en marcarla y el lector no encuentra n` | auditoría tiene razón en marcarla y el lector no encuentra nada al abrirla. | `src/docu/generate/ops.py#L211-L211` |
-| `los recupera. Sin esto, un proyecto con `tests/` en la raíz ` | los recupera. Sin esto, un proyecto con `tests/` en la raíz documenta sus propias aserciones. | `src/docu/generate/pipeline.py#L69-L69` |
-| `para que un PDF nuevo o modificado invalide la frescura, igu` | para que un PDF nuevo o modificado invalide la frescura, igual que un archivo de código. | `src/docu/generate/pipeline.py#L251-L251` |
-| `facts); sin esto declara huecos que la documentación existen` | facts); sin esto declara huecos que la documentación existente responde. | `src/docu/generate/pipeline.py#L692-L692` |
+| `los recupera. Sin esto, un proyecto con `tests/` en la raíz ` | los recupera. Sin esto, un proyecto con `tests/` en la raíz documenta sus propias aserciones. | `src/docu/generate/pipeline.py#L71-L71` |
+| `para que un PDF nuevo o modificado invalide la frescura, igu` | para que un PDF nuevo o modificado invalide la frescura, igual que un archivo de código. | `src/docu/generate/pipeline.py#L254-L254` |
+| `facts); sin esto declara huecos que la documentación existen` | facts); sin esto declara huecos que la documentación existente responde. | `src/docu/generate/pipeline.py#L697-L697` |
 | `Sin estos, una introducción sólo puede enumerar tecnología.` | Sin estos, una introducción sólo puede enumerar tecnología. | `src/docu/generate/prose.py#L46-L46` |
 | `Unidades por carpeta sólo en profundidad razonable: `vendor/` | Unidades por carpeta sólo en profundidad razonable: `vendor/includes/assets/js` no es una | `src/docu/index/packages.py#L145-L145` |
 | `primer archivo completo. Decirlo evita que la cita parezca m` | primer archivo completo. Decirlo evita que la cita parezca más fuerte de lo que es. | `src/docu/index/packages.py#L154-L154` |
@@ -518,7 +518,7 @@ erDiagram
         int line_start
         int line_end
         str signature
-        Sequence__Symbol children
+        Sequence_Symbol children
         Sequence_str annotations
         str schema_version
     }
@@ -631,18 +631,18 @@ erDiagram
 | class | `Report` | `@dataclass` | `eval/harness.py#L645-L776` |
 | class | `OnnxEmbedder` | `@dataclass` | `src/docu/adapters/embedders/onnx_local.py#L40-L104` |
 | class | `Lines` | — | `src/docu/adapters/langs/_braces.py#L233-L250` |
-| class | `_Lines` | — | `src/docu/adapters/langs/java.py#L145-L162` |
-| class | `JavaLangAdapter` | `@dataclass` | `src/docu/adapters/langs/java.py#L367-L588` |
+| class | `_Lines` | — | `src/docu/adapters/langs/java.py#L144-L161` |
+| class | `JavaLangAdapter` | `@dataclass` | `src/docu/adapters/langs/java.py#L366-L590` |
 | class | `PythonLangAdapter` | `@dataclass` | `src/docu/adapters/langs/python.py#L19-L200` |
-| class | `TypeScriptLangAdapter` | `@dataclass` | `src/docu/adapters/langs/typescript.py#L88-L424` |
+| class | `TypeScriptLangAdapter` | `@dataclass` | `src/docu/adapters/langs/typescript.py#L87-L423` |
 | class | `PdfError` | — | `src/docu/adapters/sources/pdf.py#L36-L37` |
-| class | `PdfPage` | `@dataclass` | `src/docu/adapters/sources/pdf.py#L121-L123` |
-| class | `PdfText` | `@dataclass` | `src/docu/adapters/sources/pdf.py#L127-L147` |
-| class | `WebError` | — | `src/docu/adapters/sources/web.py#L39-L40` |
-| class | `Snapshot` | `@dataclass` | `src/docu/adapters/sources/web.py#L44-L63` |
-| class | `_TextExtractor` | — | `src/docu/adapters/sources/web.py#L66-L102` |
-| class | `Check` | `@dataclass` | `src/docu/audit/verify.py#L41-L69` |
-| class | `AuditReport` | `@dataclass` | `src/docu/audit/verify.py#L73-L144` |
+| class | `PdfPage` | `@dataclass` | `src/docu/adapters/sources/pdf.py#L119-L121` |
+| class | `PdfText` | `@dataclass` | `src/docu/adapters/sources/pdf.py#L125-L145` |
+| class | `WebError` | — | `src/docu/adapters/sources/web.py#L38-L39` |
+| class | `Snapshot` | `@dataclass` | `src/docu/adapters/sources/web.py#L43-L62` |
+| class | `_TextExtractor` | — | `src/docu/adapters/sources/web.py#L65-L101` |
+| class | `Check` | `@dataclass` | `src/docu/audit/verify.py#L40-L68` |
+| class | `AuditReport` | `@dataclass` | `src/docu/audit/verify.py#L72-L143` |
 | class | `Discrepancy` | `@dataclass` | `src/docu/conformance/drift.py#L38-L62` |
 | class | `DriftReport` | `@dataclass` | `src/docu/conformance/drift.py#L66-L118` |
 | class | `RouteFact` | `@dataclass` | `src/docu/conformance/drift.py#L125-L130` |
@@ -650,20 +650,20 @@ erDiagram
 | class | `Route` | `@dataclass` | `src/docu/conformance/model.py#L31-L40` |
 | class | `DeclaredComponent` | `@dataclass` | `src/docu/conformance/model.py#L44-L49` |
 | class | `ArchitectureModel` | `@dataclass` | `src/docu/conformance/model.py#L53-L79` |
-| class | `SourceKind` | — | `src/docu/core/contracts.py#L35-L42` |
-| class | `SymbolKind` | — | `src/docu/core/contracts.py#L45-L57` |
-| class | `DocState` | — | `src/docu/core/contracts.py#L60-L68` |
-| class | `Mode` | — | `src/docu/core/contracts.py#L71-L76` |
-| class | `GateOutcome` | — | `src/docu/core/contracts.py#L79-L84` |
-| class | `Artifact` | `@dataclass` | `src/docu/core/contracts.py#L91-L114` |
-| class | `Symbol` | `@dataclass` | `src/docu/core/contracts.py#L118-L134` |
-| class | `Chunk` | `@dataclass` | `src/docu/core/contracts.py#L141-L196` |
-| class | `Claim` | `@dataclass` | `src/docu/core/contracts.py#L203-L214` |
-| class | `ContentNode` | `@dataclass` | `src/docu/core/contracts.py#L218-L240` |
-| class | `Metrics` | `@dataclass` | `src/docu/core/contracts.py#L247-L257` |
-| class | `GateDecision` | `@dataclass` | `src/docu/core/contracts.py#L261-L274` |
-| class | `RunRecord` | `@dataclass` | `src/docu/core/contracts.py#L281-L325` |
-| class | `FreshnessRecord` | `@dataclass` | `src/docu/core/contracts.py#L332-L344` |
+| class | `SourceKind` | — | `src/docu/core/contracts.py#L36-L43` |
+| class | `SymbolKind` | — | `src/docu/core/contracts.py#L46-L58` |
+| class | `DocState` | — | `src/docu/core/contracts.py#L61-L69` |
+| class | `Mode` | — | `src/docu/core/contracts.py#L72-L77` |
+| class | `GateOutcome` | — | `src/docu/core/contracts.py#L80-L85` |
+| class | `Artifact` | `@dataclass` | `src/docu/core/contracts.py#L92-L115` |
+| class | `Symbol` | `@dataclass` | `src/docu/core/contracts.py#L119-L135` |
+| class | `Chunk` | `@dataclass` | `src/docu/core/contracts.py#L142-L197` |
+| class | `Claim` | `@dataclass` | `src/docu/core/contracts.py#L204-L215` |
+| class | `ContentNode` | `@dataclass` | `src/docu/core/contracts.py#L219-L241` |
+| class | `Metrics` | `@dataclass` | `src/docu/core/contracts.py#L248-L258` |
+| class | `GateDecision` | `@dataclass` | `src/docu/core/contracts.py#L262-L275` |
+| class | `RunRecord` | `@dataclass` | `src/docu/core/contracts.py#L282-L326` |
+| class | `FreshnessRecord` | `@dataclass` | `src/docu/core/contracts.py#L333-L345` |
 | class | `BudgetExhausted` | — | `src/docu/core/policy.py#L15-L16` |
 | class | `Thresholds` | `@dataclass` | `src/docu/core/policy.py#L20-L34` |
 | class | `Budget` | `@dataclass` | `src/docu/core/policy.py#L38-L72` |
@@ -687,15 +687,15 @@ erDiagram
 | class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L289-L300` |
 | class | `ExitCode` | — | `src/docu/delivery/exit_codes.py#L8-L16` |
 | class | `_Handler` | — | `src/docu/delivery/http_server.py#L26-L89` |
-| class | `ProjectRef` | `@dataclass` | `src/docu/delivery/mcp_server.py#L163-L187` |
-| class | `ToolError` | — | `src/docu/delivery/mcp_server.py#L205-L206` |
-| class | `McpServer` | `@dataclass` | `src/docu/delivery/mcp_server.py#L210-L625` |
+| class | `ProjectRef` | `@dataclass` | `src/docu/delivery/mcp_server.py#L164-L188` |
+| class | `ToolError` | — | `src/docu/delivery/mcp_server.py#L206-L207` |
+| class | `McpServer` | `@dataclass` | `src/docu/delivery/mcp_server.py#L211-L626` |
 | class | `Diagram` | `@dataclass` | `src/docu/generate/diagrams.py#L40-L50` |
 | class | `DocSection` | `@dataclass` | `src/docu/generate/docs_evidence.py#L49-L73` |
 | class | `Fact` | `@dataclass` | `src/docu/generate/facts.py#L29-L44` |
 | class | `Narrative` | `@dataclass` | `src/docu/generate/narrative.py#L48-L57` |
-| class | `GeneratedDoc` | `@dataclass` | `src/docu/generate/pipeline.py#L89-L92` |
-| class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L96-L121` |
+| class | `GeneratedDoc` | `@dataclass` | `src/docu/generate/pipeline.py#L91-L94` |
+| class | `GenerationResult` | `@dataclass` | `src/docu/generate/pipeline.py#L98-L123` |
 | class | `ProseResponse` | `@dataclass` | `src/docu/generate/prose.py#L51-L61` |
 | class | `Verdict` | `@dataclass` | `src/docu/generate/prose.py#L65-L76` |
 | class | `SymbolChunker` | `@dataclass` | `src/docu/index/chunker.py#L46-L220` |
@@ -715,8 +715,8 @@ erDiagram
 | class | `Page` | `@dataclass` | `src/docu/publish/site.py#L124-L127` |
 | class | `CodeChunk` | `@dataclass` | `src/docu/retrieve/hybrid.py#L33-L59` |
 | class | `CodeIndex` | `@dataclass` | `src/docu/retrieve/hybrid.py#L113-L253` |
-| class | `Section` | `@dataclass` | `src/docu/retrieve/search.py#L65-L86` |
-| class | `DocIndex` | `@dataclass` | `src/docu/retrieve/search.py#L123-L193` |
+| class | `Section` | `@dataclass` | `src/docu/retrieve/search.py#L68-L89` |
+| class | `DocIndex` | `@dataclass` | `src/docu/retrieve/search.py#L126-L196` |
 
 ## 10. Diccionario de datos
 
@@ -799,33 +799,33 @@ erDiagram
 | `OnnxEmbedder` | `_tokenizer` | `object | None` | — | `src/docu/adapters/embedders/onnx_local.py#L48-L48` |
 | `OnnxEmbedder` | `_input_names` | `tuple[str, ...]` | — | `src/docu/adapters/embedders/onnx_local.py#L49-L49` |
 | `OnnxEmbedder` | `_dim` | `int` | — | `src/docu/adapters/embedders/onnx_local.py#L50-L50` |
-| `JavaLangAdapter` | `language` | `str` | — | `src/docu/adapters/langs/java.py#L370-L370` |
-| `JavaLangAdapter` | `file_globs` | `tuple[str, ...]` | — | `src/docu/adapters/langs/java.py#L371-L371` |
+| `JavaLangAdapter` | `language` | `str` | — | `src/docu/adapters/langs/java.py#L369-L369` |
+| `JavaLangAdapter` | `file_globs` | `tuple[str, ...]` | — | `src/docu/adapters/langs/java.py#L370-L370` |
 | `PythonLangAdapter` | `language` | `str` | — | `src/docu/adapters/langs/python.py#L22-L22` |
 | `PythonLangAdapter` | `file_globs` | `tuple[str, ...]` | — | `src/docu/adapters/langs/python.py#L23-L23` |
-| `TypeScriptLangAdapter` | `language` | `str` | — | `src/docu/adapters/langs/typescript.py#L89-L89` |
-| `TypeScriptLangAdapter` | `file_globs` | `tuple[str, ...]` | — | `src/docu/adapters/langs/typescript.py#L90-L90` |
-| `PdfPage` | `number` | `int` | — | `src/docu/adapters/sources/pdf.py#L122-L122` |
-| `PdfPage` | `text` | `str` | — | `src/docu/adapters/sources/pdf.py#L123-L123` |
-| `PdfText` | `pages` | `tuple[PdfPage, ...]` | — | `src/docu/adapters/sources/pdf.py#L128-L128` |
-| `PdfText` | `total_pages` | `int` | — | `src/docu/adapters/sources/pdf.py#L129-L129` |
-| `PdfText` | `chars` | `int` | — | `src/docu/adapters/sources/pdf.py#L130-L130` |
-| `PdfText` | `method` | `str` | — | `src/docu/adapters/sources/pdf.py#L131-L131` |
-| `PdfText` | `warnings` | `tuple[str, ...]` | — | `src/docu/adapters/sources/pdf.py#L132-L132` |
-| `Snapshot` | `url` | `str` | — | `src/docu/adapters/sources/web.py#L45-L45` |
-| `Snapshot` | `text` | `str` | — | `src/docu/adapters/sources/web.py#L46-L46` |
-| `Snapshot` | `sha` | `str` | — | `src/docu/adapters/sources/web.py#L47-L47` |
-| `Snapshot` | `captured_at` | `str` | — | `src/docu/adapters/sources/web.py#L48-L48` |
-| `Snapshot` | `status_code` | `int` | — | `src/docu/adapters/sources/web.py#L49-L49` |
-| `Check` | `name` | `str` | — | `src/docu/audit/verify.py#L44-L44` |
-| `Check` | `total` | `int` | — | `src/docu/audit/verify.py#L45-L45` |
-| `Check` | `failed` | `int` | — | `src/docu/audit/verify.py#L46-L46` |
-| `Check` | `details` | `tuple[str, ...]` | — | `src/docu/audit/verify.py#L47-L47` |
-| `Check` | `note` | `str` | — | `src/docu/audit/verify.py#L48-L48` |
-| `AuditReport` | `project` | `str` | — | `src/docu/audit/verify.py#L74-L74` |
-| `AuditReport` | `checks` | `dict[str, Check]` | — | `src/docu/audit/verify.py#L75-L75` |
-| `AuditReport` | `facts_total` | `int` | — | `src/docu/audit/verify.py#L77-L77` |
-| `AuditReport` | `excluded` | `dict[str, int]` | — | `src/docu/audit/verify.py#L78-L78` |
+| `TypeScriptLangAdapter` | `language` | `str` | — | `src/docu/adapters/langs/typescript.py#L88-L88` |
+| `TypeScriptLangAdapter` | `file_globs` | `tuple[str, ...]` | — | `src/docu/adapters/langs/typescript.py#L89-L89` |
+| `PdfPage` | `number` | `int` | — | `src/docu/adapters/sources/pdf.py#L120-L120` |
+| `PdfPage` | `text` | `str` | — | `src/docu/adapters/sources/pdf.py#L121-L121` |
+| `PdfText` | `pages` | `tuple[PdfPage, ...]` | — | `src/docu/adapters/sources/pdf.py#L126-L126` |
+| `PdfText` | `total_pages` | `int` | — | `src/docu/adapters/sources/pdf.py#L127-L127` |
+| `PdfText` | `chars` | `int` | — | `src/docu/adapters/sources/pdf.py#L128-L128` |
+| `PdfText` | `method` | `str` | — | `src/docu/adapters/sources/pdf.py#L129-L129` |
+| `PdfText` | `warnings` | `tuple[str, ...]` | — | `src/docu/adapters/sources/pdf.py#L130-L130` |
+| `Snapshot` | `url` | `str` | — | `src/docu/adapters/sources/web.py#L44-L44` |
+| `Snapshot` | `text` | `str` | — | `src/docu/adapters/sources/web.py#L45-L45` |
+| `Snapshot` | `sha` | `str` | — | `src/docu/adapters/sources/web.py#L46-L46` |
+| `Snapshot` | `captured_at` | `str` | — | `src/docu/adapters/sources/web.py#L47-L47` |
+| `Snapshot` | `status_code` | `int` | — | `src/docu/adapters/sources/web.py#L48-L48` |
+| `Check` | `name` | `str` | — | `src/docu/audit/verify.py#L43-L43` |
+| `Check` | `total` | `int` | — | `src/docu/audit/verify.py#L44-L44` |
+| `Check` | `failed` | `int` | — | `src/docu/audit/verify.py#L45-L45` |
+| `Check` | `details` | `tuple[str, ...]` | — | `src/docu/audit/verify.py#L46-L46` |
+| `Check` | `note` | `str` | — | `src/docu/audit/verify.py#L47-L47` |
+| `AuditReport` | `project` | `str` | — | `src/docu/audit/verify.py#L73-L73` |
+| `AuditReport` | `checks` | `dict[str, Check]` | — | `src/docu/audit/verify.py#L74-L74` |
+| `AuditReport` | `facts_total` | `int` | — | `src/docu/audit/verify.py#L76-L76` |
+| `AuditReport` | `excluded` | `dict[str, int]` | — | `src/docu/audit/verify.py#L77-L77` |
 | `Discrepancy` | `kind` | `str` | — | `src/docu/conformance/drift.py#L39-L39` |
 | `Discrepancy` | `subject` | `str` | — | `src/docu/conformance/drift.py#L40-L40` |
 | `Discrepancy` | `detail` | `str` | — | `src/docu/conformance/drift.py#L41-L41` |
@@ -852,85 +852,85 @@ erDiagram
 | `ArchitectureModel` | `routes` | `tuple[Route, ...]` | — | `src/docu/conformance/model.py#L55-L55` |
 | `ArchitectureModel` | `sources` | `tuple[str, ...]` | — | `src/docu/conformance/model.py#L56-L56` |
 | `ArchitectureModel` | `schema_version` | `str` | — | `src/docu/conformance/model.py#L57-L57` |
-| `Artifact` | `artifact_id` | `str` | — | `src/docu/core/contracts.py#L98-L98` |
-| `Artifact` | `kind` | `SourceKind` | — | `src/docu/core/contracts.py#L99-L99` |
-| `Artifact` | `uri` | `str` | — | `src/docu/core/contracts.py#L100-L100` |
-| `Artifact` | `content_hash` | `str` | — | `src/docu/core/contracts.py#L101-L101` |
-| `Artifact` | `captured_at` | `datetime` | — | `src/docu/core/contracts.py#L102-L102` |
-| `Artifact` | `lang` | `str | None` | — | `src/docu/core/contracts.py#L103-L103` |
-| `Artifact` | `snapshot_path` | `str | None` | — | `src/docu/core/contracts.py#L104-L104` |
-| `Artifact` | `metadata` | `Mapping[str, Any]` | — | `src/docu/core/contracts.py#L105-L105` |
-| `Artifact` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L106-L106` |
-| `Symbol` | `name` | `str` | — | `src/docu/core/contracts.py#L121-L121` |
-| `Symbol` | `qualname` | `str` | — | `src/docu/core/contracts.py#L122-L122` |
-| `Symbol` | `kind` | `SymbolKind` | — | `src/docu/core/contracts.py#L123-L123` |
-| `Symbol` | `path` | `str` | — | `src/docu/core/contracts.py#L124-L124` |
-| `Symbol` | `line_start` | `int` | — | `src/docu/core/contracts.py#L125-L125` |
-| `Symbol` | `line_end` | `int` | — | `src/docu/core/contracts.py#L126-L126` |
-| `Symbol` | `signature` | `str | None` | — | `src/docu/core/contracts.py#L127-L127` |
-| `Symbol` | `children` | `Sequence['Symbol']` | — | `src/docu/core/contracts.py#L128-L128` |
-| `Symbol` | `annotations` | `Sequence[str]` | — | `src/docu/core/contracts.py#L129-L129` |
-| `Symbol` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L130-L130` |
-| `Chunk` | `chunk_id` | `str` | — | `src/docu/core/contracts.py#L144-L144` |
-| `Chunk` | `artifact_id` | `str` | — | `src/docu/core/contracts.py#L145-L145` |
-| `Chunk` | `source_type` | `SourceKind` | — | `src/docu/core/contracts.py#L146-L146` |
-| `Chunk` | `content` | `str` | — | `src/docu/core/contracts.py#L147-L147` |
-| `Chunk` | `content_prefix` | `str` | — | `src/docu/core/contracts.py#L148-L148` |
-| `Chunk` | `content_hash` | `str` | — | `src/docu/core/contracts.py#L149-L149` |
-| `Chunk` | `file_path` | `str` | — | `src/docu/core/contracts.py#L150-L150` |
-| `Chunk` | `lang` | `str | None` | — | `src/docu/core/contracts.py#L151-L151` |
-| `Chunk` | `enclosing_symbol` | `str | None` | — | `src/docu/core/contracts.py#L152-L152` |
-| `Chunk` | `symbol_kind` | `SymbolKind` | — | `src/docu/core/contracts.py#L153-L153` |
-| `Chunk` | `line_start` | `int` | — | `src/docu/core/contracts.py#L154-L154` |
-| `Chunk` | `line_end` | `int` | — | `src/docu/core/contracts.py#L155-L155` |
-| `Chunk` | `ingested_at` | `datetime` | — | `src/docu/core/contracts.py#L156-L156` |
-| `Chunk` | `repo` | `str | None` | — | `src/docu/core/contracts.py#L157-L157` |
-| `Chunk` | `commit` | `str | None` | — | `src/docu/core/contracts.py#L158-L158` |
-| `Chunk` | `dependencies` | `Sequence[str]` | — | `src/docu/core/contracts.py#L159-L159` |
-| `Chunk` | `embed_model` | `str | None` | — | `src/docu/core/contracts.py#L160-L160` |
-| `Chunk` | `chunker` | `str` | — | `src/docu/core/contracts.py#L161-L161` |
-| `Chunk` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L162-L162` |
-| `Claim` | `text` | `str` | — | `src/docu/core/contracts.py#L209-L209` |
-| `Claim` | `evidence` | `Sequence[str]` | — | `src/docu/core/contracts.py#L210-L210` |
-| `ContentNode` | `node_id` | `str` | — | `src/docu/core/contracts.py#L225-L225` |
-| `ContentNode` | `kind` | `str` | — | `src/docu/core/contracts.py#L226-L226` |
-| `ContentNode` | `title` | `str` | — | `src/docu/core/contracts.py#L227-L227` |
-| `ContentNode` | `claims` | `list[Claim]` | — | `src/docu/core/contracts.py#L228-L228` |
-| `ContentNode` | `levels` | `tuple[str, ...]` | — | `src/docu/core/contracts.py#L229-L229` |
-| `ContentNode` | `state` | `DocState` | — | `src/docu/core/contracts.py#L230-L230` |
-| `ContentNode` | `confidence` | `float` | — | `src/docu/core/contracts.py#L231-L231` |
-| `ContentNode` | `rendered` | `dict[str, str]` | — | `src/docu/core/contracts.py#L232-L232` |
-| `ContentNode` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L233-L233` |
-| `Metrics` | `accuracy` | `float` | — | `src/docu/core/contracts.py#L250-L250` |
-| `Metrics` | `completeness` | `float` | — | `src/docu/core/contracts.py#L251-L251` |
-| `Metrics` | `attribution` | `float` | — | `src/docu/core/contracts.py#L252-L252` |
-| `Metrics` | `conciseness` | `float` | — | `src/docu/core/contracts.py#L253-L253` |
-| `Metrics` | `freshness` | `float` | — | `src/docu/core/contracts.py#L254-L254` |
-| `Metrics` | `cost_usd` | `float` | — | `src/docu/core/contracts.py#L255-L255` |
-| `Metrics` | `unsupported_claims` | `int` | — | `src/docu/core/contracts.py#L256-L256` |
-| `Metrics` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L257-L257` |
-| `GateDecision` | `outcome` | `GateOutcome` | — | `src/docu/core/contracts.py#L264-L264` |
-| `GateDecision` | `reasons` | `tuple[str, ...]` | — | `src/docu/core/contracts.py#L265-L265` |
-| `RunRecord` | `run_id` | `str` | — | `src/docu/core/contracts.py#L284-L284` |
-| `RunRecord` | `project` | `str` | — | `src/docu/core/contracts.py#L285-L285` |
-| `RunRecord` | `commit` | `str | None` | — | `src/docu/core/contracts.py#L286-L286` |
-| `RunRecord` | `mode` | `Mode` | — | `src/docu/core/contracts.py#L287-L287` |
-| `RunRecord` | `started_at` | `datetime` | — | `src/docu/core/contracts.py#L288-L288` |
-| `RunRecord` | `finished_at` | `datetime | None` | — | `src/docu/core/contracts.py#L289-L289` |
-| `RunRecord` | `versions` | `dict[str, str]` | — | `src/docu/core/contracts.py#L290-L290` |
-| `RunRecord` | `metrics` | `Metrics | None` | — | `src/docu/core/contracts.py#L291-L291` |
-| `RunRecord` | `gate` | `GateDecision | None` | — | `src/docu/core/contracts.py#L292-L292` |
-| `RunRecord` | `pages_written` | `int` | — | `src/docu/core/contracts.py#L293-L293` |
-| `RunRecord` | `pages_skipped` | `int` | — | `src/docu/core/contracts.py#L294-L294` |
-| `RunRecord` | `cost_usd` | `float` | — | `src/docu/core/contracts.py#L295-L295` |
-| `RunRecord` | `errors` | `list[str]` | — | `src/docu/core/contracts.py#L296-L296` |
-| `RunRecord` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L297-L297` |
-| `FreshnessRecord` | `node_id` | `str` | — | `src/docu/core/contracts.py#L335-L335` |
-| `FreshnessRecord` | `input_hash` | `str` | — | `src/docu/core/contracts.py#L336-L336` |
-| `FreshnessRecord` | `state` | `DocState` | — | `src/docu/core/contracts.py#L337-L337` |
-| `FreshnessRecord` | `generated_at` | `datetime` | — | `src/docu/core/contracts.py#L338-L338` |
-| `FreshnessRecord` | `ttl_days` | `int` | — | `src/docu/core/contracts.py#L339-L339` |
-| `FreshnessRecord` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L340-L340` |
+| `Artifact` | `artifact_id` | `str` | — | `src/docu/core/contracts.py#L99-L99` |
+| `Artifact` | `kind` | `SourceKind` | — | `src/docu/core/contracts.py#L100-L100` |
+| `Artifact` | `uri` | `str` | — | `src/docu/core/contracts.py#L101-L101` |
+| `Artifact` | `content_hash` | `str` | — | `src/docu/core/contracts.py#L102-L102` |
+| `Artifact` | `captured_at` | `datetime` | — | `src/docu/core/contracts.py#L103-L103` |
+| `Artifact` | `lang` | `str | None` | — | `src/docu/core/contracts.py#L104-L104` |
+| `Artifact` | `snapshot_path` | `str | None` | — | `src/docu/core/contracts.py#L105-L105` |
+| `Artifact` | `metadata` | `Mapping[str, Any]` | — | `src/docu/core/contracts.py#L106-L106` |
+| `Artifact` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L107-L107` |
+| `Symbol` | `name` | `str` | — | `src/docu/core/contracts.py#L122-L122` |
+| `Symbol` | `qualname` | `str` | — | `src/docu/core/contracts.py#L123-L123` |
+| `Symbol` | `kind` | `SymbolKind` | — | `src/docu/core/contracts.py#L124-L124` |
+| `Symbol` | `path` | `str` | — | `src/docu/core/contracts.py#L125-L125` |
+| `Symbol` | `line_start` | `int` | — | `src/docu/core/contracts.py#L126-L126` |
+| `Symbol` | `line_end` | `int` | — | `src/docu/core/contracts.py#L127-L127` |
+| `Symbol` | `signature` | `str | None` | — | `src/docu/core/contracts.py#L128-L128` |
+| `Symbol` | `children` | `Sequence[Symbol]` | — | `src/docu/core/contracts.py#L129-L129` |
+| `Symbol` | `annotations` | `Sequence[str]` | — | `src/docu/core/contracts.py#L130-L130` |
+| `Symbol` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L131-L131` |
+| `Chunk` | `chunk_id` | `str` | — | `src/docu/core/contracts.py#L145-L145` |
+| `Chunk` | `artifact_id` | `str` | — | `src/docu/core/contracts.py#L146-L146` |
+| `Chunk` | `source_type` | `SourceKind` | — | `src/docu/core/contracts.py#L147-L147` |
+| `Chunk` | `content` | `str` | — | `src/docu/core/contracts.py#L148-L148` |
+| `Chunk` | `content_prefix` | `str` | — | `src/docu/core/contracts.py#L149-L149` |
+| `Chunk` | `content_hash` | `str` | — | `src/docu/core/contracts.py#L150-L150` |
+| `Chunk` | `file_path` | `str` | — | `src/docu/core/contracts.py#L151-L151` |
+| `Chunk` | `lang` | `str | None` | — | `src/docu/core/contracts.py#L152-L152` |
+| `Chunk` | `enclosing_symbol` | `str | None` | — | `src/docu/core/contracts.py#L153-L153` |
+| `Chunk` | `symbol_kind` | `SymbolKind` | — | `src/docu/core/contracts.py#L154-L154` |
+| `Chunk` | `line_start` | `int` | — | `src/docu/core/contracts.py#L155-L155` |
+| `Chunk` | `line_end` | `int` | — | `src/docu/core/contracts.py#L156-L156` |
+| `Chunk` | `ingested_at` | `datetime` | — | `src/docu/core/contracts.py#L157-L157` |
+| `Chunk` | `repo` | `str | None` | — | `src/docu/core/contracts.py#L158-L158` |
+| `Chunk` | `commit` | `str | None` | — | `src/docu/core/contracts.py#L159-L159` |
+| `Chunk` | `dependencies` | `Sequence[str]` | — | `src/docu/core/contracts.py#L160-L160` |
+| `Chunk` | `embed_model` | `str | None` | — | `src/docu/core/contracts.py#L161-L161` |
+| `Chunk` | `chunker` | `str` | — | `src/docu/core/contracts.py#L162-L162` |
+| `Chunk` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L163-L163` |
+| `Claim` | `text` | `str` | — | `src/docu/core/contracts.py#L210-L210` |
+| `Claim` | `evidence` | `Sequence[str]` | — | `src/docu/core/contracts.py#L211-L211` |
+| `ContentNode` | `node_id` | `str` | — | `src/docu/core/contracts.py#L226-L226` |
+| `ContentNode` | `kind` | `str` | — | `src/docu/core/contracts.py#L227-L227` |
+| `ContentNode` | `title` | `str` | — | `src/docu/core/contracts.py#L228-L228` |
+| `ContentNode` | `claims` | `list[Claim]` | — | `src/docu/core/contracts.py#L229-L229` |
+| `ContentNode` | `levels` | `tuple[str, ...]` | — | `src/docu/core/contracts.py#L230-L230` |
+| `ContentNode` | `state` | `DocState` | — | `src/docu/core/contracts.py#L231-L231` |
+| `ContentNode` | `confidence` | `float` | — | `src/docu/core/contracts.py#L232-L232` |
+| `ContentNode` | `rendered` | `dict[str, str]` | — | `src/docu/core/contracts.py#L233-L233` |
+| `ContentNode` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L234-L234` |
+| `Metrics` | `accuracy` | `float` | — | `src/docu/core/contracts.py#L251-L251` |
+| `Metrics` | `completeness` | `float` | — | `src/docu/core/contracts.py#L252-L252` |
+| `Metrics` | `attribution` | `float` | — | `src/docu/core/contracts.py#L253-L253` |
+| `Metrics` | `conciseness` | `float` | — | `src/docu/core/contracts.py#L254-L254` |
+| `Metrics` | `freshness` | `float` | — | `src/docu/core/contracts.py#L255-L255` |
+| `Metrics` | `cost_usd` | `float` | — | `src/docu/core/contracts.py#L256-L256` |
+| `Metrics` | `unsupported_claims` | `int` | — | `src/docu/core/contracts.py#L257-L257` |
+| `Metrics` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L258-L258` |
+| `GateDecision` | `outcome` | `GateOutcome` | — | `src/docu/core/contracts.py#L265-L265` |
+| `GateDecision` | `reasons` | `tuple[str, ...]` | — | `src/docu/core/contracts.py#L266-L266` |
+| `RunRecord` | `run_id` | `str` | — | `src/docu/core/contracts.py#L285-L285` |
+| `RunRecord` | `project` | `str` | — | `src/docu/core/contracts.py#L286-L286` |
+| `RunRecord` | `commit` | `str | None` | — | `src/docu/core/contracts.py#L287-L287` |
+| `RunRecord` | `mode` | `Mode` | — | `src/docu/core/contracts.py#L288-L288` |
+| `RunRecord` | `started_at` | `datetime` | — | `src/docu/core/contracts.py#L289-L289` |
+| `RunRecord` | `finished_at` | `datetime | None` | — | `src/docu/core/contracts.py#L290-L290` |
+| `RunRecord` | `versions` | `dict[str, str]` | — | `src/docu/core/contracts.py#L291-L291` |
+| `RunRecord` | `metrics` | `Metrics | None` | — | `src/docu/core/contracts.py#L292-L292` |
+| `RunRecord` | `gate` | `GateDecision | None` | — | `src/docu/core/contracts.py#L293-L293` |
+| `RunRecord` | `pages_written` | `int` | — | `src/docu/core/contracts.py#L294-L294` |
+| `RunRecord` | `pages_skipped` | `int` | — | `src/docu/core/contracts.py#L295-L295` |
+| `RunRecord` | `cost_usd` | `float` | — | `src/docu/core/contracts.py#L296-L296` |
+| `RunRecord` | `errors` | `list[str]` | — | `src/docu/core/contracts.py#L297-L297` |
+| `RunRecord` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L298-L298` |
+| `FreshnessRecord` | `node_id` | `str` | — | `src/docu/core/contracts.py#L336-L336` |
+| `FreshnessRecord` | `input_hash` | `str` | — | `src/docu/core/contracts.py#L337-L337` |
+| `FreshnessRecord` | `state` | `DocState` | — | `src/docu/core/contracts.py#L338-L338` |
+| `FreshnessRecord` | `generated_at` | `datetime` | — | `src/docu/core/contracts.py#L339-L339` |
+| `FreshnessRecord` | `ttl_days` | `int` | — | `src/docu/core/contracts.py#L340-L340` |
+| `FreshnessRecord` | `schema_version` | `str` | — | `src/docu/core/contracts.py#L341-L341` |
 | `Thresholds` | `accuracy` | `float` | — | `src/docu/core/policy.py#L23-L23` |
 | `Thresholds` | `completeness` | `float` | — | `src/docu/core/policy.py#L24-L24` |
 | `Thresholds` | `attribution` | `float` | — | `src/docu/core/policy.py#L25-L25` |
@@ -998,18 +998,18 @@ erDiagram
 | `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L300-L300` |
 | `_Handler` | `server_version` | `sin tipo declarado` | — | `src/docu/delivery/http_server.py#L27-L27` |
 | `_Handler` | `mcp` | `McpServer` | — | `src/docu/delivery/http_server.py#L28-L28` |
-| `ProjectRef` | `name` | `str` | — | `src/docu/delivery/mcp_server.py#L166-L166` |
-| `ProjectRef` | `root` | `Path` | — | `src/docu/delivery/mcp_server.py#L167-L167` |
-| `ProjectRef` | `docs_dir` | `Path` | — | `src/docu/delivery/mcp_server.py#L168-L168` |
-| `McpServer` | `root` | `Path` | — | `src/docu/delivery/mcp_server.py#L218-L218` |
-| `McpServer` | `docs_dir` | `Path` | — | `src/docu/delivery/mcp_server.py#L219-L219` |
-| `McpServer` | `manifest_path` | `Path | None` | — | `src/docu/delivery/mcp_server.py#L220-L220` |
-| `McpServer` | `profile_path` | `Path | None` | — | `src/docu/delivery/mcp_server.py#L221-L221` |
-| `McpServer` | `workspace` | `Path | None` | — | `src/docu/delivery/mcp_server.py#L222-L222` |
-| `McpServer` | `dense` | `bool` | — | `src/docu/delivery/mcp_server.py#L223-L223` |
-| `McpServer` | `_refs` | `dict[str, ProjectRef]` | — | `src/docu/delivery/mcp_server.py#L224-L224` |
-| `McpServer` | `_indexes` | `dict[str, DocIndex]` | — | `src/docu/delivery/mcp_server.py#L225-L225` |
-| `McpServer` | `_code_indexes` | `dict[str, object]` | — | `src/docu/delivery/mcp_server.py#L226-L226` |
+| `ProjectRef` | `name` | `str` | — | `src/docu/delivery/mcp_server.py#L167-L167` |
+| `ProjectRef` | `root` | `Path` | — | `src/docu/delivery/mcp_server.py#L168-L168` |
+| `ProjectRef` | `docs_dir` | `Path` | — | `src/docu/delivery/mcp_server.py#L169-L169` |
+| `McpServer` | `root` | `Path` | — | `src/docu/delivery/mcp_server.py#L219-L219` |
+| `McpServer` | `docs_dir` | `Path` | — | `src/docu/delivery/mcp_server.py#L220-L220` |
+| `McpServer` | `manifest_path` | `Path | None` | — | `src/docu/delivery/mcp_server.py#L221-L221` |
+| `McpServer` | `profile_path` | `Path | None` | — | `src/docu/delivery/mcp_server.py#L222-L222` |
+| `McpServer` | `workspace` | `Path | None` | — | `src/docu/delivery/mcp_server.py#L223-L223` |
+| `McpServer` | `dense` | `bool` | — | `src/docu/delivery/mcp_server.py#L224-L224` |
+| `McpServer` | `_refs` | `dict[str, ProjectRef]` | — | `src/docu/delivery/mcp_server.py#L225-L225` |
+| `McpServer` | `_indexes` | `dict[str, DocIndex]` | — | `src/docu/delivery/mcp_server.py#L226-L226` |
+| `McpServer` | `_code_indexes` | `dict[str, object]` | — | `src/docu/delivery/mcp_server.py#L227-L227` |
 | `Diagram` | `name` | `str` | — | `src/docu/generate/diagrams.py#L43-L43` |
 | `Diagram` | `kind` | `str` | — | `src/docu/generate/diagrams.py#L44-L44` |
 | `Diagram` | `mermaid` | `str` | — | `src/docu/generate/diagrams.py#L45-L45` |
@@ -1027,23 +1027,23 @@ erDiagram
 | `Narrative` | `intent` | `list[Fact]` | — | `src/docu/generate/narrative.py#L51-L51` |
 | `Narrative` | `decisions` | `list[Fact]` | — | `src/docu/generate/narrative.py#L52-L52` |
 | `Narrative` | `intro` | `str` | — | `src/docu/generate/narrative.py#L53-L53` |
-| `GeneratedDoc` | `level` | `str` | — | `src/docu/generate/pipeline.py#L90-L90` |
-| `GeneratedDoc` | `path` | `Path` | — | `src/docu/generate/pipeline.py#L91-L91` |
-| `GeneratedDoc` | `content` | `str` | — | `src/docu/generate/pipeline.py#L92-L92` |
-| `GenerationResult` | `project` | `str` | — | `src/docu/generate/pipeline.py#L97-L97` |
-| `GenerationResult` | `docs` | `tuple[GeneratedDoc, ...]` | — | `src/docu/generate/pipeline.py#L98-L98` |
-| `GenerationResult` | `facts` | `tuple[Fact, ...]` | — | `src/docu/generate/pipeline.py#L99-L99` |
-| `GenerationResult` | `sources` | `Mapping[str, str]` | — | `src/docu/generate/pipeline.py#L100-L100` |
-| `GenerationResult` | `metrics` | `Metrics` | — | `src/docu/generate/pipeline.py#L101-L101` |
-| `GenerationResult` | `gate` | `GateDecision` | — | `src/docu/generate/pipeline.py#L102-L102` |
-| `GenerationResult` | `elapsed_s` | `float` | — | `src/docu/generate/pipeline.py#L103-L103` |
-| `GenerationResult` | `unsupported` | `tuple[Fact, ...]` | — | `src/docu/generate/pipeline.py#L104-L104` |
-| `GenerationResult` | `states` | `Mapping[str, DocState]` | — | `src/docu/generate/pipeline.py#L105-L105` |
-| `GenerationResult` | `manifest_path` | `Path | None` | — | `src/docu/generate/pipeline.py#L106-L106` |
-| `GenerationResult` | `applicability` | `Mapping[str, bool]` | — | `src/docu/generate/pipeline.py#L107-L107` |
-| `GenerationResult` | `unsupported_languages` | `Mapping[str, int]` | — | `src/docu/generate/pipeline.py#L108-L108` |
-| `GenerationResult` | `diagrams` | `tuple[str, ...]` | — | `src/docu/generate/pipeline.py#L109-L109` |
-| `GenerationResult` | `dry_run` | `bool` | — | `src/docu/generate/pipeline.py#L110-L110` |
+| `GeneratedDoc` | `level` | `str` | — | `src/docu/generate/pipeline.py#L92-L92` |
+| `GeneratedDoc` | `path` | `Path` | — | `src/docu/generate/pipeline.py#L93-L93` |
+| `GeneratedDoc` | `content` | `str` | — | `src/docu/generate/pipeline.py#L94-L94` |
+| `GenerationResult` | `project` | `str` | — | `src/docu/generate/pipeline.py#L99-L99` |
+| `GenerationResult` | `docs` | `tuple[GeneratedDoc, ...]` | — | `src/docu/generate/pipeline.py#L100-L100` |
+| `GenerationResult` | `facts` | `tuple[Fact, ...]` | — | `src/docu/generate/pipeline.py#L101-L101` |
+| `GenerationResult` | `sources` | `Mapping[str, str]` | — | `src/docu/generate/pipeline.py#L102-L102` |
+| `GenerationResult` | `metrics` | `Metrics` | — | `src/docu/generate/pipeline.py#L103-L103` |
+| `GenerationResult` | `gate` | `GateDecision` | — | `src/docu/generate/pipeline.py#L104-L104` |
+| `GenerationResult` | `elapsed_s` | `float` | — | `src/docu/generate/pipeline.py#L105-L105` |
+| `GenerationResult` | `unsupported` | `tuple[Fact, ...]` | — | `src/docu/generate/pipeline.py#L106-L106` |
+| `GenerationResult` | `states` | `Mapping[str, DocState]` | — | `src/docu/generate/pipeline.py#L107-L107` |
+| `GenerationResult` | `manifest_path` | `Path | None` | — | `src/docu/generate/pipeline.py#L108-L108` |
+| `GenerationResult` | `applicability` | `Mapping[str, bool]` | — | `src/docu/generate/pipeline.py#L109-L109` |
+| `GenerationResult` | `unsupported_languages` | `Mapping[str, int]` | — | `src/docu/generate/pipeline.py#L110-L110` |
+| `GenerationResult` | `diagrams` | `tuple[str, ...]` | — | `src/docu/generate/pipeline.py#L111-L111` |
+| `GenerationResult` | `dry_run` | `bool` | — | `src/docu/generate/pipeline.py#L112-L112` |
 | `ProseResponse` | `reviewer` | `str` | — | `src/docu/generate/prose.py#L54-L54` |
 | `ProseResponse` | `sections` | `dict[str, list[dict[str, object]]]` | — | `src/docu/generate/prose.py#L55-L55` |
 | `ProseResponse` | `errors` | `list[str]` | — | `src/docu/generate/prose.py#L56-L56` |
@@ -1137,18 +1137,18 @@ erDiagram
 | `CodeIndex` | `_by_name` | `dict[str, list[CodeChunk]]` | — | `src/docu/retrieve/hybrid.py#L124-L124` |
 | `CodeIndex` | `_vectors` | `list[Sequence[float]]` | — | `src/docu/retrieve/hybrid.py#L125-L125` |
 | `CodeIndex` | `_dense_ready` | `bool` | — | `src/docu/retrieve/hybrid.py#L126-L126` |
-| `Section` | `document` | `str` | — | `src/docu/retrieve/search.py#L68-L68` |
-| `Section` | `heading` | `str` | — | `src/docu/retrieve/search.py#L69-L69` |
-| `Section` | `body` | `str` | — | `src/docu/retrieve/search.py#L70-L70` |
-| `Section` | `level` | `str` | — | `src/docu/retrieve/search.py#L71-L71` |
-| `Section` | `tokens` | `tuple[str, ...]` | — | `src/docu/retrieve/search.py#L72-L72` |
-| `Section` | `citations` | `tuple[str, ...]` | — | `src/docu/retrieve/search.py#L73-L73` |
-| `DocIndex` | `sections` | `list[Section]` | — | `src/docu/retrieve/search.py#L126-L126` |
-| `DocIndex` | `k1` | `float` | — | `src/docu/retrieve/search.py#L127-L127` |
-| `DocIndex` | `b` | `float` | — | `src/docu/retrieve/search.py#L128-L128` |
-| `DocIndex` | `glossary` | `Mapping[str, Sequence[str]] | None` | — | `src/docu/retrieve/search.py#L129-L129` |
-| `DocIndex` | `_df` | `dict[str, int]` | — | `src/docu/retrieve/search.py#L130-L130` |
-| `DocIndex` | `_avgdl` | `float` | — | `src/docu/retrieve/search.py#L131-L131` |
+| `Section` | `document` | `str` | — | `src/docu/retrieve/search.py#L71-L71` |
+| `Section` | `heading` | `str` | — | `src/docu/retrieve/search.py#L72-L72` |
+| `Section` | `body` | `str` | — | `src/docu/retrieve/search.py#L73-L73` |
+| `Section` | `level` | `str` | — | `src/docu/retrieve/search.py#L74-L74` |
+| `Section` | `tokens` | `tuple[str, ...]` | — | `src/docu/retrieve/search.py#L75-L75` |
+| `Section` | `citations` | `tuple[str, ...]` | — | `src/docu/retrieve/search.py#L76-L76` |
+| `DocIndex` | `sections` | `list[Section]` | — | `src/docu/retrieve/search.py#L129-L129` |
+| `DocIndex` | `k1` | `float` | — | `src/docu/retrieve/search.py#L130-L130` |
+| `DocIndex` | `b` | `float` | — | `src/docu/retrieve/search.py#L131-L131` |
+| `DocIndex` | `glossary` | `Mapping[str, Sequence[str]] | None` | — | `src/docu/retrieve/search.py#L132-L132` |
+| `DocIndex` | `_df` | `dict[str, int]` | — | `src/docu/retrieve/search.py#L133-L133` |
+| `DocIndex` | `_avgdl` | `float` | — | `src/docu/retrieve/search.py#L134-L134` |
 
 ## 11. Índice de métodos
 
@@ -1217,25 +1217,25 @@ erDiagram
 | `skip_whitespace` | `def skip_whitespace(text: str, start: int, limit: int) -> int` | `src/docu/adapters/langs/_braces.py#L253-L258` |
 | `declaration_start` | `def declaration_start(masked: str, depth: list[int], offset: int, floor: int, level: int) ` | `src/docu/adapters/langs/_braces.py#L261-L278` |
 | `strip_comment_args` | `def strip_comment_args(text: str) -> str` | `src/docu/adapters/langs/_braces.py#L281-L282` |
-| `mask_source` | `def mask_source(source: str) -> str` | `src/docu/adapters/langs/java.py#L60-L115` |
-| `depth_map` | `def depth_map(masked: str) -> list[int]` | `src/docu/adapters/langs/java.py#L118-L128` |
-| `matching_brace` | `def matching_brace(masked: str, open_index: int) -> int` | `src/docu/adapters/langs/java.py#L131-L142` |
-| `_Lines.__init__` | `def __init__(self, source: str) -> None` | `src/docu/adapters/langs/java.py#L148-L152` |
-| `_Lines.line_of` | `def line_of(self, offset: int) -> int` | `src/docu/adapters/langs/java.py#L154-L162` |
-| `annotation_names` | `def annotation_names(text: str) -> tuple[str, ...]` | `src/docu/adapters/langs/java.py#L165-L167` |
-| `route_of` | `def route_of(annotation: str, args: str | None) -> tuple[str, str | None] | None` | `src/docu/adapters/langs/java.py#L170-L182` |
-| `class_level_route` | `def class_level_route(text: str) -> str | None` | `src/docu/adapters/langs/java.py#L185-L191` |
-| `join_paths` | `def join_paths(base: str | None, suffix: str | None) -> str` | `src/docu/adapters/langs/java.py#L194-L202` |
-| `_strip_annotations` | `def _strip_annotations(text: str) -> str` | `src/docu/adapters/langs/java.py#L205-L206` |
-| `_java_fields` | `def _java_fields(masked: str, source: str, depth: list[int], level: int, open_brace: int, ` | `src/docu/adapters/langs/java.py#L209-L268` |
-| `_record_fields` | `def _record_fields(masked: str, source: str, type_name: str, path: str, match_end: int, li` | `src/docu/adapters/langs/java.py#L271-L318` |
-| `_annotation_block` | `def _annotation_block(source: str, start: int, end: int) -> tuple[str, int]` | `src/docu/adapters/langs/java.py#L321-L332` |
-| `_declaration_start` | `def _declaration_start(masked: str, depth: list[int], offset: int, floor: int, level: int)` | `src/docu/adapters/langs/java.py#L335-L352` |
-| `_skip_whitespace` | `def _skip_whitespace(text: str, start: int, limit: int) -> int` | `src/docu/adapters/langs/java.py#L355-L360` |
-| `JavaLangAdapter.symbols` | `def symbols(self, path: str, source: str) -> tuple[Symbol, ...]` | `src/docu/adapters/langs/java.py#L375-L467` |
-| `JavaLangAdapter._members` | `def _members(self) -> tuple[list[Symbol], list[Symbol]]` | `src/docu/adapters/langs/java.py#L469-L555` |
-| `JavaLangAdapter.imports` | `def imports(self, path: str, source: str) -> tuple[str, ...]` | `src/docu/adapters/langs/java.py#L559-L561` |
-| `JavaLangAdapter.calls` | `def calls(self, path: str, source: str) -> tuple[tuple[str, str], ...]` | `src/docu/adapters/langs/java.py#L563-L588` |
+| `mask_source` | `def mask_source(source: str) -> str` | `src/docu/adapters/langs/java.py#L59-L114` |
+| `depth_map` | `def depth_map(masked: str) -> list[int]` | `src/docu/adapters/langs/java.py#L117-L127` |
+| `matching_brace` | `def matching_brace(masked: str, open_index: int) -> int` | `src/docu/adapters/langs/java.py#L130-L141` |
+| `_Lines.__init__` | `def __init__(self, source: str) -> None` | `src/docu/adapters/langs/java.py#L147-L151` |
+| `_Lines.line_of` | `def line_of(self, offset: int) -> int` | `src/docu/adapters/langs/java.py#L153-L161` |
+| `annotation_names` | `def annotation_names(text: str) -> tuple[str, ...]` | `src/docu/adapters/langs/java.py#L164-L166` |
+| `route_of` | `def route_of(annotation: str, args: str | None) -> tuple[str, str | None] | None` | `src/docu/adapters/langs/java.py#L169-L181` |
+| `class_level_route` | `def class_level_route(text: str) -> str | None` | `src/docu/adapters/langs/java.py#L184-L190` |
+| `join_paths` | `def join_paths(base: str | None, suffix: str | None) -> str` | `src/docu/adapters/langs/java.py#L193-L201` |
+| `_strip_annotations` | `def _strip_annotations(text: str) -> str` | `src/docu/adapters/langs/java.py#L204-L205` |
+| `_java_fields` | `def _java_fields(masked: str, source: str, depth: list[int], level: int, open_brace: int, ` | `src/docu/adapters/langs/java.py#L208-L267` |
+| `_record_fields` | `def _record_fields(masked: str, source: str, type_name: str, path: str, match_end: int, li` | `src/docu/adapters/langs/java.py#L270-L317` |
+| `_annotation_block` | `def _annotation_block(source: str, start: int, end: int) -> tuple[str, int]` | `src/docu/adapters/langs/java.py#L320-L331` |
+| `_declaration_start` | `def _declaration_start(masked: str, depth: list[int], offset: int, floor: int, level: int)` | `src/docu/adapters/langs/java.py#L334-L351` |
+| `_skip_whitespace` | `def _skip_whitespace(text: str, start: int, limit: int) -> int` | `src/docu/adapters/langs/java.py#L354-L359` |
+| `JavaLangAdapter.symbols` | `def symbols(self, path: str, source: str) -> tuple[Symbol, ...]` | `src/docu/adapters/langs/java.py#L374-L469` |
+| `JavaLangAdapter._members` | `def _members(self) -> tuple[list[Symbol], list[Symbol]]` | `src/docu/adapters/langs/java.py#L471-L557` |
+| `JavaLangAdapter.imports` | `def imports(self, path: str, source: str) -> tuple[str, ...]` | `src/docu/adapters/langs/java.py#L561-L563` |
+| `JavaLangAdapter.calls` | `def calls(self, path: str, source: str) -> tuple[tuple[str, str], ...]` | `src/docu/adapters/langs/java.py#L565-L590` |
 | `PythonLangAdapter.symbols` | `def symbols(self, path: str, source: str) -> tuple[Symbol, ...]` | `src/docu/adapters/langs/python.py#L27-L39` |
 | `PythonLangAdapter._module_member` | `def _module_member(self, path: str, node: ast.AST, container: str | None) -> Symbol | None` | `src/docu/adapters/langs/python.py#L41-L81` |
 | `PythonLangAdapter._class_field` | `def _class_field(self, path: str, node: ast.AST, container: str) -> Symbol | None` | `src/docu/adapters/langs/python.py#L83-L117` |
@@ -1251,66 +1251,66 @@ erDiagram
 | `_function_table` | `def _function_table(tree: ast.AST) -> list[tuple[str, int, int]]` | `src/docu/adapters/langs/python.py#L275-L294` |
 | `adapter_for` | `def adapter_for(path: str) -> object | None` | `src/docu/adapters/langs/registry.py#L16-L22` |
 | `supported_languages` | `def supported_languages() -> tuple[str, ...]` | `src/docu/adapters/langs/registry.py#L25-L26` |
-| `TypeScriptLangAdapter.symbols` | `def symbols(self, path: str, source: str) -> tuple[Symbol, ...]` | `src/docu/adapters/langs/typescript.py#L94-L190` |
-| `TypeScriptLangAdapter._members` | `def _members(self) -> tuple[list[Symbol], list[Symbol]]` | `src/docu/adapters/langs/typescript.py#L192-L326` |
-| `TypeScriptLangAdapter._express_routes` | `def _express_routes(self, path: str, source: str, masked: str, lines: Lines) -> list[Symbo` | `src/docu/adapters/langs/typescript.py#L328-L406` |
-| `TypeScriptLangAdapter.imports` | `def imports(self, path: str, source: str) -> tuple[str, ...]` | `src/docu/adapters/langs/typescript.py#L408-L409` |
-| `TypeScriptLangAdapter.calls` | `def calls(self, path: str, source: str) -> tuple[tuple[str, str], ...]` | `src/docu/adapters/langs/typescript.py#L411-L424` |
-| `_annotation_block` | `def _annotation_block(source: str, start: int, end: int) -> tuple[str, int]` | `src/docu/adapters/langs/typescript.py#L430-L436` |
-| `_decorators_in` | `def _decorators_in(text: str) -> tuple[str, ...]` | `src/docu/adapters/langs/typescript.py#L439-L442` |
-| `_class_route` | `def _class_route(decorators: tuple[str, ...]) -> str | None` | `src/docu/adapters/langs/typescript.py#L445-L450` |
-| `_route_path` | `def _route_path(text: str, annotation: str) -> str` | `src/docu/adapters/langs/typescript.py#L453-L460` |
-| `_join` | `def _join(base: str | None, route: str) -> str` | `src/docu/adapters/langs/typescript.py#L463-L471` |
+| `TypeScriptLangAdapter.symbols` | `def symbols(self, path: str, source: str) -> tuple[Symbol, ...]` | `src/docu/adapters/langs/typescript.py#L93-L189` |
+| `TypeScriptLangAdapter._members` | `def _members(self) -> tuple[list[Symbol], list[Symbol]]` | `src/docu/adapters/langs/typescript.py#L191-L325` |
+| `TypeScriptLangAdapter._express_routes` | `def _express_routes(self, path: str, source: str, masked: str, lines: Lines) -> list[Symbo` | `src/docu/adapters/langs/typescript.py#L327-L405` |
+| `TypeScriptLangAdapter.imports` | `def imports(self, path: str, source: str) -> tuple[str, ...]` | `src/docu/adapters/langs/typescript.py#L407-L408` |
+| `TypeScriptLangAdapter.calls` | `def calls(self, path: str, source: str) -> tuple[tuple[str, str], ...]` | `src/docu/adapters/langs/typescript.py#L410-L423` |
+| `_annotation_block` | `def _annotation_block(source: str, start: int, end: int) -> tuple[str, int]` | `src/docu/adapters/langs/typescript.py#L429-L435` |
+| `_decorators_in` | `def _decorators_in(text: str) -> tuple[str, ...]` | `src/docu/adapters/langs/typescript.py#L438-L441` |
+| `_class_route` | `def _class_route(decorators: tuple[str, ...]) -> str | None` | `src/docu/adapters/langs/typescript.py#L444-L449` |
+| `_route_path` | `def _route_path(text: str, annotation: str) -> str` | `src/docu/adapters/langs/typescript.py#L452-L459` |
+| `_join` | `def _join(base: str | None, route: str) -> str` | `src/docu/adapters/langs/typescript.py#L462-L470` |
 | `_object_of` | `def _object_of(value: bytes) -> bytes` | `src/docu/adapters/sources/pdf.py#L47-L50` |
 | `_font_map` | `def _font_map(objects: dict[int, bytes]) -> dict[str, tuple[dict[int, str], bool]]` | `src/docu/adapters/sources/pdf.py#L53-L81` |
 | `_decode_with` | `def _decode_with(raw: bytes, cmap: dict[int, str] | None, two_byte: bool) -> str` | `src/docu/adapters/sources/pdf.py#L84-L94` |
-| `_looks_like_garbage` | `def _looks_like_garbage(text: str) -> bool` | `src/docu/adapters/sources/pdf.py#L97-L117` |
-| `PdfText.usable` | `def usable(self) -> bool` | `src/docu/adapters/sources/pdf.py#L135-L139` |
-| `PdfText.status` | `def status(self) -> str` | `src/docu/adapters/sources/pdf.py#L142-L147` |
-| `is_pdf` | `def is_pdf(path: str, data: bytes | None=...) -> bool` | `src/docu/adapters/sources/pdf.py#L150-L153` |
-| `_decode` | `def _decode(stream: bytes) -> bytes` | `src/docu/adapters/sources/pdf.py#L159-L166` |
-| `_objects` | `def _objects(data: bytes) -> dict[int, bytes]` | `src/docu/adapters/sources/pdf.py#L169-L174` |
-| `_stream_of` | `def _stream_of(body: bytes) -> bytes | None` | `src/docu/adapters/sources/pdf.py#L177-L181` |
-| `_parse_cmap` | `def _parse_cmap(text: bytes) -> dict[int, str]` | `src/docu/adapters/sources/pdf.py#L187-L206` |
-| `_cmap_for` | `def _cmap_for(objects: dict[int, bytes]) -> dict[int, str]` | `src/docu/adapters/sources/pdf.py#L209-L232` |
-| `_decode_bytes` | `def _decode_bytes(raw: bytes, cmap: dict[int, str]) -> str` | `src/docu/adapters/sources/pdf.py#L238-L248` |
-| `_literal` | `def _literal(data: bytes, index: int) -> tuple[bytes, int]` | `src/docu/adapters/sources/pdf.py#L251-L286` |
-| `_hexstring` | `def _hexstring(data: bytes, index: int) -> tuple[bytes, int]` | `src/docu/adapters/sources/pdf.py#L289-L299` |
-| `_content_text` | `def _content_text(data: bytes, cmap: dict[int, str], fonts: dict[str, tuple[dict[int, str]` | `src/docu/adapters/sources/pdf.py#L302-L451` |
-| `_page_streams` | `def _page_streams(objects: dict[int, bytes]) -> list[bytes]` | `src/docu/adapters/sources/pdf.py#L457-L474` |
-| `extract` | `def extract(data: bytes) -> PdfText` | `src/docu/adapters/sources/pdf.py#L477-L516` |
-| `pages_text` | `def pages_text(result: PdfText) -> str` | `src/docu/adapters/sources/pdf.py#L519-L524` |
-| `Snapshot.lines` | `def lines(self) -> int` | `src/docu/adapters/sources/web.py#L52-L53` |
-| `Snapshot.usable` | `def usable(self) -> bool` | `src/docu/adapters/sources/web.py#L56-L57` |
-| `Snapshot.slug` | `def slug(self) -> str` | `src/docu/adapters/sources/web.py#L60-L63` |
-| `_TextExtractor.__init__` | `def __init__(self) -> None` | `src/docu/adapters/sources/web.py#L69-L72` |
-| `_TextExtractor.handle_starttag` | `def handle_starttag(self, tag: str, attrs) -> None` | `src/docu/adapters/sources/web.py#L74-L79` |
-| `_TextExtractor.handle_endtag` | `def handle_endtag(self, tag: str) -> None` | `src/docu/adapters/sources/web.py#L81-L86` |
-| `_TextExtractor.handle_data` | `def handle_data(self, data: str) -> None` | `src/docu/adapters/sources/web.py#L88-L91` |
-| `_TextExtractor.text` | `def text(self) -> str` | `src/docu/adapters/sources/web.py#L93-L102` |
-| `html_to_text` | `def html_to_text(html: str) -> str` | `src/docu/adapters/sources/web.py#L105-L109` |
-| `is_allowed` | `def is_allowed(url: str, allowlist: tuple[str, ...] | list[str]) -> bool` | `src/docu/adapters/sources/web.py#L112-L126` |
-| `fetch` | `def fetch(url: str, timeout: int=..., max_bytes: int=..., opener=..., attempts: int=...) -` | `src/docu/adapters/sources/web.py#L129-L166` |
-| `capture` | `def capture(url: str, allowlist: tuple[str, ...] | list[str], opener=...) -> Snapshot` | `src/docu/adapters/sources/web.py#L169-L192` |
-| `Check.passed` | `def passed(self) -> bool` | `src/docu/audit/verify.py#L51-L52` |
-| `Check.score` | `def score(self) -> float` | `src/docu/audit/verify.py#L55-L58` |
-| `Check.to_dict` | `def to_dict(self) -> dict[str, object]` | `src/docu/audit/verify.py#L60-L69` |
-| `AuditReport.score` | `def score(self) -> float` | `src/docu/audit/verify.py#L81-L87` |
-| `AuditReport.passed` | `def passed(self) -> bool` | `src/docu/audit/verify.py#L90-L91` |
-| `AuditReport.to_dict` | `def to_dict(self) -> dict[str, object]` | `src/docu/audit/verify.py#L93-L103` |
-| `AuditReport._reconciliation` | `def _reconciliation(self) -> str` | `src/docu/audit/verify.py#L105-L116` |
-| `AuditReport.to_markdown` | `def to_markdown(self) -> str` | `src/docu/audit/verify.py#L118-L144` |
-| `check_citations` | `def check_citations(facts: Sequence[Fact], root: Path) -> Check` | `src/docu/audit/verify.py#L150-L195` |
-| `_probes` | `def _probes(fact: Fact) -> list[str]` | `src/docu/audit/verify.py#L198-L218` |
-| `_prose_supported` | `def _prose_supported(fact: Fact, span: str) -> bool` | `src/docu/audit/verify.py#L221-L235` |
-| `_normalize_needle` | `def _normalize_needle(text: str) -> str` | `src/docu/audit/verify.py#L238-L243` |
-| `check_duplicates` | `def check_duplicates(facts: Sequence[Fact]) -> Check` | `src/docu/audit/verify.py#L246-L261` |
-| `_document_paths` | `def _document_paths(text: str) -> set[str]` | `src/docu/audit/verify.py#L264-L266` |
-| `check_consistency` | `def check_consistency(docs: Mapping[str, str]) -> Check` | `src/docu/audit/verify.py#L269-L285` |
-| `check_coverage` | `def check_coverage(facts: Sequence[Fact], root: Path) -> Check` | `src/docu/audit/verify.py#L288-L298` |
-| `_evidence_kinds` | `def _evidence_kinds(kind: str) -> tuple[str, ...]` | `src/docu/audit/verify.py#L301-L304` |
-| `check_freshness` | `def check_freshness(root: Path, levels: Sequence[str], manifest_path: Path | str | None=..` | `src/docu/audit/verify.py#L307-L337` |
-| `audit` | `def audit(root: Path | str, docs_dir: Path | str | None=..., levels: Sequence[str]=..., pr` | `src/docu/audit/verify.py#L343-L418` |
+| `_looks_like_garbage` | `def _looks_like_garbage(text: str) -> bool` | `src/docu/adapters/sources/pdf.py#L97-L115` |
+| `PdfText.usable` | `def usable(self) -> bool` | `src/docu/adapters/sources/pdf.py#L133-L137` |
+| `PdfText.status` | `def status(self) -> str` | `src/docu/adapters/sources/pdf.py#L140-L145` |
+| `is_pdf` | `def is_pdf(path: str, data: bytes | None=...) -> bool` | `src/docu/adapters/sources/pdf.py#L148-L151` |
+| `_decode` | `def _decode(stream: bytes) -> bytes` | `src/docu/adapters/sources/pdf.py#L157-L164` |
+| `_objects` | `def _objects(data: bytes) -> dict[int, bytes]` | `src/docu/adapters/sources/pdf.py#L167-L172` |
+| `_stream_of` | `def _stream_of(body: bytes) -> bytes | None` | `src/docu/adapters/sources/pdf.py#L175-L179` |
+| `_parse_cmap` | `def _parse_cmap(text: bytes) -> dict[int, str]` | `src/docu/adapters/sources/pdf.py#L185-L204` |
+| `_cmap_for` | `def _cmap_for(objects: dict[int, bytes]) -> dict[int, str]` | `src/docu/adapters/sources/pdf.py#L207-L230` |
+| `_decode_bytes` | `def _decode_bytes(raw: bytes, cmap: dict[int, str]) -> str` | `src/docu/adapters/sources/pdf.py#L236-L246` |
+| `_literal` | `def _literal(data: bytes, index: int) -> tuple[bytes, int]` | `src/docu/adapters/sources/pdf.py#L249-L284` |
+| `_hexstring` | `def _hexstring(data: bytes, index: int) -> tuple[bytes, int]` | `src/docu/adapters/sources/pdf.py#L287-L297` |
+| `_content_text` | `def _content_text(data: bytes, cmap: dict[int, str], fonts: dict[str, tuple[dict[int, str]` | `src/docu/adapters/sources/pdf.py#L300-L448` |
+| `_page_streams` | `def _page_streams(objects: dict[int, bytes]) -> list[bytes]` | `src/docu/adapters/sources/pdf.py#L454-L471` |
+| `extract` | `def extract(data: bytes) -> PdfText` | `src/docu/adapters/sources/pdf.py#L474-L513` |
+| `pages_text` | `def pages_text(result: PdfText) -> str` | `src/docu/adapters/sources/pdf.py#L516-L521` |
+| `Snapshot.lines` | `def lines(self) -> int` | `src/docu/adapters/sources/web.py#L51-L52` |
+| `Snapshot.usable` | `def usable(self) -> bool` | `src/docu/adapters/sources/web.py#L55-L56` |
+| `Snapshot.slug` | `def slug(self) -> str` | `src/docu/adapters/sources/web.py#L59-L62` |
+| `_TextExtractor.__init__` | `def __init__(self) -> None` | `src/docu/adapters/sources/web.py#L68-L71` |
+| `_TextExtractor.handle_starttag` | `def handle_starttag(self, tag: str, attrs) -> None` | `src/docu/adapters/sources/web.py#L73-L78` |
+| `_TextExtractor.handle_endtag` | `def handle_endtag(self, tag: str) -> None` | `src/docu/adapters/sources/web.py#L80-L85` |
+| `_TextExtractor.handle_data` | `def handle_data(self, data: str) -> None` | `src/docu/adapters/sources/web.py#L87-L90` |
+| `_TextExtractor.text` | `def text(self) -> str` | `src/docu/adapters/sources/web.py#L92-L101` |
+| `html_to_text` | `def html_to_text(html: str) -> str` | `src/docu/adapters/sources/web.py#L104-L108` |
+| `is_allowed` | `def is_allowed(url: str, allowlist: tuple[str, ...] | list[str]) -> bool` | `src/docu/adapters/sources/web.py#L111-L125` |
+| `fetch` | `def fetch(url: str, timeout: int=..., max_bytes: int=..., opener=..., attempts: int=...) -` | `src/docu/adapters/sources/web.py#L128-L165` |
+| `capture` | `def capture(url: str, allowlist: tuple[str, ...] | list[str], opener=...) -> Snapshot` | `src/docu/adapters/sources/web.py#L168-L191` |
+| `Check.passed` | `def passed(self) -> bool` | `src/docu/audit/verify.py#L50-L51` |
+| `Check.score` | `def score(self) -> float` | `src/docu/audit/verify.py#L54-L57` |
+| `Check.to_dict` | `def to_dict(self) -> dict[str, object]` | `src/docu/audit/verify.py#L59-L68` |
+| `AuditReport.score` | `def score(self) -> float` | `src/docu/audit/verify.py#L80-L86` |
+| `AuditReport.passed` | `def passed(self) -> bool` | `src/docu/audit/verify.py#L89-L90` |
+| `AuditReport.to_dict` | `def to_dict(self) -> dict[str, object]` | `src/docu/audit/verify.py#L92-L102` |
+| `AuditReport._reconciliation` | `def _reconciliation(self) -> str` | `src/docu/audit/verify.py#L104-L115` |
+| `AuditReport.to_markdown` | `def to_markdown(self) -> str` | `src/docu/audit/verify.py#L117-L143` |
+| `check_citations` | `def check_citations(facts: Sequence[Fact], root: Path) -> Check` | `src/docu/audit/verify.py#L149-L194` |
+| `_probes` | `def _probes(fact: Fact) -> list[str]` | `src/docu/audit/verify.py#L197-L217` |
+| `_prose_supported` | `def _prose_supported(fact: Fact, span: str) -> bool` | `src/docu/audit/verify.py#L220-L234` |
+| `_normalize_needle` | `def _normalize_needle(text: str) -> str` | `src/docu/audit/verify.py#L237-L242` |
+| `check_duplicates` | `def check_duplicates(facts: Sequence[Fact]) -> Check` | `src/docu/audit/verify.py#L245-L260` |
+| `_document_paths` | `def _document_paths(text: str) -> set[str]` | `src/docu/audit/verify.py#L263-L265` |
+| `check_consistency` | `def check_consistency(docs: Mapping[str, str]) -> Check` | `src/docu/audit/verify.py#L268-L284` |
+| `check_coverage` | `def check_coverage(facts: Sequence[Fact], root: Path) -> Check` | `src/docu/audit/verify.py#L287-L297` |
+| `_evidence_kinds` | `def _evidence_kinds(kind: str) -> tuple[str, ...]` | `src/docu/audit/verify.py#L300-L303` |
+| `check_freshness` | `def check_freshness(root: Path, levels: Sequence[str], manifest_path: Path | str | None=..` | `src/docu/audit/verify.py#L306-L336` |
+| `audit` | `def audit(root: Path | str, docs_dir: Path | str | None=..., levels: Sequence[str]=..., pr` | `src/docu/audit/verify.py#L342-L417` |
 | `Discrepancy.severity` | `def severity(self) -> str` | `src/docu/conformance/drift.py#L46-L47` |
 | `Discrepancy.action` | `def action(self) -> str` | `src/docu/conformance/drift.py#L50-L51` |
 | `Discrepancy.to_dict` | `def to_dict(self) -> dict[str, object]` | `src/docu/conformance/drift.py#L53-L62` |
@@ -1323,9 +1323,9 @@ erDiagram
 | `describe_code` | `def describe_code(root: Path | str, include_tests: bool=...) -> CodeFacts` | `src/docu/conformance/drift.py#L140-L174` |
 | `_short` | `def _short(name: str) -> str` | `src/docu/conformance/drift.py#L180-L182` |
 | `_owner` | `def _owner(qualname: str) -> str` | `src/docu/conformance/drift.py#L185-L191` |
-| `compare` | `def compare(model: ArchitectureModel, code: CodeFacts) -> DriftReport` | `src/docu/conformance/drift.py#L194-L267` |
-| `analyze` | `def analyze(root: Path | str, architecture: Path | str | None=..., include_tests: bool=...` | `src/docu/conformance/drift.py#L270-L277` |
-| `bootstrap` | `def bootstrap(root: Path | str, include_tests: bool=...) -> ArchitectureModel` | `src/docu/conformance/drift.py#L280-L317` |
+| `compare` | `def compare(model: ArchitectureModel, code: CodeFacts) -> DriftReport` | `src/docu/conformance/drift.py#L194-L268` |
+| `analyze` | `def analyze(root: Path | str, architecture: Path | str | None=..., include_tests: bool=...` | `src/docu/conformance/drift.py#L271-L278` |
+| `bootstrap` | `def bootstrap(root: Path | str, include_tests: bool=...) -> ArchitectureModel` | `src/docu/conformance/drift.py#L281-L318` |
 | `Route.key` | `def key(self) -> str` | `src/docu/conformance/model.py#L36-L37` |
 | `Route.__str__` | `def __str__(self) -> str` | `src/docu/conformance/model.py#L39-L40` |
 | `ArchitectureModel.component_names` | `def component_names(self) -> set[str]` | `src/docu/conformance/model.py#L60-L61` |
@@ -1339,21 +1339,21 @@ erDiagram
 | `_as_list` | `def _as_list(value: object) -> Iterable[object]` | `src/docu/conformance/model.py#L176-L181` |
 | `_route_from_text` | `def _route_from_text(text: str) -> Route | None` | `src/docu/conformance/model.py#L184-L192` |
 | `to_yaml` | `def to_yaml(model: ArchitectureModel, project: str) -> str` | `src/docu/conformance/model.py#L195-L218` |
-| `utcnow` | `def utcnow() -> datetime` | `src/docu/core/contracts.py#L22-L24` |
-| `sha256_of` | `def sha256_of(data: str | bytes) -> str` | `src/docu/core/contracts.py#L27-L29` |
-| `Artifact.__post_init__` | `def __post_init__(self) -> None` | `src/docu/core/contracts.py#L108-L114` |
-| `Symbol.is_container` | `def is_container(self) -> bool` | `src/docu/core/contracts.py#L133-L134` |
-| `Chunk.__post_init__` | `def __post_init__(self) -> None` | `src/docu/core/contracts.py#L164-L168` |
-| `Chunk.citation` | `def citation(self) -> str` | `src/docu/core/contracts.py#L171-L173` |
-| `Chunk.to_record` | `def to_record(self) -> dict[str, Any]` | `src/docu/core/contracts.py#L175-L196` |
-| `Claim.verified` | `def verified(self) -> bool` | `src/docu/core/contracts.py#L213-L214` |
-| `ContentNode.unsupported` | `def unsupported(self) -> list[Claim]` | `src/docu/core/contracts.py#L236-L237` |
-| `ContentNode.is_publishable` | `def is_publishable(self) -> bool` | `src/docu/core/contracts.py#L239-L240` |
-| `GateDecision.may_write` | `def may_write(self) -> bool` | `src/docu/core/contracts.py#L268-L270` |
-| `GateDecision.describe` | `def describe(self) -> str` | `src/docu/core/contracts.py#L272-L274` |
-| `RunRecord.duration_s` | `def duration_s(self) -> float | None` | `src/docu/core/contracts.py#L300-L303` |
-| `RunRecord.to_jsonl` | `def to_jsonl(self) -> str` | `src/docu/core/contracts.py#L305-L325` |
-| `FreshnessRecord.is_expired` | `def is_expired(self, now: datetime | None=...) -> bool` | `src/docu/core/contracts.py#L342-L344` |
+| `utcnow` | `def utcnow() -> datetime` | `src/docu/core/contracts.py#L23-L25` |
+| `sha256_of` | `def sha256_of(data: str | bytes) -> str` | `src/docu/core/contracts.py#L28-L30` |
+| `Artifact.__post_init__` | `def __post_init__(self) -> None` | `src/docu/core/contracts.py#L109-L115` |
+| `Symbol.is_container` | `def is_container(self) -> bool` | `src/docu/core/contracts.py#L134-L135` |
+| `Chunk.__post_init__` | `def __post_init__(self) -> None` | `src/docu/core/contracts.py#L165-L169` |
+| `Chunk.citation` | `def citation(self) -> str` | `src/docu/core/contracts.py#L172-L174` |
+| `Chunk.to_record` | `def to_record(self) -> dict[str, Any]` | `src/docu/core/contracts.py#L176-L197` |
+| `Claim.verified` | `def verified(self) -> bool` | `src/docu/core/contracts.py#L214-L215` |
+| `ContentNode.unsupported` | `def unsupported(self) -> list[Claim]` | `src/docu/core/contracts.py#L237-L238` |
+| `ContentNode.is_publishable` | `def is_publishable(self) -> bool` | `src/docu/core/contracts.py#L240-L241` |
+| `GateDecision.may_write` | `def may_write(self) -> bool` | `src/docu/core/contracts.py#L269-L271` |
+| `GateDecision.describe` | `def describe(self) -> str` | `src/docu/core/contracts.py#L273-L275` |
+| `RunRecord.duration_s` | `def duration_s(self) -> float | None` | `src/docu/core/contracts.py#L301-L304` |
+| `RunRecord.to_jsonl` | `def to_jsonl(self) -> str` | `src/docu/core/contracts.py#L306-L326` |
+| `FreshnessRecord.is_expired` | `def is_expired(self, now: datetime | None=...) -> bool` | `src/docu/core/contracts.py#L343-L345` |
 
 _(356 métodos adicionales omitidos del índice)_.
 
@@ -1377,7 +1377,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 
 | Archivo | sha256 |
 |---|---|
-| `.github/workflows/ci.yml` | `d394b49b4ccf` |
+| `.github/workflows/ci.yml` | `0b9310a247a5` |
 | `.github/workflows/docu.yml` | `a319ef05bb5c` |
 | `.github/workflows/pages.yml` | `a62284389f13` |
 | `docs/brand/make-cover.py` | `bbe4d72bcbfa` |
@@ -1388,59 +1388,59 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/__init__.py` | `ec3694c43263` |
 | `src/docu/adapters/__init__.py` | `a2c1108f5fd9` |
 | `src/docu/adapters/embedders/__init__.py` | `8864f7d0c67f` |
-| `src/docu/adapters/embedders/onnx_local.py` | `9d4142107e83` |
+| `src/docu/adapters/embedders/onnx_local.py` | `978b1d93c208` |
 | `src/docu/adapters/langs/__init__.py` | `db232e3411bb` |
 | `src/docu/adapters/langs/_braces.py` | `408fed7da941` |
-| `src/docu/adapters/langs/java.py` | `1a35a611ab39` |
+| `src/docu/adapters/langs/java.py` | `a37225c4a710` |
 | `src/docu/adapters/langs/python.py` | `41d930d37760` |
 | `src/docu/adapters/langs/registry.py` | `97c5aef6b7cd` |
-| `src/docu/adapters/langs/typescript.py` | `b24202ca64d6` |
+| `src/docu/adapters/langs/typescript.py` | `82bbf89ec01d` |
 | `src/docu/adapters/sources/__init__.py` | `0a506367a368` |
-| `src/docu/adapters/sources/pdf.py` | `e2bf7513c8a5` |
-| `src/docu/adapters/sources/web.py` | `838eb154a9dc` |
+| `src/docu/adapters/sources/pdf.py` | `745f1f36ab3d` |
+| `src/docu/adapters/sources/web.py` | `c961e29d5b53` |
 | `src/docu/audit/__init__.py` | `db19f5507fab` |
-| `src/docu/audit/verify.py` | `2d7eae0673d4` |
+| `src/docu/audit/verify.py` | `1960a7fc8c5e` |
 | `src/docu/conformance/__init__.py` | `0362d002bd6b` |
-| `src/docu/conformance/drift.py` | `8cba54b3c1fd` |
-| `src/docu/conformance/model.py` | `1353357e8785` |
+| `src/docu/conformance/drift.py` | `ce805755bba6` |
+| `src/docu/conformance/model.py` | `5b4dfd8f52d5` |
 | `src/docu/core/__init__.py` | `f6d1da76275b` |
-| `src/docu/core/contracts.py` | `2a79af0cd07f` |
-| `src/docu/core/policy.py` | `bb4c3a0a3ed5` |
-| `src/docu/core/ports.py` | `88d8cfdb18c0` |
-| `src/docu/core/profile.py` | `0def56ccec02` |
-| `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
+| `src/docu/core/contracts.py` | `b49bc0cf5a8e` |
+| `src/docu/core/policy.py` | `b4ce9e1ccb3e` |
+| `src/docu/core/ports.py` | `9ccc9aea5d3f` |
+| `src/docu/core/profile.py` | `8b0b079fd5b4` |
+| `src/docu/core/yamlmini.py` | `5238797f7411` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
-| `src/docu/delivery/cleanup.py` | `001b4d5dcb36` |
-| `src/docu/delivery/cli.py` | `c20d2874a270` |
+| `src/docu/delivery/cleanup.py` | `c09c29defa34` |
+| `src/docu/delivery/cli.py` | `32ade039746f` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
-| `src/docu/delivery/http_server.py` | `508873897a2b` |
-| `src/docu/delivery/mcp_server.py` | `ab622e99436c` |
-| `src/docu/delivery/proposal.py` | `d3f93708a83b` |
+| `src/docu/delivery/http_server.py` | `a1dc1363204a` |
+| `src/docu/delivery/mcp_server.py` | `c88c2eef74e8` |
+| `src/docu/delivery/proposal.py` | `f8deb13750ef` |
 | `src/docu/generate/__init__.py` | `91d9129019a3` |
-| `src/docu/generate/diagrams.py` | `f008c57b7365` |
-| `src/docu/generate/docs_evidence.py` | `55fd8094dfae` |
-| `src/docu/generate/facts.py` | `50ee7dba477a` |
-| `src/docu/generate/markdown.py` | `8b680f43c285` |
-| `src/docu/generate/narrative.py` | `36db8af62437` |
-| `src/docu/generate/ops.py` | `cee221559089` |
-| `src/docu/generate/pipeline.py` | `3922b5e1fe2c` |
-| `src/docu/generate/prose.py` | `e960ae53b9e4` |
+| `src/docu/generate/diagrams.py` | `4248fe8e627f` |
+| `src/docu/generate/docs_evidence.py` | `0a59fc39019d` |
+| `src/docu/generate/facts.py` | `fd90b254a772` |
+| `src/docu/generate/markdown.py` | `8f6f5956f004` |
+| `src/docu/generate/narrative.py` | `f18eae929b00` |
+| `src/docu/generate/ops.py` | `c1cdd7629ea1` |
+| `src/docu/generate/pipeline.py` | `9a389c344ad0` |
+| `src/docu/generate/prose.py` | `00877769d134` |
 | `src/docu/index/__init__.py` | `06566a17f409` |
-| `src/docu/index/chunker.py` | `7a6418ba69aa` |
-| `src/docu/index/freshness.py` | `076f96a3fb8b` |
-| `src/docu/index/ignore.py` | `1c15a32806bd` |
-| `src/docu/index/manifest.py` | `9e2be2253110` |
-| `src/docu/index/packages.py` | `f0dc77febb01` |
-| `src/docu/index/pdfdocs.py` | `39bc1fa44d36` |
-| `src/docu/index/webdocs.py` | `e9185b94784e` |
+| `src/docu/index/chunker.py` | `b2386f2cfaeb` |
+| `src/docu/index/freshness.py` | `962936079253` |
+| `src/docu/index/ignore.py` | `71f923bea6d6` |
+| `src/docu/index/manifest.py` | `05ab325f7d08` |
+| `src/docu/index/packages.py` | `bc1812062f43` |
+| `src/docu/index/pdfdocs.py` | `c4f731b244a2` |
+| `src/docu/index/webdocs.py` | `cf38008b598f` |
 | `src/docu/learn/__init__.py` | `4d33ba71c4c5` |
-| `src/docu/learn/federation.py` | `ffeb217ac871` |
-| `src/docu/learn/ledger.py` | `38818d4f92ec` |
-| `src/docu/learn/patterns.py` | `39aec53783eb` |
-| `src/docu/learn/promotion.py` | `66d049f788e8` |
+| `src/docu/learn/federation.py` | `d927b27d0bd5` |
+| `src/docu/learn/ledger.py` | `a640c128cd7a` |
+| `src/docu/learn/patterns.py` | `8987a966ace8` |
+| `src/docu/learn/promotion.py` | `d19b1561a35a` |
 | `src/docu/publish/__init__.py` | `0b0f93cf665a` |
-| `src/docu/publish/site.py` | `a8523d0bb8ec` |
+| `src/docu/publish/site.py` | `1da7c7423253` |
 | `src/docu/retrieve/__init__.py` | `d44cd2bb75d8` |
-| `src/docu/retrieve/glossary.py` | `d45a6ee652f1` |
-| `src/docu/retrieve/hybrid.py` | `03b1d5e83bcb` |
-| `src/docu/retrieve/search.py` | `13d6e62bb88d` |
+| `src/docu/retrieve/glossary.py` | `c7890a80ade6` |
+| `src/docu/retrieve/hybrid.py` | `a6bf72ee78e6` |
+| `src/docu/retrieve/search.py` | `577a9829df70` |

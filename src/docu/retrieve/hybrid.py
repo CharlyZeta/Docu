@@ -13,9 +13,9 @@ Este módulo es la versión de producto: el arnés conserva su copia como banco 
 from __future__ import annotations
 
 import math
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Mapping, Sequence
 
 from docu.adapters.langs.registry import adapter_for
 from docu.core.contracts import Artifact, SourceKind, sha256_of, utcnow
@@ -278,12 +278,12 @@ def build_index(
 
 
 __all__ = [
-    "CodeChunk",
-    "CodeIndex",
     "DENSE_CHUNK_LIMIT",
     "EXCLUDED_PARTS",
-    "build_chunks",
-    "build_index",
+    "CodeChunk",
+    "CodeIndex",
     "_is_test_path",
     "_path_matches",
+    "build_chunks",
+    "build_index",
 ]

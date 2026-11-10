@@ -10,10 +10,10 @@ from __future__ import annotations
 import json
 import urllib.error
 import urllib.request
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Mapping, Sequence
 
-from docu.core.contracts import utcnow, sha256_of
+from docu.core.contracts import sha256_of, utcnow
 from docu.learn.patterns import PatternLibrary
 
 SCHEMA_VERSION = "1.0"
@@ -130,7 +130,7 @@ def send(
         method="POST",
     )
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:  # noqa: S310 - endpoint explicito
+        with urllib.request.urlopen(request, timeout=timeout) as response:
             status = response.status
     except (urllib.error.URLError, OSError) as error:
         return {"sent": False, "reason": f"error de red: {error}"}

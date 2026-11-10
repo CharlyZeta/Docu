@@ -116,13 +116,13 @@ class StateTests(unittest.TestCase):
 
 class InputHashTests(unittest.TestCase):
     def _hash(self, **overrides: object) -> str:
-        params: dict[str, object] = dict(
-            level="l1",
-            sources={"a.java": "111"},
-            fact_signature="sig",
-            versions={"renderer": "1", "embedder": "onnx", "chunker": "ast-v2"},
-            profile_digest="prof",
-        )
+        params: dict[str, object] = {
+            "level": "l1",
+            "sources": {"a.java": "111"},
+            "fact_signature": "sig",
+            "versions": {"renderer": "1", "embedder": "onnx", "chunker": "ast-v2"},
+            "profile_digest": "prof",
+        }
         params.update(overrides)
         return input_hash_for(**params)  # type: ignore[arg-type]
 

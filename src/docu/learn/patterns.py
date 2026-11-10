@@ -8,11 +8,11 @@ allá del umbral; si una métrica cae, se revierte a la versión anterior.
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Mapping, Sequence
 
-from docu.core.contracts import utcnow, sha256_of
+from docu.core.contracts import utcnow
 
 PATTERNS_PATH = ".docu/patterns.json"
 SCHEMA_VERSION = "1.0"
@@ -43,7 +43,7 @@ class Pattern:
         }
 
     @classmethod
-    def from_dict(cls, payload: Mapping[str, object]) -> "Pattern":
+    def from_dict(cls, payload: Mapping[str, object]) -> Pattern:
         metrics = payload.get("metrics") or {}
         return cls(
             pattern_id=str(payload.get("pattern_id", "")),
@@ -73,7 +73,7 @@ class PatternLibrary:
         }
 
     @classmethod
-    def from_dict(cls, payload: Mapping[str, object]) -> "PatternLibrary":
+    def from_dict(cls, payload: Mapping[str, object]) -> PatternLibrary:
         raw = payload.get("patterns") or {}
         patterns = {
             str(key): Pattern.from_dict(value)  # type: ignore[arg-type]
@@ -97,7 +97,7 @@ class PatternLibrary:
         return target
 
     @classmethod
-    def load(cls, path: Path | str) -> "PatternLibrary":
+    def load(cls, path: Path | str) -> PatternLibrary:
         target = Path(path)
         if not target.exists():
             return cls()
@@ -230,11 +230,11 @@ def candidates_from(
 
 
 __all__ = [
-    "Candidate",
     "PATTERNS_PATH",
+    "WATCHED",
+    "Candidate",
     "Pattern",
     "PatternLibrary",
-    "WATCHED",
     "candidates_from",
     "stack_of",
 ]

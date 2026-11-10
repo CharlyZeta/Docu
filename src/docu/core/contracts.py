@@ -8,10 +8,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from enum import Enum
-from typing import Any, Mapping, Sequence
+from typing import Any
 
 SCHEMA_VERSION = "1.0"
 
@@ -21,7 +22,7 @@ SCHEMA_VERSION = "1.0"
 
 def utcnow() -> datetime:
     """Reloj unico del sistema: siempre UTC con zona explicita."""
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def sha256_of(data: str | bytes) -> str:
@@ -125,7 +126,7 @@ class Symbol:
     line_start: int
     line_end: int
     signature: str | None = None
-    children: Sequence["Symbol"] = ()
+    children: Sequence[Symbol] = ()
     annotations: Sequence[str] = ()
     schema_version: str = SCHEMA_VERSION
 

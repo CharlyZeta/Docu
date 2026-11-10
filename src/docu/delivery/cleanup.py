@@ -14,9 +14,9 @@ Reglas de seguridad, porque un comando de borrado mal hecho es peor que no tener
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, Sequence
 
 from docu.core.contracts import sha256_of
 
@@ -145,11 +145,11 @@ def fingerprint(paths: Sequence[Path]) -> str:
 
 __all__ = [
     "ARTIFACT_DIRS",
-    "CleanPlan",
     "DOC_SUFFIXES",
     "LEDGER_FILE",
     "STATE_DIR",
     "STATE_FILES",
+    "CleanPlan",
     "apply",
     "fingerprint",
     "plan",

@@ -8,10 +8,10 @@ aunque el archivo no se haya tocado.
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Mapping
 
 from docu.core.contracts import DocState, sha256_of, utcnow
 from docu.index.freshness import InputComponents, classify, compute_input_hash
@@ -53,7 +53,7 @@ class DocEntry:
         }
 
     @classmethod
-    def from_dict(cls, payload: Mapping[str, object]) -> "DocEntry":
+    def from_dict(cls, payload: Mapping[str, object]) -> DocEntry:
         return cls(
             level=str(payload["level"]),
             path=str(payload["path"]),
@@ -96,7 +96,7 @@ class Manifest:
         }
 
     @classmethod
-    def from_dict(cls, payload: Mapping[str, object]) -> "Manifest":
+    def from_dict(cls, payload: Mapping[str, object]) -> Manifest:
         return cls(
             project=str(payload.get("project", "")),
             docs=[DocEntry.from_dict(item) for item in payload.get("docs", [])],  # type: ignore[union-attr]
@@ -111,7 +111,7 @@ class Manifest:
         return target
 
     @classmethod
-    def load(cls, path: Path | str) -> "Manifest | None":
+    def load(cls, path: Path | str) -> Manifest | None:
         target = Path(path)
         if not target.exists():
             return None

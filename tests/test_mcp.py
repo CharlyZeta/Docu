@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import io
 import json
-import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -13,7 +12,6 @@ from docu.delivery.mcp_server import (
     PROTOCOL_VERSION,
     READ_ONLY_TOOLS,
     TOOL_DEFINITIONS,
-    McpServer,
     ToolError,
     build_server,
 )

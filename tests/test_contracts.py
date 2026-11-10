@@ -12,7 +12,6 @@ from docu.core.contracts import (
     Claim,
     ContentNode,
     DocState,
-    Metrics,
     Mode,
     RunRecord,
     SourceKind,
@@ -22,21 +21,21 @@ from docu.core.contracts import (
 
 
 def _chunk(**overrides: object) -> Chunk:
-    base = dict(
-        chunk_id="git:acme/x@abc:src/A.java#A.run",
-        artifact_id="art-1",
-        source_type=SourceKind.GIT_REPOSITORY,
-        content="void run() {}",
-        content_prefix="[File: src/A.java | Class: A | Method: run | lines 10-12]",
-        content_hash="sha256:00",
-        file_path="src/A.java",
-        lang="java",
-        enclosing_symbol="A.run",
-        symbol_kind=SymbolKind.METHOD,
-        line_start=10,
-        line_end=12,
-        ingested_at=utcnow(),
-    )
+    base = {
+        "chunk_id": "git:acme/x@abc:src/A.java#A.run",
+        "artifact_id": "art-1",
+        "source_type": SourceKind.GIT_REPOSITORY,
+        "content": "void run() {}",
+        "content_prefix": "[File: src/A.java | Class: A | Method: run | lines 10-12]",
+        "content_hash": "sha256:00",
+        "file_path": "src/A.java",
+        "lang": "java",
+        "enclosing_symbol": "A.run",
+        "symbol_kind": SymbolKind.METHOD,
+        "line_start": 10,
+        "line_end": 12,
+        "ingested_at": utcnow(),
+    }
     base.update(overrides)
     return Chunk(**base)  # type: ignore[arg-type]
 

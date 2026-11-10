@@ -72,13 +72,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Ruff (solo lo que rompe)
-        # E9: errores de sintaxis · F63: comparaciones sospechosas · F7: `__all__` y similares
-        # F82: nombres indefinidos. Es la compuerta que no discute estilo: si esto falla, el código
-        # tiene un error, no un gusto distinto.
+      - name: Ruff
+        # Conjunto completo del proyecto (configurado en `pyproject.toml`). La versión va fijada a la
+        # serie con la que se limpió el código: una regla nueva en una versión futura no puede romper
+        # un PR que no cambió nada.
         run: |
-          pip install ruff
-          ruff check --select E9,F63,F7,F82 src tests --output-format concise
+          pip install "ruff~=0.17.0"
+          ruff check src tests --output-format concise
 
   packaging:
     name: se instala y se ejecuta

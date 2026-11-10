@@ -9,9 +9,9 @@ sustituyera, el producto perdería exactamente lo que promete: trazabilidad veri
 from __future__ import annotations
 
 import re
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, Mapping, Sequence
 
 from docu.core.contracts import DocState
 from docu.core.profile import find, load
@@ -19,7 +19,6 @@ from docu.generate.facts import Fact
 from docu.generate.pipeline import (
     applicability,
     collect_facts,
-    completeness,
     inspect,
 )
 
@@ -271,7 +270,7 @@ def check_consistency(docs: Mapping[str, str]) -> Check:
     if len(docs) < 2:
         return Check("consistency", 0, 0, (), "un solo nivel generado: nada que contrastar")
     paths = {level: _document_paths(text) for level, text in docs.items()}
-    reference_level = sorted(paths)[0]
+    reference_level = min(paths)
     reference = paths[reference_level]
     failed = 0
     details: list[str] = []
@@ -393,8 +392,8 @@ def audit(
             documents[level] = path.read_text(encoding="utf-8")
 
     # El nombre documentado vive en el manifest; el del directorio es un fallback.
-    from docu.index.manifest import Manifest
     from docu.generate.pipeline import manifest_file
+    from docu.index.manifest import Manifest
 
     manifest = Manifest.load(manifest_file(root_path, None))
     project_name = (
@@ -419,9 +418,9 @@ def audit(
 
 
 __all__ = [
+    "WEIGHTS",
     "AuditReport",
     "Check",
-    "WEIGHTS",
     "audit",
     "check_citations",
     "check_consistency",
