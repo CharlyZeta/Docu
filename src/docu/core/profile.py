@@ -444,13 +444,11 @@ __all__ = [
     "ProfileError",
     "SUPPORTED_LEVELS",
     "candidate_paths",
-    "detect",
     "find",
     "from_dict",
     "load",
     "merge",
     "plan_changes",
-    "propose",
     "render_change_order",
     "to_yaml",
 ]

@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:628e7` · archivos analizados: 65 · afirmaciones: 1208 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:f73d3` · archivos analizados: 67 · afirmaciones: 1230 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -8,11 +8,11 @@ Generado por `docu 0.1.0` · fuente `sha256:628e7` · archivos analizados: 65 ·
 
 > Introducción compuesta con hechos citados: cada frase sale de un conteo o de la propia documentación del proyecto. No es prosa libre.
 
-**docu** se compone de 16 dependencias declaradas, 15 paquetes, 97 tipos y 422 campos.
+**docu** se compone de 16 dependencias declaradas, 15 paquetes, 97 tipos y 425 campos.
 
 Su propia documentación declara: «Verifiable technical documentation generated from source code: every claim cites the file and line that supports it.» [`pyproject.toml#L8-L8`].
 
-El repositorio deja constancia de 13 decisiones («Se oscurece apenas el arte para que el…»; «Saltar el bloque completo para que la…»; «El inicializador se separa con `=(?!>)`…» y 10 más); están listadas con su cita en la sección *Intención y decisiones*.
+El repositorio deja constancia de 15 decisiones («Se oscurece apenas el arte para que el…»; «es un nombre de archivo. Sin esto…»; «Saltar el bloque completo para que la…» y 12 más); están listadas con su cita en la sección *Intención y decisiones*.
 
 ## 2. Resumen
 
@@ -20,7 +20,7 @@ El repositorio deja constancia de 13 decisiones («Se oscurece apenas el arte pa
 - Dependencias declaradas: **16**
 - Rutas HTTP: **0**
 - Claves de configuración: **24**
-- Tipos: **97** · métodos: **552**
+- Tipos: **97** · métodos: **556**
 
 ## 3. Intención y decisiones
 
@@ -29,23 +29,27 @@ El repositorio deja constancia de 13 decisiones («Se oscurece apenas el arte pa
 | Declaración | Intención | Cita |
 |---|---|---|
 | `pyproject.toml (description)` | Verifiable technical documentation generated from source code: every claim cites the file and line that supports it. | `pyproject.toml#L8-L8` |
-| `docu` | Technical documentation you can verify. Every claim in the generated document links to the file and line that supports it. If a citation cannot be opened and confirmed, the claim does not ship. | `README.md#L19-L20` |
+| `docu` | Technical documentation you can verify. Every claim in the generated document links to the file and line that supports it. If a citation cannot be opened and confirmed, the claim does not ship. | `README.md#L20-L21` |
 | `docs/brand/make-cover.py (módulo)` | Portada del README a partir de un frame del video y del sistema de diseño de `docu`. | `docs/brand/make-cover.py#L1-L13` |
 | `_espaciado` | Texto con espaciado entre letras: el logotipo respira, el texto normal no. | `docs/brand/make-cover.py#L47-L52` |
 | `eval/__init__.py (módulo)` | Arnés de evaluación: golden sets y línea base de recuperación (F0). | `eval/__init__.py#L1-L1` |
 | `eval/harness.py (módulo)` | Arnés de evaluación de F0 (Plan.md §5). | `eval/harness.py#L1-L14` |
-| `_fold` | Quita diacríticos: `configuración` y `configuracion` deben ser el mismo término. | `eval/harness.py#L84-L90` |
-| `tokenize` | Tokens con descomposición de CamelCase, separadores y plegado de acentos. | `eval/harness.py#L94-L106` |
-| `Segment` | Unidad recuperable. | `eval/harness.py#L119-L131` |
-| `_exact_names` | Nombres por los que un simbolo debe coincidir de forma exacta (sin descomponer). | `eval/harness.py#L194-L199` |
-| `build_symbol_corpus` | Indice de F1: chunks sintacticos para Java y ventanas para el resto de artefactos. | `eval/harness.py#L208-L220` |
-| `BM25` | BM25 Okapi en stdlib. Canal lexico de ambos indices. | `eval/harness.py#L263-L275` |
-| `_looks_like_identifier` | ¿La consulta es codigo tecleado o una pregunta humana? | `eval/harness.py#L308-L320` |
-| `_diversity` | Limita cuantos fragmentos aporta un mismo archivo (Guia-v2.md §3.4). | `eval/harness.py#L334-L346` |
-| `AutoIndex` | Indice de F2 con enrutado por tipo de consulta. | `eval/harness.py#L354-L366` |
-| `HybridIndex` | Indice de F2: denso (multilingue) + lexico + coincidencia exacta de simbolo, fusionados. | `eval/harness.py#L378-L390` |
-| `SymbolIndex` | Indice de F1: fusiona el canal lexico con un canal de coincidencia exacta de simbolo. | `eval/harness.py#L463-L475` |
-| `_channel_weights` | Enrutado por tipo de consulta: si el usuario teclea identificadores, el canal denso pesa menos. | `eval/harness.py#L433-L439` |
+| `_fold` | Quita diacríticos: `configuración` y `configuracion` deben ser el mismo término. | `eval/harness.py#L82-L88` |
+| `tokenize` | Tokens con descomposición de CamelCase, separadores y plegado de acentos. | `eval/harness.py#L92-L104` |
+| `Segment` | Unidad recuperable. | `eval/harness.py#L117-L129` |
+| `_exact_names` | Nombres por los que un simbolo debe coincidir de forma exacta (sin descomponer). | `eval/harness.py#L192-L197` |
+| `build_symbol_corpus` | Indice de F1: chunks sintacticos para Java y ventanas para el resto de artefactos. | `eval/harness.py#L206-L218` |
+| `BM25` | BM25 Okapi en stdlib. Canal lexico de ambos indices. | `eval/harness.py#L261-L273` |
+| `_looks_like_identifier` | ¿La consulta es código tecleado o una pregunta humana? | `eval/harness.py#L306-L318` |
+| `_diversity` | Limita cuantos fragmentos aporta un mismo archivo (Guia-v2.md §3.4). | `eval/harness.py#L410-L422` |
+| `AutoIndex` | Indice de F2 con enrutado por tipo de consulta. | `eval/harness.py#L430-L442` |
+| `HybridIndex` | Indice de F2: denso (multilingue) + lexico + coincidencia exacta de simbolo, fusionados. | `eval/harness.py#L454-L466` |
+| `SymbolIndex` | Indice de F1: fusiona el canal lexico con un canal de coincidencia exacta de simbolo. | `eval/harness.py#L539-L551` |
+| `_query_mode` | Determina el modo de consulta basándose en el contenido. | `eval/harness.py#L801-L813` |
+| `_validate_case_id` | Validaciones basicas del golden set: ids unicos y categorías conocidas. | `eval/harness.py#L904-L912` |
+| `_validate_golden_set` | F-06: validación del golden set antes de evaluar nada. | `eval/harness.py#L916-L928` |
+| `_channel_weights` | Enrutado por tipo de consulta: si el usuario teclea identificadores, el canal denso pesa menos. | `eval/harness.py#L509-L515` |
+| `by_mode` | Devuelve el _agg de cada modo de consulta para ver umbrales por separado. | `eval/harness.py#L683-L685` |
 | `src/docu/__init__.py (módulo)` | docu — agente autonomo de documentacion tecnica. | `src/docu/__init__.py#L1-L4` |
 | `src/docu/adapters/__init__.py (módulo)` | Implementaciones de los puertos del nucleo. Nada de aqui lo importa `docu.core`. | `src/docu/adapters/__init__.py#L1-L1` |
 | `src/docu/adapters/embedders/__init__.py (módulo)` | Adaptadores de embeddings: locales (ONNX) o por API, detras del puerto `Embedder`. | `src/docu/adapters/embedders/__init__.py#L1-L1` |
@@ -64,25 +68,23 @@ El repositorio deja constancia de 13 decisiones («Se oscurece apenas el arte pa
 | `iter_callables` | Recorre declaraciones `nombre(...) {` con parentesis balanceados. | `src/docu/adapters/langs/_braces.py#L149-L161` |
 | `annotations_before` | Bloque de anotaciones inmediatamente encima de una declaracion. | `src/docu/adapters/langs/_braces.py#L205-L217` |
 | `Lines` | Conversion offsets <-> numeros de linea (1-based). | `src/docu/adapters/langs/_braces.py#L234-L246` |
-| `skip_whitespace` | Avanza sobre espacios y saltos: la declaracion empieza en la primera anotacion o token. | `src/docu/adapters/langs/_braces.py#L254-L258` |
-| `declaration_start` | Inicio de la declaracion que contiene `offset`. | `src/docu/adapters/langs/_braces.py#L262-L274` |
-| `src/docu/adapters/langs/java.py (módulo)` | Adaptador Java sin dependencias externas (implementacion de referencia de F1). | `src/docu/adapters/langs/java.py#L1-L10` |
-| `mask_source` | Sustituye comentarios y literales por espacios, conservando saltos de linea. | `src/docu/adapters/langs/java.py#L61-L73` |
 
 **Decisiones registradas.** De ADRs, contratos y comentarios que explican un porqué: el lugar donde el equipo dejó escrito *por qué* algo es así.
 
 | Decisión | Estado y contexto | Cita |
 |---|---|---|
 | `Se oscurece apenas el arte para que el logotipo tenga contra` | Se oscurece apenas el arte para que el logotipo tenga contraste sin tapar la ilustración. | `docs/brand/make-cover.py#L59-L59` |
+| `es un nombre de archivo. Sin esto, "application.yml server p` | es un nombre de archivo. Sin esto, "application.yml server port" se enruta al | `eval/harness.py#L330-L330` |
 | `Saltar el bloque completo para que la proxima anotacion no h` | Saltar el bloque completo para que la proxima anotacion no herede estas lineas. | `src/docu/adapters/langs/java.py#L506-L506` |
 | `El inicializador se separa con `=(?!>)` para no cortar los t` | El inicializador se separa con `=(?!>)` para no cortar los tipos función (`() => void`). | `src/docu/adapters/langs/typescript.py#L74-L74` |
 | `son el valor. Sin esto, un workflow real con `run: |` rompe ` | son el valor. Sin esto, un workflow real con `run: |` rompe toda la ingesta. | `src/docu/core/yamlmini.py#L96-L96` |
-| `contradecirse, porque el incremental necesita justamente el ` | contradecirse, porque el incremental necesita justamente el manifest que falta. | `src/docu/delivery/cli.py#L1180-L1180` |
+| `contradecirse, porque el incremental necesita justamente el ` | contradecirse, porque el incremental necesita justamente el manifest que falta. | `src/docu/delivery/cli.py#L1204-L1204` |
 | `Se publican ambos para que la diferencia no sea silenciosa.` | Se publican ambos para que la diferencia no sea silenciosa. | `src/docu/delivery/mcp_server.py#L356-L356` |
 | ``vite` puede estar en dependencies y en devDependencies: bus` | `vite` puede estar en dependencies y en devDependencies: buscar desde la seccion evita | `src/docu/generate/facts.py#L302-L302` |
 | `auditoría tiene razón en marcarla y el lector no encuentra n` | auditoría tiene razón en marcarla y el lector no encuentra nada al abrirla. | `src/docu/generate/ops.py#L211-L211` |
 | `los recupera. Sin esto, un proyecto con `tests/` en la raíz ` | los recupera. Sin esto, un proyecto con `tests/` en la raíz documenta sus propias aserciones. | `src/docu/generate/pipeline.py#L69-L69` |
 | `para que un PDF nuevo o modificado invalide la frescura, igu` | para que un PDF nuevo o modificado invalide la frescura, igual que un archivo de código. | `src/docu/generate/pipeline.py#L251-L251` |
+| `facts); sin esto declara huecos que la documentación existen` | facts); sin esto declara huecos que la documentación existente responde. | `src/docu/generate/pipeline.py#L692-L692` |
 | `Sin estos, una introducción sólo puede enumerar tecnología.` | Sin estos, una introducción sólo puede enumerar tecnología. | `src/docu/generate/prose.py#L46-L46` |
 | `Unidades por carpeta sólo en profundidad razonable: `vendor/` | Unidades por carpeta sólo en profundidad razonable: `vendor/includes/assets/js` no es una | `src/docu/index/packages.py#L145-L145` |
 | `primer archivo completo. Decirlo evita que la cita parezca m` | primer archivo completo. Decirlo evita que la cita parezca más fuerte de lo que es. | `src/docu/index/packages.py#L154-L154` |
@@ -91,21 +93,21 @@ El repositorio deja constancia de 13 decisiones («Se oscurece apenas el arte pa
 
 | Sección | Cita |
 |---|---|
-| `README.md › docu` | `README.md#L1-L24` |
-| `README.md › The problem, in two sentences` | `README.md#L24-L30` |
-| `README.md › What you get` | `README.md#L30-L45` |
-| `README.md › How it works` | `README.md#L45-L60` |
-| `README.md › Start in three commands` | `README.md#L60-L71` |
-| `README.md › Updating an install` | `README.md#L71-L84` |
-| `README.md › What makes it different` | `README.md#L84-L94` |
-| `README.md › The four levels` | `README.md#L94-L107` |
-| `README.md › Diagrams and website` | `README.md#L107-L117` |
-| `README.md › MCP server` | `README.md#L117-L130` |
-| `README.md › Corpus hygiene` | `README.md#L130-L136` |
-| `README.md › Exit codes` | `README.md#L136-L156` |
-| `README.md › Back to zero` | `README.md#L156-L171` |
-| `README.md › Try it without touching your project` | `README.md#L171-L181` |
-| `README.md › Declared limits` | `README.md#L181-L190` |
+| `README.md › docu` | `README.md#L1-L28` |
+| `README.md › The problem, in two sentences` | `README.md#L28-L34` |
+| `README.md › What you get` | `README.md#L34-L49` |
+| `README.md › How it works` | `README.md#L49-L64` |
+| `README.md › Start in three commands` | `README.md#L64-L75` |
+| `README.md › Updating an install` | `README.md#L75-L88` |
+| `README.md › What makes it different` | `README.md#L88-L98` |
+| `README.md › The four levels` | `README.md#L98-L111` |
+| `README.md › Diagrams and website` | `README.md#L111-L121` |
+| `README.md › MCP server` | `README.md#L121-L134` |
+| `README.md › Corpus hygiene` | `README.md#L134-L140` |
+| `README.md › Exit codes` | `README.md#L140-L160` |
+| `README.md › Back to zero` | `README.md#L160-L175` |
+| `README.md › Try it without touching your project` | `README.md#L175-L185` |
+| `README.md › Declared limits` | `README.md#L185-L194` |
 
 ## 4. Arquitectura: módulos y paquetes
 
@@ -347,6 +349,19 @@ erDiagram
         Pattern pattern
         Sequence_str reasons
     }
+    CaseResult {
+        str case_id
+        str category
+        float recall
+        bool hit
+        float mrr
+        bool line_hit
+        bool symbol_hit
+        str query_mode
+        bool passed
+        tuple_str retrieved
+        float elapsed_ms
+    }
     Chunk {
         str chunk_id
         str artifact_id
@@ -373,17 +388,6 @@ erDiagram
         dict_str__list_CodeChunk _by_name
         list_Sequence_float _vectors
         bool _dense_ready
-    }
-    ContentNode {
-        str node_id
-        str kind
-        str title
-        list_Claim claims
-        tuple_str levels
-        DocState state
-        float confidence
-        dict_str__str rendered
-        str schema_version
     }
     DriftReport {
         ArchitectureModel model
@@ -598,7 +602,7 @@ erDiagram
 | `output.language` | `es` | `docu.profile.yaml#L38-L38` |
 | `output.levels.l1` | `true` | `docu.profile.yaml#L40-L40` |
 | `output.levels.l2` | `true` | `docu.profile.yaml#L41-L41` |
-| `output.levels.l3` | `false` | `docu.profile.yaml#L42-L42` |
+| `output.levels.l3` | `true` | `docu.profile.yaml#L42-L42` |
 | `output.levels.l4` | `true` | `docu.profile.yaml#L43-L43` |
 | `output.notation.diagrams` | `mermaid` | `docu.profile.yaml#L45-L45` |
 | `output.notation.architecture` | `c4` | `docu.profile.yaml#L46-L46` |
@@ -616,15 +620,15 @@ erDiagram
 
 | Tipo | Nombre | Anotaciones | Cita |
 |---|---|---|---|
-| class | `Segment` | `@dataclass` | `eval/harness.py#L118-L131` |
-| class | `BM25` | `@dataclass` | `eval/harness.py#L262-L304` |
-| class | `AutoIndex` | `@dataclass` | `eval/harness.py#L353-L373` |
-| class | `HybridIndex` | `@dataclass` | `eval/harness.py#L377-L458` |
-| class | `SymbolIndex` | `@dataclass` | `eval/harness.py#L462-L518` |
-| class | `Expected` | `@dataclass` | `eval/harness.py#L525-L529` |
-| class | `Case` | `@dataclass` | `eval/harness.py#L533-L550` |
-| class | `CaseResult` | `@dataclass` | `eval/harness.py#L554-L562` |
-| class | `Report` | `@dataclass` | `eval/harness.py#L566-L661` |
+| class | `Segment` | `@dataclass` | `eval/harness.py#L116-L129` |
+| class | `BM25` | `@dataclass` | `eval/harness.py#L260-L302` |
+| class | `AutoIndex` | `@dataclass` | `eval/harness.py#L429-L449` |
+| class | `HybridIndex` | `@dataclass` | `eval/harness.py#L453-L534` |
+| class | `SymbolIndex` | `@dataclass` | `eval/harness.py#L538-L594` |
+| class | `Expected` | `@dataclass` | `eval/harness.py#L601-L605` |
+| class | `Case` | `@dataclass` | `eval/harness.py#L609-L626` |
+| class | `CaseResult` | `@dataclass` | `eval/harness.py#L630-L641` |
+| class | `Report` | `@dataclass` | `eval/harness.py#L645-L776` |
 | class | `OnnxEmbedder` | `@dataclass` | `src/docu/adapters/embedders/onnx_local.py#L40-L104` |
 | class | `Lines` | — | `src/docu/adapters/langs/_braces.py#L233-L250` |
 | class | `_Lines` | — | `src/docu/adapters/langs/java.py#L145-L162` |
@@ -679,8 +683,8 @@ erDiagram
 | class | `YamlError` | — | `src/docu/core/yamlmini.py#L14-L15` |
 | class | `CleanPlan` | `@dataclass` | `src/docu/delivery/cleanup.py#L44-L69` |
 | class | `_Parser` | — | `src/docu/delivery/cli.py#L56-L67` |
-| class | `CliError` | — | `src/docu/delivery/cli.py#L265-L270` |
-| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L274-L285` |
+| class | `CliError` | — | `src/docu/delivery/cli.py#L280-L285` |
+| class | `ResolvedOptions` | `@dataclass` | `src/docu/delivery/cli.py#L289-L300` |
 | class | `ExitCode` | — | `src/docu/delivery/exit_codes.py#L8-L16` |
 | class | `_Handler` | — | `src/docu/delivery/http_server.py#L26-L89` |
 | class | `ProjectRef` | `@dataclass` | `src/docu/delivery/mcp_server.py#L163-L187` |
@@ -720,70 +724,73 @@ erDiagram
 
 | Entidad | Campo | Tipo declarado | Anotaciones | Cita |
 |---|---|---|---|---|
-| `Segment` | `path` | `str` | — | `eval/harness.py#L125-L125` |
-| `Segment` | `start` | `int` | — | `eval/harness.py#L126-L126` |
-| `Segment` | `end` | `int` | — | `eval/harness.py#L127-L127` |
-| `Segment` | `text` | `str` | — | `eval/harness.py#L128-L128` |
-| `Segment` | `tokens` | `tuple[str, ...]` | — | `eval/harness.py#L129-L129` |
-| `Segment` | `exact_names` | `tuple[str, ...]` | — | `eval/harness.py#L130-L130` |
-| `Segment` | `citation` | `str | None` | — | `eval/harness.py#L131-L131` |
-| `BM25` | `k1` | `float` | — | `eval/harness.py#L265-L265` |
-| `BM25` | `b` | `float` | — | `eval/harness.py#L266-L266` |
-| `BM25` | `segments` | `Sequence[Segment]` | — | `eval/harness.py#L267-L267` |
-| `BM25` | `_df` | `dict[str, int]` | — | `eval/harness.py#L268-L268` |
-| `BM25` | `_lengths` | `list[int]` | — | `eval/harness.py#L269-L269` |
-| `BM25` | `_avgdl` | `float` | — | `eval/harness.py#L270-L270` |
-| `AutoIndex` | `segments` | `Sequence[Segment]` | — | `eval/harness.py#L361-L361` |
-| `AutoIndex` | `embedder` | `object` | — | `eval/harness.py#L362-L362` |
-| `AutoIndex` | `_symbols` | `SymbolIndex` | — | `eval/harness.py#L363-L363` |
-| `AutoIndex` | `_hybrid` | `HybridIndex` | — | `eval/harness.py#L364-L364` |
-| `HybridIndex` | `segments` | `Sequence[Segment]` | — | `eval/harness.py#L384-L384` |
-| `HybridIndex` | `embedder` | `object` | — | `eval/harness.py#L385-L385` |
-| `HybridIndex` | `k1` | `float` | — | `eval/harness.py#L386-L386` |
-| `HybridIndex` | `b` | `float` | — | `eval/harness.py#L387-L387` |
-| `HybridIndex` | `rrf_k` | `int` | — | `eval/harness.py#L388-L388` |
-| `HybridIndex` | `max_exact_per_file` | `int` | — | `eval/harness.py#L389-L389` |
-| `HybridIndex` | `max_per_file` | `int` | — | `eval/harness.py#L390-L390` |
-| `HybridIndex` | `_bm25` | `BM25` | — | `eval/harness.py#L391-L391` |
-| `HybridIndex` | `_by_name` | `dict[str, list[Segment]]` | — | `eval/harness.py#L392-L392` |
-| `HybridIndex` | `_vectors` | `list[list[float]]` | — | `eval/harness.py#L393-L393` |
-| `SymbolIndex` | `segments` | `Sequence[Segment]` | — | `eval/harness.py#L472-L472` |
-| `SymbolIndex` | `k1` | `float` | — | `eval/harness.py#L473-L473` |
-| `SymbolIndex` | `b` | `float` | — | `eval/harness.py#L474-L474` |
-| `SymbolIndex` | `rrf_k` | `int` | — | `eval/harness.py#L475-L475` |
-| `SymbolIndex` | `max_exact_per_file` | `int` | — | `eval/harness.py#L476-L476` |
-| `SymbolIndex` | `max_per_file` | `int` | — | `eval/harness.py#L477-L477` |
-| `SymbolIndex` | `_bm25` | `BM25` | — | `eval/harness.py#L478-L478` |
-| `SymbolIndex` | `_by_name` | `dict[str, list[Segment]]` | — | `eval/harness.py#L479-L479` |
-| `Expected` | `path` | `str` | — | `eval/harness.py#L526-L526` |
-| `Expected` | `symbol` | `str | None` | — | `eval/harness.py#L527-L527` |
-| `Expected` | `lines` | `tuple[int, int] | None` | — | `eval/harness.py#L528-L528` |
-| `Expected` | `optional` | `bool` | — | `eval/harness.py#L529-L529` |
-| `Case` | `id` | `str` | — | `eval/harness.py#L534-L534` |
-| `Case` | `category` | `str` | — | `eval/harness.py#L535-L535` |
-| `Case` | `question` | `str` | — | `eval/harness.py#L536-L536` |
-| `Case` | `expected` | `tuple[Expected, ...]` | — | `eval/harness.py#L537-L537` |
-| `Case` | `answer` | `str` | — | `eval/harness.py#L538-L538` |
-| `Case` | `notes` | `str` | — | `eval/harness.py#L539-L539` |
-| `Case` | `query` | `str` | — | `eval/harness.py#L540-L540` |
-| `CaseResult` | `case_id` | `str` | — | `eval/harness.py#L555-L555` |
-| `CaseResult` | `category` | `str` | — | `eval/harness.py#L556-L556` |
-| `CaseResult` | `recall` | `float` | — | `eval/harness.py#L557-L557` |
-| `CaseResult` | `hit` | `bool` | — | `eval/harness.py#L558-L558` |
-| `CaseResult` | `mrr` | `float` | — | `eval/harness.py#L559-L559` |
-| `CaseResult` | `line_hit` | `bool | None` | — | `eval/harness.py#L560-L560` |
-| `CaseResult` | `retrieved` | `tuple[str, ...]` | — | `eval/harness.py#L561-L561` |
-| `CaseResult` | `elapsed_ms` | `float` | — | `eval/harness.py#L562-L562` |
-| `Report` | `project` | `str` | — | `eval/harness.py#L567-L567` |
-| `Report` | `k` | `int` | — | `eval/harness.py#L568-L568` |
-| `Report` | `files` | `int` | — | `eval/harness.py#L569-L569` |
-| `Report` | `segments` | `int` | — | `eval/harness.py#L570-L570` |
-| `Report` | `results` | `list[CaseResult]` | — | `eval/harness.py#L571-L571` |
-| `Report` | `query_field` | `str` | — | `eval/harness.py#L572-L572` |
-| `Report` | `index_mode` | `str` | — | `eval/harness.py#L573-L573` |
-| `Report` | `query_expansion` | `bool` | — | `eval/harness.py#L574-L574` |
-| `Report` | `generated_at` | `str` | — | `eval/harness.py#L575-L575` |
-| `Report` | `schema_version` | `str` | — | `eval/harness.py#L576-L576` |
+| `Segment` | `path` | `str` | — | `eval/harness.py#L123-L123` |
+| `Segment` | `start` | `int` | — | `eval/harness.py#L124-L124` |
+| `Segment` | `end` | `int` | — | `eval/harness.py#L125-L125` |
+| `Segment` | `text` | `str` | — | `eval/harness.py#L126-L126` |
+| `Segment` | `tokens` | `tuple[str, ...]` | — | `eval/harness.py#L127-L127` |
+| `Segment` | `exact_names` | `tuple[str, ...]` | — | `eval/harness.py#L128-L128` |
+| `Segment` | `citation` | `str | None` | — | `eval/harness.py#L129-L129` |
+| `BM25` | `k1` | `float` | — | `eval/harness.py#L263-L263` |
+| `BM25` | `b` | `float` | — | `eval/harness.py#L264-L264` |
+| `BM25` | `segments` | `Sequence[Segment]` | — | `eval/harness.py#L265-L265` |
+| `BM25` | `_df` | `dict[str, int]` | — | `eval/harness.py#L266-L266` |
+| `BM25` | `_lengths` | `list[int]` | — | `eval/harness.py#L267-L267` |
+| `BM25` | `_avgdl` | `float` | — | `eval/harness.py#L268-L268` |
+| `AutoIndex` | `segments` | `Sequence[Segment]` | — | `eval/harness.py#L437-L437` |
+| `AutoIndex` | `embedder` | `object` | — | `eval/harness.py#L438-L438` |
+| `AutoIndex` | `_symbols` | `SymbolIndex` | — | `eval/harness.py#L439-L439` |
+| `AutoIndex` | `_hybrid` | `HybridIndex` | — | `eval/harness.py#L440-L440` |
+| `HybridIndex` | `segments` | `Sequence[Segment]` | — | `eval/harness.py#L460-L460` |
+| `HybridIndex` | `embedder` | `object` | — | `eval/harness.py#L461-L461` |
+| `HybridIndex` | `k1` | `float` | — | `eval/harness.py#L462-L462` |
+| `HybridIndex` | `b` | `float` | — | `eval/harness.py#L463-L463` |
+| `HybridIndex` | `rrf_k` | `int` | — | `eval/harness.py#L464-L464` |
+| `HybridIndex` | `max_exact_per_file` | `int` | — | `eval/harness.py#L465-L465` |
+| `HybridIndex` | `max_per_file` | `int` | — | `eval/harness.py#L466-L466` |
+| `HybridIndex` | `_bm25` | `BM25` | — | `eval/harness.py#L467-L467` |
+| `HybridIndex` | `_by_name` | `dict[str, list[Segment]]` | — | `eval/harness.py#L468-L468` |
+| `HybridIndex` | `_vectors` | `list[list[float]]` | — | `eval/harness.py#L469-L469` |
+| `SymbolIndex` | `segments` | `Sequence[Segment]` | — | `eval/harness.py#L548-L548` |
+| `SymbolIndex` | `k1` | `float` | — | `eval/harness.py#L549-L549` |
+| `SymbolIndex` | `b` | `float` | — | `eval/harness.py#L550-L550` |
+| `SymbolIndex` | `rrf_k` | `int` | — | `eval/harness.py#L551-L551` |
+| `SymbolIndex` | `max_exact_per_file` | `int` | — | `eval/harness.py#L552-L552` |
+| `SymbolIndex` | `max_per_file` | `int` | — | `eval/harness.py#L553-L553` |
+| `SymbolIndex` | `_bm25` | `BM25` | — | `eval/harness.py#L554-L554` |
+| `SymbolIndex` | `_by_name` | `dict[str, list[Segment]]` | — | `eval/harness.py#L555-L555` |
+| `Expected` | `path` | `str` | — | `eval/harness.py#L602-L602` |
+| `Expected` | `symbol` | `str | None` | — | `eval/harness.py#L603-L603` |
+| `Expected` | `lines` | `tuple[int, int] | None` | — | `eval/harness.py#L604-L604` |
+| `Expected` | `optional` | `bool` | — | `eval/harness.py#L605-L605` |
+| `Case` | `id` | `str` | — | `eval/harness.py#L610-L610` |
+| `Case` | `category` | `str` | — | `eval/harness.py#L611-L611` |
+| `Case` | `question` | `str` | — | `eval/harness.py#L612-L612` |
+| `Case` | `expected` | `tuple[Expected, ...]` | — | `eval/harness.py#L613-L613` |
+| `Case` | `answer` | `str` | — | `eval/harness.py#L614-L614` |
+| `Case` | `notes` | `str` | — | `eval/harness.py#L615-L615` |
+| `Case` | `query` | `str` | — | `eval/harness.py#L616-L616` |
+| `CaseResult` | `case_id` | `str` | — | `eval/harness.py#L631-L631` |
+| `CaseResult` | `category` | `str` | — | `eval/harness.py#L632-L632` |
+| `CaseResult` | `recall` | `float` | — | `eval/harness.py#L633-L633` |
+| `CaseResult` | `hit` | `bool` | — | `eval/harness.py#L634-L634` |
+| `CaseResult` | `mrr` | `float` | — | `eval/harness.py#L635-L635` |
+| `CaseResult` | `line_hit` | `bool | None` | — | `eval/harness.py#L636-L636` |
+| `CaseResult` | `symbol_hit` | `bool | None` | — | `eval/harness.py#L637-L637` |
+| `CaseResult` | `query_mode` | `str` | — | `eval/harness.py#L638-L638` |
+| `CaseResult` | `passed` | `bool` | — | `eval/harness.py#L639-L639` |
+| `CaseResult` | `retrieved` | `tuple[str, ...]` | — | `eval/harness.py#L640-L640` |
+| `CaseResult` | `elapsed_ms` | `float` | — | `eval/harness.py#L641-L641` |
+| `Report` | `project` | `str` | — | `eval/harness.py#L646-L646` |
+| `Report` | `k` | `int` | — | `eval/harness.py#L647-L647` |
+| `Report` | `files` | `int` | — | `eval/harness.py#L648-L648` |
+| `Report` | `segments` | `int` | — | `eval/harness.py#L649-L649` |
+| `Report` | `results` | `list[CaseResult]` | — | `eval/harness.py#L650-L650` |
+| `Report` | `query_field` | `str` | — | `eval/harness.py#L651-L651` |
+| `Report` | `index_mode` | `str` | — | `eval/harness.py#L652-L652` |
+| `Report` | `query_expansion` | `bool` | — | `eval/harness.py#L653-L653` |
+| `Report` | `generated_at` | `str` | — | `eval/harness.py#L654-L654` |
+| `Report` | `schema_version` | `str` | — | `eval/harness.py#L655-L655` |
 | `OnnxEmbedder` | `model_dir` | `Path | str` | — | `src/docu/adapters/embedders/onnx_local.py#L43-L43` |
 | `OnnxEmbedder` | `embedder_id` | `str` | — | `src/docu/adapters/embedders/onnx_local.py#L44-L44` |
 | `OnnxEmbedder` | `max_length` | `int` | — | `src/docu/adapters/embedders/onnx_local.py#L45-L45` |
@@ -980,15 +987,15 @@ erDiagram
 | `CleanPlan` | `state` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L49-L49` |
 | `CleanPlan` | `ledger` | `list[Path]` | — | `src/docu/delivery/cleanup.py#L50-L50` |
 | `CleanPlan` | `warnings` | `list[str]` | — | `src/docu/delivery/cleanup.py#L51-L51` |
-| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L277-L277` |
-| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L278-L278` |
-| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L279-L279` |
-| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L280-L280` |
-| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L281-L281` |
-| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L282-L282` |
-| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L283-L283` |
-| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L284-L284` |
-| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L285-L285` |
+| `ResolvedOptions` | `profile` | `Profile | None` | — | `src/docu/delivery/cli.py#L292-L292` |
+| `ResolvedOptions` | `project` | `str` | — | `src/docu/delivery/cli.py#L293-L293` |
+| `ResolvedOptions` | `levels` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L294-L294` |
+| `ResolvedOptions` | `out_dir` | `Path` | — | `src/docu/delivery/cli.py#L295-L295` |
+| `ResolvedOptions` | `ttl_days` | `int` | — | `src/docu/delivery/cli.py#L296-L296` |
+| `ResolvedOptions` | `include` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L297-L297` |
+| `ResolvedOptions` | `exclude` | `tuple[str, ...]` | — | `src/docu/delivery/cli.py#L298-L298` |
+| `ResolvedOptions` | `thresholds` | `Thresholds` | — | `src/docu/delivery/cli.py#L299-L299` |
+| `ResolvedOptions` | `manifest` | `Path | None` | — | `src/docu/delivery/cli.py#L300-L300` |
 | `_Handler` | `server_version` | `sin tipo declarado` | — | `src/docu/delivery/http_server.py#L27-L27` |
 | `_Handler` | `mcp` | `McpServer` | — | `src/docu/delivery/http_server.py#L28-L28` |
 | `ProjectRef` | `name` | `str` | — | `src/docu/delivery/mcp_server.py#L166-L166` |
@@ -1151,42 +1158,46 @@ erDiagram
 | `_espaciado` | `def _espaciado(dibujo: ImageDraw.ImageDraw, xy: tuple[int, int], texto: str, fuente, extra` | `docs/brand/make-cover.py#L46-L52` |
 | `componer` | `def componer(frame: Path, destino: Path) -> Path` | `docs/brand/make-cover.py#L55-L97` |
 | `main` | `def main(argv: list[str]) -> int` | `docs/brand/make-cover.py#L100-L104` |
-| `_fold` | `def _fold(text: str) -> str` | `eval/harness.py#L83-L90` |
-| `tokenize` | `def tokenize(text: str) -> list[str]` | `eval/harness.py#L93-L111` |
-| `_matches` | `def _matches(path: str, patterns: Sequence[str]) -> bool` | `eval/harness.py#L134-L136` |
-| `discover_files` | `def discover_files(repo: Path, include: Sequence[str], exclude: Sequence[str]) -> list[str` | `eval/harness.py#L139-L148` |
-| `_window_segments` | `def _window_segments(repo: Path, rel: str, window: int, overlap: int) -> list[Segment]` | `eval/harness.py#L151-L177` |
-| `build_corpus` | `def build_corpus(repo: Path, include: Sequence[str]=..., exclude: Sequence[str]=..., windo` | `eval/harness.py#L180-L190` |
-| `_exact_names` | `def _exact_names(qualname: str | None) -> tuple[str, ...]` | `eval/harness.py#L193-L199` |
-| `build_symbol_corpus` | `def build_symbol_corpus(repo: Path, exclude: Sequence[str]=..., window: int=..., overlap: ` | `eval/harness.py#L202-L255` |
-| `BM25.__post_init__` | `def __post_init__(self) -> None` | `eval/harness.py#L272-L277` |
-| `BM25._idf` | `def _idf(self, term: str) -> float` | `eval/harness.py#L279-L282` |
-| `BM25.scores` | `def scores(self, query: str) -> list[float]` | `eval/harness.py#L284-L299` |
-| `BM25.search` | `def search(self, query: str, k: int=...) -> list[tuple[Segment, float]]` | `eval/harness.py#L301-L304` |
-| `_looks_like_identifier` | `def _looks_like_identifier(query: str) -> bool` | `eval/harness.py#L307-L325` |
-| `_diversity` | `def _diversity(ordered: Sequence[tuple[tuple[str, int, int], float]], k: int, cap: int, by` | `eval/harness.py#L328-L349` |
-| `AutoIndex.__post_init__` | `def __post_init__(self) -> None` | `eval/harness.py#L366-L368` |
-| `AutoIndex.search` | `def search(self, query: str, k: int=...) -> list[tuple[Segment, float]]` | `eval/harness.py#L370-L373` |
-| `HybridIndex.__post_init__` | `def __post_init__(self) -> None` | `eval/harness.py#L395-L401` |
-| `HybridIndex._dense_channel` | `def _dense_channel(self, query: str, limit: int) -> list[Segment]` | `eval/harness.py#L405-L416` |
-| `HybridIndex._exact_channel` | `def _exact_channel(self, terms: set[str]) -> list[Segment]` | `eval/harness.py#L418-L430` |
-| `HybridIndex._channel_weights` | `def _channel_weights(self, query: str) -> tuple[float, float, float]` | `eval/harness.py#L432-L439` |
-| `HybridIndex.search` | `def search(self, query: str, k: int=...) -> list[tuple[Segment, float]]` | `eval/harness.py#L441-L458` |
-| `SymbolIndex.__post_init__` | `def __post_init__(self) -> None` | `eval/harness.py#L481-L485` |
-| `SymbolIndex._exact_channel` | `def _exact_channel(self, terms: set[str]) -> list[Segment]` | `eval/harness.py#L487-L501` |
-| `SymbolIndex.search` | `def search(self, query: str, k: int=...) -> list[tuple[Segment, float]]` | `eval/harness.py#L503-L518` |
-| `Case.required_paths` | `def required_paths(self) -> tuple[str, ...]` | `eval/harness.py#L544-L545` |
-| `Case.retrieval_query` | `def retrieval_query(self, field: str=...) -> str` | `eval/harness.py#L547-L550` |
-| `Report._agg` | `def _agg(self, results: Sequence[CaseResult]) -> dict[str, float]` | `eval/harness.py#L578-L589` |
-| `Report.overall` | `def overall(self) -> dict[str, float]` | `eval/harness.py#L592-L593` |
-| `Report.by_category` | `def by_category(self) -> dict[str, dict[str, float]]` | `eval/harness.py#L595-L597` |
-| `Report.to_dict` | `def to_dict(self) -> dict[str, object]` | `eval/harness.py#L599-L624` |
-| `Report.to_markdown` | `def to_markdown(self) -> str` | `eval/harness.py#L626-L661` |
-| `_overlaps` | `def _overlaps(a: tuple[int, int], b: tuple[int, int]) -> bool` | `eval/harness.py#L664-L665` |
-| `evaluate` | `def evaluate(cases: Sequence[Case], index: object, k: int=..., query_field: str=..., expan` | `eval/harness.py#L668-L720` |
-| `load_golden` | `def load_golden(path: Path) -> tuple[str, str, list[Case]]` | `eval/harness.py#L726-L750` |
-| `run` | `def run(golden_path: Path, repo: Path | None, k: int, out_dir: Path, quiet: bool=..., quer` | `eval/harness.py#L756-L824` |
-| `main` | `def main(argv: Sequence[str] | None=...) -> int` | `eval/harness.py#L827-L871` |
+| `_fold` | `def _fold(text: str) -> str` | `eval/harness.py#L81-L88` |
+| `tokenize` | `def tokenize(text: str) -> list[str]` | `eval/harness.py#L91-L109` |
+| `_matches` | `def _matches(path: str, patterns: Sequence[str]) -> bool` | `eval/harness.py#L132-L134` |
+| `discover_files` | `def discover_files(repo: Path, include: Sequence[str], exclude: Sequence[str]) -> list[str` | `eval/harness.py#L137-L146` |
+| `_window_segments` | `def _window_segments(repo: Path, rel: str, window: int, overlap: int) -> list[Segment]` | `eval/harness.py#L149-L175` |
+| `build_corpus` | `def build_corpus(repo: Path, include: Sequence[str]=..., exclude: Sequence[str]=..., windo` | `eval/harness.py#L178-L188` |
+| `_exact_names` | `def _exact_names(qualname: str | None) -> tuple[str, ...]` | `eval/harness.py#L191-L197` |
+| `build_symbol_corpus` | `def build_symbol_corpus(repo: Path, exclude: Sequence[str]=..., window: int=..., overlap: ` | `eval/harness.py#L200-L253` |
+| `BM25.__post_init__` | `def __post_init__(self) -> None` | `eval/harness.py#L270-L275` |
+| `BM25._idf` | `def _idf(self, term: str) -> float` | `eval/harness.py#L277-L280` |
+| `BM25.scores` | `def scores(self, query: str) -> list[float]` | `eval/harness.py#L282-L297` |
+| `BM25.search` | `def search(self, query: str, k: int=...) -> list[tuple[Segment, float]]` | `eval/harness.py#L299-L302` |
+| `_looks_like_identifier` | `def _looks_like_identifier(query: str) -> bool` | `eval/harness.py#L305-L401` |
+| `_diversity` | `def _diversity(ordered: Sequence[tuple[tuple[str, int, int], float]], k: int, cap: int, by` | `eval/harness.py#L404-L425` |
+| `AutoIndex.__post_init__` | `def __post_init__(self) -> None` | `eval/harness.py#L442-L444` |
+| `AutoIndex.search` | `def search(self, query: str, k: int=...) -> list[tuple[Segment, float]]` | `eval/harness.py#L446-L449` |
+| `HybridIndex.__post_init__` | `def __post_init__(self) -> None` | `eval/harness.py#L471-L477` |
+| `HybridIndex._dense_channel` | `def _dense_channel(self, query: str, limit: int) -> list[Segment]` | `eval/harness.py#L481-L492` |
+| `HybridIndex._exact_channel` | `def _exact_channel(self, terms: set[str]) -> list[Segment]` | `eval/harness.py#L494-L506` |
+| `HybridIndex._channel_weights` | `def _channel_weights(self, query: str) -> tuple[float, float, float]` | `eval/harness.py#L508-L515` |
+| `HybridIndex.search` | `def search(self, query: str, k: int=...) -> list[tuple[Segment, float]]` | `eval/harness.py#L517-L534` |
+| `SymbolIndex.__post_init__` | `def __post_init__(self) -> None` | `eval/harness.py#L557-L561` |
+| `SymbolIndex._exact_channel` | `def _exact_channel(self, terms: set[str]) -> list[Segment]` | `eval/harness.py#L563-L577` |
+| `SymbolIndex.search` | `def search(self, query: str, k: int=...) -> list[tuple[Segment, float]]` | `eval/harness.py#L579-L594` |
+| `Case.required_paths` | `def required_paths(self) -> tuple[str, ...]` | `eval/harness.py#L620-L621` |
+| `Case.retrieval_query` | `def retrieval_query(self, field: str=...) -> str` | `eval/harness.py#L623-L626` |
+| `Report._agg` | `def _agg(self, results: Sequence[CaseResult]) -> dict[str, float]` | `eval/harness.py#L657-L672` |
+| `Report.overall` | `def overall(self) -> dict[str, float]` | `eval/harness.py#L675-L676` |
+| `Report.by_category` | `def by_category(self) -> dict[str, dict[str, float]]` | `eval/harness.py#L678-L680` |
+| `Report.by_mode` | `def by_mode(self) -> dict[str, dict[str, float]]` | `eval/harness.py#L682-L685` |
+| `Report.to_dict` | `def to_dict(self) -> dict[str, object]` | `eval/harness.py#L687-L730` |
+| `Report.to_markdown` | `def to_markdown(self) -> str` | `eval/harness.py#L732-L776` |
+| `_overlaps` | `def _overlaps(a: tuple[int, int], b: tuple[int, int]) -> bool` | `eval/harness.py#L779-L780` |
+| `_query_mode` | `def _query_mode(case: Case) -> str` | `eval/harness.py#L800-L815` |
+| `evaluate` | `def evaluate(cases: Sequence[Case], index: object, k: int=..., query_field: str=..., expan` | `eval/harness.py#L818-L897` |
+| `_validate_case_id` | `def _validate_case_id(case: Case) -> list[str]` | `eval/harness.py#L903-L912` |
+| `_validate_golden_set` | `def _validate_golden_set(cases: Sequence[Case]) -> list[str]` | `eval/harness.py#L915-L953` |
+| `load_golden` | `def load_golden(path: Path) -> tuple[str, str, list[Case]]` | `eval/harness.py#L956-L985` |
+| `run` | `def run(golden_path: Path, repo: Path | None, k: int, out_dir: Path, quiet: bool=..., quer` | `eval/harness.py#L991-L1059` |
+| `main` | `def main(argv: Sequence[str] | None=...) -> int` | `eval/harness.py#L1062-L1106` |
 | `resolve_model_dir` | `def resolve_model_dir(*roots) -> Path | None` | `src/docu/adapters/embedders/onnx_local.py#L20-L36` |
 | `OnnxEmbedder.dim` | `def dim(self) -> int` | `src/docu/adapters/embedders/onnx_local.py#L53-L54` |
 | `OnnxEmbedder.available` | `def available(self) -> bool` | `src/docu/adapters/embedders/onnx_local.py#L57-L60` |
@@ -1343,12 +1354,8 @@ erDiagram
 | `RunRecord.duration_s` | `def duration_s(self) -> float | None` | `src/docu/core/contracts.py#L300-L303` |
 | `RunRecord.to_jsonl` | `def to_jsonl(self) -> str` | `src/docu/core/contracts.py#L305-L325` |
 | `FreshnessRecord.is_expired` | `def is_expired(self, now: datetime | None=...) -> bool` | `src/docu/core/contracts.py#L342-L344` |
-| `Thresholds.as_mapping` | `def as_mapping(self) -> Mapping[str, float]` | `src/docu/core/policy.py#L28-L34` |
-| `Budget.spend` | `def spend(self) -> None` | `src/docu/core/policy.py#L50-L56` |
-| `Budget.exceeded` | `def exceeded(self) -> list[str]` | `src/docu/core/policy.py#L58-L68` |
-| `Budget.remaining_usd` | `def remaining_usd(self) -> float` | `src/docu/core/policy.py#L71-L72` |
 
-_(352 métodos adicionales omitidos del índice)_.
+_(356 métodos adicionales omitidos del índice)_.
 
 ## 12. Documentos y fuentes de referencia
 
@@ -1370,11 +1377,13 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 
 | Archivo | sha256 |
 |---|---|
-| `.github/workflows/docu.yml` | `1a164973b830` |
+| `.github/workflows/ci.yml` | `d361f8af736e` |
+| `.github/workflows/docu.yml` | `a319ef05bb5c` |
+| `.github/workflows/pages.yml` | `a62284389f13` |
 | `docs/brand/make-cover.py` | `bbe4d72bcbfa` |
-| `docu.profile.yaml` | `536bf0c2d80d` |
+| `docu.profile.yaml` | `7e8d97b3460c` |
 | `eval/__init__.py` | `65861c4d8840` |
-| `eval/harness.py` | `6137ad8155a0` |
+| `eval/harness.py` | `911f8e0d7dd8` |
 | `pyproject.toml` | `81bbabf16beb` |
 | `src/docu/__init__.py` | `ec3694c43263` |
 | `src/docu/adapters/__init__.py` | `a2c1108f5fd9` |
@@ -1398,23 +1407,23 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | `src/docu/core/contracts.py` | `2a79af0cd07f` |
 | `src/docu/core/policy.py` | `bb4c3a0a3ed5` |
 | `src/docu/core/ports.py` | `88d8cfdb18c0` |
-| `src/docu/core/profile.py` | `0a80beb4ea0e` |
+| `src/docu/core/profile.py` | `0def56ccec02` |
 | `src/docu/core/yamlmini.py` | `52a40b1f04f7` |
 | `src/docu/delivery/__init__.py` | `1ee493763f5d` |
 | `src/docu/delivery/cleanup.py` | `001b4d5dcb36` |
-| `src/docu/delivery/cli.py` | `37304df5e19c` |
+| `src/docu/delivery/cli.py` | `c20d2874a270` |
 | `src/docu/delivery/exit_codes.py` | `34e3a22d2847` |
 | `src/docu/delivery/http_server.py` | `508873897a2b` |
 | `src/docu/delivery/mcp_server.py` | `ab622e99436c` |
 | `src/docu/delivery/proposal.py` | `d3f93708a83b` |
 | `src/docu/generate/__init__.py` | `91d9129019a3` |
 | `src/docu/generate/diagrams.py` | `f008c57b7365` |
-| `src/docu/generate/docs_evidence.py` | `4cd7ffa479f1` |
+| `src/docu/generate/docs_evidence.py` | `55fd8094dfae` |
 | `src/docu/generate/facts.py` | `50ee7dba477a` |
-| `src/docu/generate/markdown.py` | `ff0e36c384b8` |
+| `src/docu/generate/markdown.py` | `8b680f43c285` |
 | `src/docu/generate/narrative.py` | `36db8af62437` |
 | `src/docu/generate/ops.py` | `cee221559089` |
-| `src/docu/generate/pipeline.py` | `1a107239fa01` |
+| `src/docu/generate/pipeline.py` | `3922b5e1fe2c` |
 | `src/docu/generate/prose.py` | `e960ae53b9e4` |
 | `src/docu/index/__init__.py` | `06566a17f409` |
 | `src/docu/index/chunker.py` | `7a6418ba69aa` |
