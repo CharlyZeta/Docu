@@ -7,8 +7,10 @@ name: ci
 # Nota: `docu.yml` cuida que la documentación no quede vieja; este workflow cuida que el código no se
 # rompa. Son responsabilidades distintas y por eso son dos archivos.
 on:
+  # Todas las ramas: una rama de trabajo también tiene que probarse antes de pedir revisión. El
+  # costo es bajo (el proyecto no tiene dependencias) y evita el clásico «verde en main, roto en la
+  # rama que nadie corrió».
   push:
-    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
