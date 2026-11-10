@@ -39,7 +39,7 @@ output:
   levels:
     l1: true
     l2: true
-    l3: false
+    l3: true
     l4: true
   notation:
     diagrams: mermaid

@@ -19,6 +19,18 @@ README = """# SalesHub
 Plataforma de gestión comercial omnicanal para equipos de venta que operan ventas físicas
 y tiendas en línea desde un solo lugar, con integraciones de comercio electrónico.
 
+## What you get
+
+- **Un manual que no miente en silencio**: 100 % de las filas con cita a `archivo#línea`. Lo que no
+  tiene evidencia aparece declarado como *hueco*, no rellenado con texto plausible.
+- **Cuatro documentos distintos**, no cuatro copias: manual técnico, operación, guía sin jerga y
+  onboarding.
+
+## How it works
+
+El generador lee el código, extrae hechos con cita y los organiza en cuatro niveles. No usa ningún
+modelo de lenguaje: mismo código, mismo documento, byte a byte.
+
 ## 🚀 Guía de Instalación y Ejecución Local
 
 Cómo levantar el proyecto en una máquina nueva.
@@ -122,6 +134,29 @@ class RenderTests(unittest.TestCase):
 
         document = render_l4("demo", [], {}, {})
         self.assertIn("Sin evidencia", document)
+
+    def test_l3_fills_faq_with_purpose_sections(self) -> None:
+        """F10: la sección Preguntas frecuentes de L3 no puede quedarse vacía.
+
+        El README del proyecto ya explica qué es docu (sección "## What you get" / "## How it works").
+        `render_l3` debe citar esas secciones en lugar de declarar el hueco: un usuario de negocio
+        que pregunta "¿Qué obtengo?" merece la respuesta, no un hueco.
+        """
+        from docu.generate.markdown import render_l3
+
+        sections = parse_sections("README.md", README)
+        document = render_l3("demo", [], {}, {}, docs_sections=sections)
+        faq = document.split("## Preguntas frecuentes")[1].split("##")[0]
+        self.assertNotIn("Sin evidencia", faq)
+        self.assertIn("README.md#L", faq)
+
+    def test_l3_faq_falls_back_to_gap_when_nothing_matches(self) -> None:
+        """Si no hay sección que responda a la pregunta, L3 declara el hueco."""
+        from docu.generate.markdown import render_l3
+
+        document = render_l3("demo", [], {}, {}, docs_sections=[])
+        faq = document.split("## Preguntas frecuentes")[1].split("##")[0]
+        self.assertIn("Sin evidencia", faq)
 
 
 if __name__ == "__main__":

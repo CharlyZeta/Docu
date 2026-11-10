@@ -35,6 +35,19 @@ erDiagram
         Pattern pattern
         Sequence_str reasons
     }
+    CaseResult {
+        str case_id
+        str category
+        float recall
+        bool hit
+        float mrr
+        bool line_hit
+        bool symbol_hit
+        str query_mode
+        bool passed
+        tuple_str retrieved
+        float elapsed_ms
+    }
     Chunk {
         str chunk_id
         str artifact_id
@@ -61,17 +74,6 @@ erDiagram
         dict_str__list_CodeChunk _by_name
         list_Sequence_float _vectors
         bool _dense_ready
-    }
-    ContentNode {
-        str node_id
-        str kind
-        str title
-        list_Claim claims
-        tuple_str levels
-        DocState state
-        float confidence
-        dict_str__str rendered
-        str schema_version
     }
     DriftReport {
         ArchitectureModel model

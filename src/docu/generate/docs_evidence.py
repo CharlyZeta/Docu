@@ -41,7 +41,7 @@ SETUP_HINTS = (
 )
 PURPOSE_HINTS = (
     "qué es", "que es", "descripción", "descripcion", "introducción", "introduccion",
-    "about", "overview", "propósito", "proposito",
+    "about", "overview", "propósito", "proposito", "what you get", "how it works",
 )
 
 

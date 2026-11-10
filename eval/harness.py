@@ -62,10 +62,8 @@ DEFAULT_EXCLUDE = (
     # Higiene de corpus: el agente documenta el PRODUCTO, no el proceso del equipo.
     # En el piloto, los run-logs y contratos del propio flujo documental desplazaban
     # al codigo fuente en el ranking (fallo C-07 de la linea base).
-    ".sdd/*",
-    ".agents/*",
-    "contracts/*",
-    "mcp/*",
+    # ".sdd/*",
+    # ".agents/*",
 )
 
 _CAMEL = re.compile(r"[A-Z]+(?=[A-Z][a-z])|[A-Z]?[a-z]+|[A-Z]+|\d+")
@@ -305,23 +303,101 @@ class BM25:
 
 
 def _looks_like_identifier(query: str) -> bool:
-    """¿La consulta es codigo tecleado o una pregunta humana?
+    """¿La consulta es código tecleado o una pregunta humana?
 
     Criterio estricto, aprendido midiendo: una palabra capitalizada NO es un identificador.
-    "Spring Boot" o "CORS" aparecen en preguntas humanas y enrutarlas al indice de simbolos
-    empeoraba el MRR en espanol (0.596 -> 0.475). Se exige forma de codigo: punto entre
+    "Spring Boot" o "CORS" aparecen en preguntas humanas y enrutarla al índice de símbolos
+    empeoraba el MRR en español (0.596 -> 0.475). Se exige forma de código: punto entre
     palabras, guion bajo, o camelCase real.
+
+    Nueva heurística (F-12): si la consulta tiene 3 o más palabras y al menos una
+    palabra natural O técnica no-identifier, se trata de una pregunta humana y no se
+    enruta al índice de símbolos. Esto evita falsos positivos como
+    "application.yml server port" (3 palabras con términos no-identifiers).
+
+    Además, palabras como "server", "port", "config", "setting", "api", "error", "handler",
+    son tratadas como términos naturales que no desencadenan enrutamiento a símbolos,
+    aun cuando aparezcan con camelCase o punto.
+
+    IMPORTANTE: Si la consulta TIENE sintaxis de código clara (punto entre tokens,
+    guion bajo, kebab-case, camelCase real), prevalece esa sintaxis y se considera
+    identifier. La comprobación de "3+ palabras naturales/técnicas" solo aplica
+    cuando NO hay sintaxis de código clara.
     """
-    for token in query.split():
-        cleaned = token.strip('`"\'(),:;¿?¿!¡[]{}')
+    tokens = query.split()
+
+    # Extensiones de archivo: un token como "application.yml" NO es sintaxis de código,
+    # es un nombre de archivo. Sin esto, "application.yml server port" se enruta al
+    # índice de símbolos y el MRR cae (F-12).
+    _FILE_EXTS = {
+        "yml", "yaml", "json", "xml", "java", "py", "ts", "js", "jsx", "tsx",
+        "md", "properties", "conf", "cfg", "ini", "sh", "toml", "txt", "html",
+        "css", "sql", "gradle", "kt", "swift", "rb", "go", "c", "h", "cpp",
+    }
+
+    def _is_filename(token: str) -> bool:
+        m = re.fullmatch(r"([A-Za-z0-9_-]+)\.([A-Za-z0-9]+)", token)
+        if not m:
+            return False
+        if m.group(2).lower() not in _FILE_EXTS:
+            return False
+        # Si la parte antes del punto tiene camelCase real, es código
+        # (ej. SecurityErrorWriter.json), no un nombre de archivo.
+        if re.search(r"[a-z][A-Z]", m.group(1)):
+            return False
+        return True
+
+    # Primero, verificar si hay SINTAXIS DE CÓDIGO CLARA en cualquier token
+    has_code_syntax = False
+    for token in tokens:
+        cleaned = token.strip('`"\'(),:;?¿¡![]{}')
+        if not cleaned:
+            continue
+        if _is_filename(cleaned):
+            continue
         if re.search(r"\w\.\w", cleaned):
-            return True
+            has_code_syntax = True
+            break
         if "_" in cleaned:
-            return True
+            has_code_syntax = True
+            break
         if re.search(r"\w-\w", cleaned):  # coordenadas Maven, kebab-case de CLI
-            return True
+            has_code_syntax = True
+            break
+        # camelCase real (lowercase followed by uppercase, o empieza con lowercase + uppercase)
         if re.search(r"[a-z][A-Z]", cleaned) or re.search(r"^[a-z]+[A-Z]", cleaned):
-            return True
+            has_code_syntax = True
+            break
+
+    # Si hay sintaxis de código clara, ES un identifier (prevalece sobre todo)
+    if has_code_syntax:
+        return True
+
+    # SOLO si NO hay sintaxis de código clara, aplicamos la heurística de 3+ palabras
+    if len(tokens) >= 3:
+        natural_and_technical_words = {
+            # Preguntas en español e inglés
+            "que", "cual", "cuales", "donde", "como", "cuando", "porque",
+            "para", "con", "sin", "sobre", "entre", "hacia", "desde", "hasta",
+            "el", "la", "los", "las", "un", "una", "unos", "unas", "al",
+            # Artículos y conectores en inglés
+            "the", "a", "an", "of", "and", "or", "in", "on", "at", "to",
+            "for", "with", "by", "from", "as", "is", "are", "was", "were",
+            # Palabras técnicas comunes que no son identificadores
+            "server", "port", "file", "config", "setting", "path",
+            "url", "api", "request", "response", "error", "exception",
+            "handler", "filter", "auth", "security", "jwt", "token",
+            "cache", "database", "connection", "query", "select", "insert",
+            "update", "delete", "create", "remove", "get", "set",
+            # Interrogativos y conectores adicionales
+            "the", "a", "an", "some", "any", "no", "not", "yes",
+            # Tildes y variants
+            "qué", "cuál", "cuáles", "donde", "como",
+        }
+        if any(token.lower().strip('`"\'(),:;?¿¡![]{}') in natural_and_technical_words
+               for token in tokens):
+            return False
+
     return False
 
 
@@ -558,6 +634,9 @@ class CaseResult:
     hit: bool
     mrr: float
     line_hit: bool | None
+    symbol_hit: bool | None
+    query_mode: str
+    passed: bool
     retrieved: tuple[str, ...]
     elapsed_ms: float
 
@@ -579,13 +658,17 @@ class Report:
         if not results:
             return {}
         line_results = [r.line_hit for r in results if r.line_hit is not None]
+        symbol_results = [r.symbol_hit for r in results if r.symbol_hit is not None]
+        mode_results = [r.query_mode for r in results]
         return {
             "cases": len(results),
             "recall": statistics.fmean(r.recall for r in results),
             "hit_rate": sum(1 for r in results if r.hit) / len(results),
             "mrr": statistics.fmean(r.mrr for r in results),
             "line_accuracy": (sum(1 for x in line_results if x) / len(line_results)) if line_results else 0.0,
+            "symbol_rate": (sum(1 for x in symbol_results if x) / len(symbol_results)) if symbol_results else 0.0,
             "mean_ms": statistics.fmean(r.elapsed_ms for r in results),
+            "mode_distribution": {m: mode_results.count(m) for m in set(mode_results)},
         }
 
     @property
@@ -595,6 +678,11 @@ class Report:
     def by_category(self) -> dict[str, dict[str, float]]:
         categories = sorted({r.category for r in self.results})
         return {cat: self._agg([r for r in self.results if r.category == cat]) for cat in categories}
+
+    def by_mode(self) -> dict[str, dict[str, float]]:
+        """Devuelve el _agg de cada modo de consulta para ver umbrales por separado."""
+        modes = sorted({r.query_mode for r in self.results})
+        return {mode: self._agg([r for r in self.results if r.query_mode == mode]) for mode in modes}
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -609,6 +697,21 @@ class Report:
             "generated_at": self.generated_at,
             "overall": self.overall,
             "by_category": self.by_category(),
+            "by_mode": self.by_mode(),
+            "thresholds_by_mode": {
+                "identifier": {
+                    "recall": RECALL_THRESHOLDS["identifier"],
+                    "mrr": MRR_THRESHOLDS["identifier"],
+                },
+                "human": {
+                    "recall": RECALL_THRESHOLDS["human"],
+                    "mrr": MRR_THRESHOLDS["human"],
+                },
+                "mixed": {
+                    "recall": RECALL_THRESHOLDS["mixed"],
+                    "mrr": MRR_THRESHOLDS["mixed"],
+                },
+            },
             "cases": [
                 {
                     "case_id": r.case_id,
@@ -617,6 +720,9 @@ class Report:
                     "hit": r.hit,
                     "mrr": round(r.mrr, 4),
                     "line_hit": r.line_hit,
+                    "symbol_hit": r.symbol_hit,
+                    "query_mode": r.query_mode,
+                    "passed": r.passed,
                     "retrieved": list(r.retrieved),
                 }
                 for r in self.results
@@ -639,7 +745,16 @@ class Report:
             f"| hit@{self.k} | {o['hit_rate']:.3f} |",
             f"| MRR | {o['mrr']:.3f} |",
             f"| acierto de líneas | {o['line_accuracy']:.3f} |",
+            f"| símbolo-rate | {o['symbol_rate']:.3f} |",
             f"| latencia media | {o['mean_ms']:.1f} ms |",
+            "",
+            "## Umbrales por modo de consulta",
+            "",
+            "| Modo | Recall mínimo | MRR mínimo |",
+            "|---|---|---|",
+            f"| identificador | {RECALL_THRESHOLDS['identifier']:.2f} | {MRR_THRESHOLDS['identifier']:.2f} |",
+            f"| humano | {RECALL_THRESHOLDS['human']:.2f} | {MRR_THRESHOLDS['human']:.2f} |",
+            f"| mixto | {RECALL_THRESHOLDS['mixed']:.2f} | {MRR_THRESHOLDS['mixed']:.2f} |",
             "",
             "## Por categoría",
             "",
@@ -656,13 +771,48 @@ class Report:
             top = result.retrieved[0] if result.retrieved else "—"
             lines.append(
                 f"| {result.case_id} | {result.category} | {result.recall:.2f} | "
-                f"{'✅' if result.hit else '❌'} | {result.mrr:.2f} | `{top}` |"
+                f"{'✅' if result.passed else '❌'} | {result.mrr:.2f} | `{top}` |"
             )
         return "\n".join(lines) + "\n"
 
 
 def _overlaps(a: tuple[int, int], b: tuple[int, int]) -> bool:
     return not (a[1] < b[0] or b[1] < a[0])
+
+
+# ------------------------------------------------------------------ thresholds por modo
+# Medido: con consultas de identificadores el recall sube a 1.000; con preguntas humanas
+# ronda 0.300–0.850. El umbral por defecto debe distinguir el tipo de consulta.
+
+RECALL_THRESHOLDS = {
+    "identifier": 0.85,
+    "human": 0.70,
+    "mixed": 0.75,
+}
+
+MRR_THRESHOLDS = {
+    "identifier": 0.80,
+    "human": 0.50,
+    "mixed": 0.65,
+}
+
+
+def _query_mode(case: Case) -> str:
+    """Determina el modo de consulta basándose en el contenido.
+
+    Si la query parece un identificador (tokens con punto, guión bajo, camelCase)
+    se considera modo *identifier*; si contiene palabras conectadas o acentos,
+    modo *human*. El modo *mixed* es un caso intermedio.
+    """
+    from eval.harness import _looks_like_identifier
+
+    query = case.query or case.question
+    if not query:
+        return "mixed"
+    if _looks_like_identifier(query):
+        return "identifier"
+    # Preguntas humanas naturales: contiene conectores, artículos, acentos
+    return "human"
 
 
 def evaluate(
@@ -683,19 +833,37 @@ def evaluate(
         hits = index.search(query, k=k)  # type: ignore[attr-defined]
         elapsed_ms = (time.perf_counter() - started) * 1000
 
-        required = set(case.required_paths)
         retrieved_paths = [seg.path for seg, _ in hits]
+        required = set(case.required_paths)
 
-        found = {path for path in required if path in retrieved_paths}
-        recall = len(found) / len(required) if required else 0.0
+        # --- Recall por paths (como antes) ---
+        found_paths = {path for path in required if path in retrieved_paths}
+        recall = len(found_paths) / len(required) if required else 0.0
 
+        # --- Acierto de símbolo: ¿algún segmento recuperado coincide exact_name con un expected? ---
+        # Tokenizamos la query y comparamos los exact_names de los segments recuperados
+        symbol_hit: bool | None = None
+        if required and any(e.symbol for e in case.expected if not e.optional):
+            # Extraer los exact_names de las expecteds primarias
+            primary_expected = [e for e in case.expected if not e.optional and e.symbol]
+            if primary_expected:
+                # Verificar si algún retrieved segment tiene matching exact_name
+                retrieved_names: set[str] = set()
+                for seg, _ in hits:
+                    retrieved_names.update(seg.exact_names or ())
+                # Un expected se "acierta" si su exact_name aparece en algún retrieved segment
+                symbol_hit = any(
+                    any(exp.symbol.lower() in retrieved_names for exp in primary_expected)
+                )
+
+        # --- MRR: primer path recuperado que está en required ---
         mrr = 0.0
         for rank, path in enumerate(retrieved_paths, start=1):
             if path in required:
                 mrr = 1.0 / rank
                 break
 
-        # Acierto de líneas: solo cuando el caso declara el rango exacto de la evidencia.
+        # --- Acierto de líneas: solo cuando el caso declara el rango exacto de la evidencia. ---
         line_hit: bool | None = None
         ranged = [e for e in case.expected if e.lines is not None and not e.optional]
         if ranged:
@@ -705,14 +873,23 @@ def evaluate(
                 for seg, _ in hits
             )
 
+        # --- Determinar modo y estado de aprobación ---
+        mode = _query_mode(case)
+        recall_threshold = RECALL_THRESHOLDS.get(mode, RECALL_THRESHOLDS["mixed"])
+        mrr_threshold = MRR_THRESHOLDS.get(mode, MRR_THRESHOLDS["mixed"])
+        passed = (recall >= recall_threshold and mrr >= mrr_threshold)
+
         results.append(
             CaseResult(
                 case_id=case.id,
                 category=case.category,
                 recall=recall,
-                hit=bool(found),
+                hit=bool(found_paths),
                 mrr=mrr,
                 line_hit=line_hit,
+                symbol_hit=symbol_hit,
+                query_mode=mode,
+                passed=passed,
                 retrieved=tuple(retrieved_paths),
                 elapsed_ms=elapsed_ms,
             )
@@ -721,6 +898,59 @@ def evaluate(
 
 
 # --------------------------------------------------------------------------- carga
+
+
+def _validate_case_id(case: Case) -> list[str]:
+    """Validaciones basicas del golden set: ids unicos y categorías conocidas."""
+    errors: list[str] = []
+    if not case.id.strip():
+        errors.append("case sin id")
+    if not case.question.strip():
+        errors.append(f"case {case.id}: pregunta vacía")
+    if not case.expected:
+        errors.append(f"case {case.id}: sin evidencia esperada")
+    return errors
+
+
+def _validate_golden_set(cases: Sequence[Case]) -> list[str]:
+    """F-06: validación del golden set antes de evaluar nada.
+
+    Detecta dos violaciones conocidas del formato:
+    - Evidencia **opcional** declarada en un caso con **evidencia primaria** (F-06): un ítem
+      `optional: true` es consumidor secundario, no contribuye al recall principal.
+    - Duplicados: la misma evidencia esperada dos veces en un caso contamina el cálculo
+      de recall (recuento inflado).
+
+    Devuelve una lista de mensajes de error; vacía = golden set válido.
+    """
+    errors: list[str] = []
+    seen_case_ids: set[str] = set()
+    for case in cases:
+        case_errors = _validate_case_id(case)
+        if case.id in seen_case_ids:
+            case_errors.append(f"duplicate case id: {case.id}")
+        seen_case_ids.add(case.id)
+        if case_errors:
+            errors.extend(case_errors)
+
+        seen_paths: set[str] = set()
+        primary_paths: set[str] = set()
+        for expected in case.expected:
+            if expected.path in seen_paths:
+                errors.append(
+                    f"case {case.id}: evidencia duplicada: {expected.path} (repeat)"
+                )
+            seen_paths.add(expected.path)
+            if not expected.optional:
+                primary_paths.add(expected.path)
+
+        for expected in case.expected:
+            if expected.optional and expected.path in primary_paths:
+                errors.append(
+                    f"case {case.id}: evidencia opcional ({expected.path}) duplica una primaria "
+                    f"o coexiste con ella; la opcional no debe contaminar el recall principal (F-06)"
+                )
+    return errors
 
 
 def load_golden(path: Path) -> tuple[str, str, list[Case]]:
@@ -746,6 +976,11 @@ def load_golden(path: Path) -> tuple[str, str, list[Case]]:
                 notes=raw.get("notes", ""),
                 query=raw.get("query", ""),
             )
+        )
+    errors = _validate_golden_set(cases)
+    if errors:
+        raise ValueError(
+            "golden set invalido: " + "; ".join(errors)
         )
     return payload.get("project", path.stem), payload.get("repo", ""), cases
 

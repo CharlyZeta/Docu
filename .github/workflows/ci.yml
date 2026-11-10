@@ -1,0 +1,110 @@
+name: ci
+
+# La suite completa, en los tres sistemas operativos. Windows no es decorado: la frescura normaliza
+# los finales de línea justamente para que el mismo commit valide igual en Windows y en Linux, y solo
+# hay una forma de comprobarlo.
+#
+# Nota: `docu.yml` cuida que la documentación no quede vieja; este workflow cuida que el código no se
+# rompa. Son responsabilidades distintas y por eso son dos archivos.
+on:
+  # Todas las ramas: una rama de trabajo también tiene que probarse antes de pedir revisión. El
+  # costo es bajo (el proyecto no tiene dependencias) y evita el clásico «verde en main, roto en la
+  # rama que nadie corrió».
+  push:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: tests · ${{ matrix.os }} · py${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.11", "3.12", "3.13"]
+        include:
+          # macOS solo en la versión más nueva: el valor marginal de la matriz completa no paga
+          # los minutos, y el objetivo es detectar problemas de rutas y fin de línea.
+          - os: macos-latest
+            python: "3.13"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+
+      - name: Instalar docu
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Comprobar que el paquete se importa y el CLI responde
+        run: |
+          python -c "import docu; print('docu', docu.__version__)"
+          python -m docu.delivery.cli --version
+
+      - name: Suite completa
+        # Sin red y sin modelos: 600+ tests deterministas.
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -t . 
+
+  lint:
+    name: lint · errores reales
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Ruff (solo lo que rompe)
+        # E9: errores de sintaxis · F63: comparaciones sospechosas · F7: `__all__` y similares
+        # F82: nombres indefinidos. Es la compuerta que no discute estilo: si esto falla, el código
+        # tiene un error, no un gusto distinto.
+        run: |
+          pip install ruff
+          ruff check --select E9,F63,F7,F82 src tests --output-format concise
+
+  packaging:
+    name: se instala y se ejecuta
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Construir la distribución
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build --wheel --sdist
+
+      - name: Instalar el wheel en un entorno limpio
+        run: |
+          python -m venv /tmp/limpio
+          /tmp/limpio/bin/pip install dist/*.whl
+          /tmp/limpio/bin/docu --version
+          /tmp/limpio/bin/docu gen --help
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docu-dist
+          path: dist/
+          retention-days: 7

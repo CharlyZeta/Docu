@@ -604,3 +604,27 @@ raíz, por si algún día se sube a `user-attachments`.
 conmutador centrado en la cabecera. La guardia `tests/test_readme.py` cubre **las dos**: comandos, tools
 MCP, códigos de salida, imágenes de la cabecera, el badge de tests (idéntico en ambos) y que ninguna
 anuncie un `.mp4`. Una traducción que se queda atrás es peor que no tener traducción.
+
+### 13.15 CI real: la suite en los tres sistemas, no solo la frescura
+
+Hasta acá el CI verificaba **documentación** (`docu ci check`, regeneración) y publicaba la web, pero
+nunca corría los 600+ tests: la garantía de calidad se quedaba en la máquina de quien escribía.
+
+`.github/workflows/ci.yml` agrega tres jobs:
+
+| Job | Qué hace |
+|---|---|
+| `test` | suite completa en Ubuntu y Windows × Python 3.11/3.12/3.13, más macOS 3.13 (7 combinaciones). Windows no es decorado: la frescura normaliza CRLF **para** que el mismo commit valide igual en los dos sistemas, y sólo así se comprueba |
+| `lint` | `ruff check --select E9,F63,F7,F82`: sintaxis, comparaciones sospechosas, `__all__` inexistente y nombres indefinidos. No discute estilo: si falla, hay un error |
+| `packaging` | `python -m build` de wheel y sdist, instalación del wheel en un venv limpio, `docu --version` y `docu gen --help`, y el artefacto queda 7 días |
+
+El lint encontró de entrada un **bug real**: `core/profile.py` declaraba en `__all__` a `detect` y
+`propose`, que se habían mudado a `delivery/proposal.py`. `from docu.core.profile import *` habría
+explotado con `AttributeError`. Corregido.
+
+`tests/test_ci_workflows.py` (8 tests) verifica los tres workflows con el propio `yamlmini`: que exista
+el paso de tests, que la matriz incluya Windows, que Pages audite antes de publicar, que el regen no
+falle cuando GitHub bloquea la creación de PRs, y que **todo `docu <comando>` mencionado exista**.
+
+Ruff completo reporta 179 hallazgos (casi todos imports sin usar en tests). No se aplicaron en este
+cambio: se dejan como tarea aparte para no mezclar 40 archivos de reformateo con una compuerta nueva.
