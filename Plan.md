@@ -652,3 +652,16 @@ dos condiciones (`internal`, `folded`) antes de combinarlas, que se lee mejor qu
 
 La compuerta del CI pasó al **conjunto completo** con la versión de ruff fijada (`~=0.17.0`): una regla
 nueva en una versión futura no puede romper un PR que no cambió nada. 644 tests verdes.
+
+### 13.17 El bot de documentación ya no propone ramas por una línea del ledger
+
+El job `regen` hacía `git add -A`, así que cada corrida del CI publicaba `docs/docu-bot` con una única
+línea nueva en `.docu/ledger.jsonl` (cada ejecución deja su entrada con fecha). El resultado: una rama
+nueva por push y un PR que nunca valía la pena revisar — ruido, no documentación.
+
+Ahora se versionan **sólo los artefactos**: `docs/generated` y `.docu/manifest.json`, y el commit se
+decide con `git diff --cached`, no con `git status`. Si lo único que cambió es el ledger, el job dice
+«sin cambios en la documentación» y no publica nada.
+
+Queda como decisión abierta si el ledger debería versionarse: hoy viaja en cada commit local y registra
+fechas de esta máquina. Si molesta, la alternativa es ignorarlo en git y tratarlo como estado local.

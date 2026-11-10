@@ -1,6 +1,6 @@
 # docu — README de onboarding (Nivel 4)
 
-Generado por `docu 0.1.0` · fuente `sha256:77076` · archivos analizados: 67 · afirmaciones: 1230 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:78757` · archivos analizados: 67 · afirmaciones: 1230 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 

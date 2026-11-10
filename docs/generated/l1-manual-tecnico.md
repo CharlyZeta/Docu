@@ -1,6 +1,6 @@
 # docu — Manual técnico (Nivel 1)
 
-Generado por `docu 0.1.0` · fuente `sha256:77076` · archivos analizados: 67 · afirmaciones: 1230 · sin cita: 0
+Generado por `docu 0.1.0` · fuente `sha256:78757` · archivos analizados: 67 · afirmaciones: 1230 · sin cita: 0
 
 > Documento **extractivo**: cada fila procede de un archivo y un rango de líneas del repositorio. No hay texto generado sin evidencia.
 
@@ -1378,7 +1378,7 @@ Cada afirmación de este documento enlaza a `ruta#L inicio-L fin`. Los archivos 
 | Archivo | sha256 |
 |---|---|
 | `.github/workflows/ci.yml` | `0b9310a247a5` |
-| `.github/workflows/docu.yml` | `a319ef05bb5c` |
+| `.github/workflows/docu.yml` | `053e0a5f574c` |
 | `.github/workflows/pages.yml` | `a62284389f13` |
 | `docs/brand/make-cover.py` | `bbe4d72bcbfa` |
 | `docu.profile.yaml` | `7e8d97b3460c` |

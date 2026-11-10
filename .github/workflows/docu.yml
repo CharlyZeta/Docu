@@ -56,17 +56,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if git status --porcelain | grep -q .; then
-            git config user.name "docu-bot"
-            git config user.email "docu-bot@users.noreply.github.com"
-            git checkout -b docs/docu-bot
-            git add -A
-            git commit -m "docs: regenerar documentación desactualizada"
-            git push --force origin docs/docu-bot
-            gh pr create --base main --head docs/docu-bot \
-              --title "docs: documentación regenerada por docu" \
-              --body-file .docu/pr-body.md --label documentation \
-              || echo "::warning::la rama está publicada, pero no se pudo abrir el PR: activá 'Allow GitHub Actions to create and approve pull requests' en Settings → Actions → General"
-          else
-            echo "sin cambios: la documentación ya estaba al día"
+          # Solo se versionan los artefactos de documentación. El ledger de aprendizaje registra
+          # cada corrida con su fecha: incluirlo producía una rama nueva por push con una única
+          # línea de diferencia, que es ruido, no documentación.
+          git add --all docs/generated .docu/manifest.json
+          if git diff --cached --quiet; then
+            echo "sin cambios en la documentación: no hay nada que proponer"
+            exit 0
           fi
+          git config user.name "docu-bot"
+          git config user.email "docu-bot@users.noreply.github.com"
+          git checkout -b docs/docu-bot
+          git commit -m "docs: regenerar documentación desactualizada"
+          git push --force origin docs/docu-bot
+          gh pr create --base main --head docs/docu-bot \
+            --title "docs: documentación regenerada por docu" \
+            --body-file .docu/pr-body.md --label documentation \
+            || echo "::warning::la rama está publicada, pero no se pudo abrir el PR: activá 'Allow GitHub Actions to create and approve pull requests' en Settings → Actions → General"
