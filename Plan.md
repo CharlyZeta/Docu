@@ -184,7 +184,7 @@ propone el perfil** (niveles según rutas, glosario si reconoce el framework, ex
 y `gen`/`status`/`ci`/`serve` que **lo obedecen**: niveles, carpeta, exclusiones, umbrales, TTL y
 glosario. **`docu audit`** con cinco comprobaciones deterministas y nota ponderada.
 - **Medido:** `docu init` + `docu gen` sin banderas sobre este repo: 1084 afirmaciones, 0 sin cita,
-  completitud 10/10, exit 0. Perfil inválido → exit 60. Audit sobre `saleshub`: **100.00/100** con
+  completitud 10/10, exit 0. Perfil inválido → exit 60. Audit sobre el proyecto externo: **100.00/100** con
   402/402 citas verificables por código. 66 tests nuevos entre perfil, orden de cambio, paquetes y
   auditoría.
 - **`init` es idempotente y no destructivo:** al reejecutarlo produce una **orden de cambio**
@@ -364,7 +364,7 @@ Fuente: `.env.example` y equivalentes (**sólo nombres de variables**), `Dockerf
 - **Regla dura:** un `.env` real no se abre nunca y hay un test que verifica que un valor secreto del
   archivo de ejemplo **no aparece** en el documento generado.
 - Los workflows dejan de contarse como configuración de la aplicación: son CI, no `application.yml`.
-- **Medido:** `saleshub` documenta 14 variables de entorno y los scripts de `package.json` con su cita;
+- **Medido:** el proyecto externo documenta 14 variables de entorno y los scripts de `package.json` con su cita;
   `docu` documenta su CLI desde `pyproject.toml`.
 
 ### 13.2 Diagramas como código (Mermaid)
@@ -386,7 +386,7 @@ muchos, tipo simple → uno.
 Cinco comprobaciones, sin modelos: citas (archivo existe, rango válido y **el sujeto aparece dentro**),
 duplicados (sujeto + cita), coherencia de rutas entre niveles, cobertura de secciones aplicables y
 frescura. Nota ponderada con esos pesos.
-- **Medido:** `docu` 936/936 citas verificadas y **100.00/100**; `saleshub` 1226/1226 y **100.00/100**.
+- **Medido:** `docu` 936/936 citas verificadas y **100.00/100**; el proyecto externo 1226/1226 y **100.00/100**.
 - Un juez LLM queda como métrica **asesora** para claridad, nunca como compuerta: si el verificador es
   otro modelo, el producto pierde la garantía que promete.
 
@@ -398,7 +398,7 @@ anotaciones, valor) y **prueba** (cita + fragmento real del archivo con números
 - Arquitectura, ERD y flujo de API se dibujan como **SVG propio**; el recorte es explícito («se muestran
   16 de 94 entidades · 36 relaciones fuera del recorte»). Las clases quedan como Mermaid copiable.
 - `site.json` como índice legible por máquina.
-- **Medido:** `saleshub` 1226 afirmaciones en 3 páginas con 1201 pruebas; cero referencias externas
+- **Medido:** el proyecto externo, 1226 afirmaciones en 3 páginas con 1201 pruebas; cero referencias externas
   (test que lo verifica) y test de inyección de HTML.
 
 ### 13.6 Estado y pendientes
@@ -454,7 +454,7 @@ declara como hueco.
 
 ---
 
-## 15. Feedback de la prueba en un proyecto ajeno (SalesHub)
+## 15. Feedback de una prueba en un proyecto ajeno (no público)
 
 18 hallazgos reportados por el agente que probó `docu` sobre un repositorio real. Estado al cerrar:
 
@@ -516,7 +516,7 @@ Cierra el ciclo de vida completo: `init` → `gen` → `audit` → `status` → 
 
 ### 13.11 Revisión del build del 31-10 (F-19 a F-25)
 
-Segunda verificación del agente de SalesHub sobre el binario reinstalado. Siete hallazgos, seis
+Segunda verificación del agente de ese proyecto sobre el binario reinstalado. Siete hallazgos, seis
 corregidos en el mismo día:
 
 | ID | Hallazgo | Corrección |
@@ -551,7 +551,7 @@ párrafo y su rango de líneas, y las publica como hechos `doc_section`.
   como si fuera la puesta en marcha.
 - Si no hay coincidencia, el hueco sigue declarado. No se inventa un prerrequisito.
 
-**Medido en SalesHub:** «Prerrequisitos» pasa de hueco a `Prerrequisitos: Node.js v20 · npm v10`
+**Medido en ese proyecto:** «Prerrequisitos» pasa de hueco a `Prerrequisitos: Node.js v20 · npm v10`
 citando `README.md#L244-L249`, y la petición de prosa gana 60 secciones documentadas. 11 tests nuevos.
 
 ### 13.13 F-26: un solo universo para el documento y la auditoría
@@ -569,7 +569,7 @@ decisiones y secciones de la documentación del repositorio. Cada uno contaba su
   **palabras** del texto citado (70 % o más presentes en el rango), porque el extractor une líneas y
   una comparación carácter a carácter rechazaría citas correctas.
 
-**Medido en SalesHub:** documento 1366 · auditoría 1366 · excluidas 0 · 100.00/100.
+**Medido en ese proyecto:** documento 1366 · auditoría 1366 · excluidas 0 · 100.00/100.
 
 **La anomalía del manifest no se reproduce**: tras `clean --force` el manifest no existe, `status`
 responde «sin documentación generada» dos veces seguidas y no lo recrea. Queda como observación del

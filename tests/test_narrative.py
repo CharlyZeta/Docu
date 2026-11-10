@@ -18,8 +18,8 @@ README = """# Mi Proyecto
 [![CI](https://img.shields.io/badge/ci-ok-brightgreen)](https://example.com)
 ![Licencia](https://img.shields.io/badge/licencia-MIT-green)
 
-Plataforma de gestión comercial omnicanal para equipos de ventas que necesitan
-operar ventas físicas y tiendas en línea desde un solo lugar.
+Plataforma de ejemplo para equipos que necesitan gestionar inventario y pedidos en línea
+desde un solo lugar, con datos ficticios.
 
 ## Instalación
 
@@ -65,14 +65,14 @@ class DocTests(unittest.TestCase):
         facts = doc_facts("README.md", README)
         self.assertEqual(len(facts), 1)
         self.assertEqual(facts[0].kind, "intent")
-        self.assertIn("gestión comercial omnicanal", facts[0].detail)
+        self.assertIn("gestionar inventario y pedidos", facts[0].detail)
         self.assertNotIn("shields.io", facts[0].detail)
         self.assertNotIn("Mi Proyecto", facts[0].detail)
 
     def test_citation_points_to_the_paragraph(self) -> None:
         facts = doc_facts("README.md", README)
         line = int(facts[0].citation.split("#L")[1].split("-")[0])
-        self.assertEqual(README.splitlines()[line - 1][:20], "Plataforma de gestió")
+        self.assertEqual(README.splitlines()[line - 1][:20], "Plataforma de ejempl")
 
     def test_adr_is_a_decision_with_status(self) -> None:
         facts = doc_facts("docs/adr/0007-cola.md", ADR)
@@ -134,7 +134,7 @@ class CollectTests(unittest.TestCase):
             )
             self.assertIn("**demo** se compone de 3 paquetes, 5 tipos y 9 campos.", narrative.intro)
             self.assertIn("README.md#L", narrative.intro)
-            self.assertIn("gestión comercial", narrative.intro)
+            self.assertIn("inventario y pedidos", narrative.intro)
 
     def test_without_evidence_the_intro_declares_it(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

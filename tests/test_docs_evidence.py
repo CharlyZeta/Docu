@@ -14,10 +14,10 @@ from docu.generate.docs_evidence import (
     parse_sections,
 )
 
-README = """# SalesHub
+README = """# Proyecto Ejemplo
 
-Plataforma de gestión comercial omnicanal para equipos de venta que operan ventas físicas
-y tiendas en línea desde un solo lugar, con integraciones de comercio electrónico.
+Aplicación de ejemplo para practicar inventario y pedidos en línea, sin datos reales ni
+integraciones externas: existe solo para las pruebas de esta suite.
 
 ## What you get
 
